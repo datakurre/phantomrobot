@@ -11,8 +11,13 @@ implementations for the same keywords than SeleniumLibrary_. I'm not sure if
 that's worth of effor, or should one just implement Selenium `WebDriver Wire
 Protocol`_ instead.
 
+This borrows many ideas from RoboZombie_ – a similar proof-of-concept remote
+library for Zombie.js_.
+
 .. _SeleniumLibrary: http://code.google.com/p/robotframework-seleniumlibrary/
 .. _WebDriver Wire Protocol: http://code.google.com/p/selenium/wiki/JsonWireProtocol
+.. _RoboZombie: https://github.com/mkorpela/RoboZombie
+.. _Zombie.js: http://zombie.labnotes.org/
 
 
 Requirements
