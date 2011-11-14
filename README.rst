@@ -6,9 +6,9 @@ This is a proof-of-concept PhantomJS integration for Robot Framework.
 This package provides an XML-RPC-service, which implements Robot Framework's
 remove library API and relays its commands to PhantomJS using WebSocket.
 
-To be completed enough to be useful, I think, the library should contain
-implementations for the same keywords than SeleniumLibrary_. I'm not sure if
-that's worth of effor, or should one just implement Selenium `WebDriver Wire
+To be complete enough to be useful, the library should contain implementations
+for the same keywords as SeleniumLibrary_. Yet, I'm not sure if that's worth of
+the effort, because maybe one should just implement Selenium `WebDriver Wire
 Protocol`_ instead.
 
 This borrows many ideas from RoboZombie_ – a similar proof-of-concept remote
