@@ -6,7 +6,7 @@ class PhantomProxy
 
     constructor: ->
         @proxy = require("http").createServer()
-        @proxy.listen 1339
+        @proxy.listen 1338
 
         @io = io.listen(@proxy)
         console.log "Listening for PhantomJS on port 1338"
