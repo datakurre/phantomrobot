@@ -1,6 +1,19 @@
+# Copyright (C) 2011  Asko Soukka <asko.soukka@iki.fi>
 #
-# Some ideas got from RoboZombie by Mikko Korpela
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 
 class PhantomProxy
 
@@ -17,7 +30,7 @@ class PhantomProxy
             server = xmlrpc.createServer host: "localhost", port: 1337
 
             # Because robot framework's remote API is synchronous, we may
-            # overload single callback-method for all return values.
+            # simply overload a single callback-method for all return values.
             sync_callback = null
 
             create_callback = (name) ->
@@ -37,7 +50,7 @@ class PhantomProxy
             for name in api_method_names
                 console.log "Listening for #{name}"
                 server.on name, create_callback name
-            console.log("Remote robot server now on port 1337")
+            console.log("Remote robot server is now available on port 1337")
 
         @phantom =\
             require("child_process").exec "phantomjs phantomrobot.coffee",
@@ -58,7 +71,7 @@ class PhantomRobot
         @socket.on name, (params) =>
             @[name] params, (response) =>
                 if response?.status == "FAIL"
-                    # Take a screenshot and embed it to the log
+                    # take a screenshot and embed it to the log
                     fs = require "fs"
                     filename = "#{(new Date).getTime().toString()}.png"
                     response.output =\
@@ -104,6 +117,7 @@ else do ->
     # on phantomjs
     phantom.injectJs "lib/socket.io.js"
 
+    # XXX: new keyword libraries (mixins) must be loaded here:
     phantom.injectJs "lib/browser.js"
     phantom.injectJs "lib/click.js"
     phantom.injectJs "lib/page.js"
@@ -115,6 +129,7 @@ else do ->
 
     class PhantomLibrary
         constructor: ->
+            # XXX: ... and merged into main library here:
             extend(this, new Browser)
             extend(this, new Click)
             extend(this, new Page)
