@@ -14,20 +14,23 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+ROBOT_PORT = 1337
+PROXY_PORT = 1338
+
 
 class PhantomProxy
 
     constructor: ->
         @proxy = require("http").createServer()
-        @proxy.listen 1338
+        @proxy.listen PROXY_PORT
 
         @io = io.listen(@proxy)
-        console.log "Listening for PhantomJS on port 1338"
+        console.log "Listening for PhantomJS on port #{PROXY_PORT}"
 
         @io.sockets.on "connection", (socket) ->
             console.log "Got connection from PhantomJS"
 
-            server = xmlrpc.createServer host: "localhost", port: 1337
+            server = xmlrpc.createServer host: "localhost", port: ROBOT_PORT
 
             # Because robot framework's remote API is synchronous, we may
             # simply overload a single callback-method for all return values.
@@ -38,7 +41,8 @@ class PhantomProxy
                     sync_callback = callback
                     socket.emit name, params
 
-            socket.on "callback", (data) -> sync_callback null, data
+            socket.on "callback", (data) ->
+                sync_callback null, data
 
             api_method_names = [
                 "get_keyword_names"
@@ -50,36 +54,56 @@ class PhantomProxy
             for name in api_method_names
                 console.log "Listening for #{name}"
                 server.on name, create_callback name
-            console.log("Remote robot server is now available on port 1337")
+            console.log("Remote robot server is now available on "\
+                        + "port #{ROBOT_PORT}")
 
         @phantom =\
-            require("child_process").exec "phantomjs phantomrobot.coffee",
+            require("child_process").exec "phantomjs phantomrobot.js",
             (err, stdout, stderr) -> console.log stdout
         process.on "SIGTERM", -> do @phantom.kill
 
 
 class PhantomRobot
 
-    constructor: (@library = null) ->
-        @socket = io.connect "http://localhost:1338/"
+    constructor: (@library=null, @implicit_wait=11, @implicit_sleep=1,\
+                  @screenshots_directory="./") ->
+        @socket = io.connect "http://localhost:#{PROXY_PORT}/"
         for name, _ of this
-            if name not in ["library", "socket", "create_callback"]
+            if name not in ["library",\
+                            "implicit_wait", "implicit_sleep",\
+                            "screenshots_directory",\
+                            "socket", "create_callback"]
                 @create_callback name
 
     create_callback: (name) ->
         console.log "Listening for #{name}"
         @socket.on name, (params) =>
-            @[name] params, (response) =>
+            timeout = new Date().getTime() + @implicit_wait * 1000
+
+            callback = (response) =>
+                if response?.status == "RETRY"
+                    if (new Date().getTime()) < timeout
+                        setTimeout =>
+                            @[name] params, (response) => callback response
+                        , @implicit_sleep * 1000
+                    else
+                        response.status = "FAIL"
+
                 if response?.status == "FAIL"
                     # take a screenshot and embed it to the log
                     fs = require "fs"
-                    filename = "#{(new Date).getTime().toString()}.png"
+                    filename = "#{@screenshots_directory}"\
+                        + "#{(new Date).getTime().toString()}.png"
                     response.output =\
                         "*HTML* "\
                         + "<img src='#{fs.workingDirectory}#{fs.separator}"\
                         + "#{filename}'/>"
                     @library.page?.render filename
-                @socket.emit "callback", response
+
+                if response?.status != "RETRY"
+                    @socket.emit "callback", response
+
+            @[name] params, (response) => callback response
 
     get_keyword_names: (params, callback) ->
         names = (name.replace(/\_/g, " ") for name, _ of @library\
@@ -135,4 +159,8 @@ else do ->
             extend(this, new Page)
             extend(this, new TextField)
 
-    new PhantomRobot(new PhantomLibrary)
+    wait = phantom.args.length > 0 and parseInt(phantom.args[0], 10) or 10
+    sleep = phantom.args.length > 1 and parseInt(phantom.args[1], 10) or 1
+    dir = phantom.args.length > 2 and phantom.args[2] or "./"
+
+    new PhantomRobot(new PhantomLibrary, wait, sleep, dir)

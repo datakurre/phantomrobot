@@ -106,9 +106,9 @@ An example test suite
         Input text  __ac_name  admin
         Input text  __ac_password  admin
         Click Button  Log in
-        Wait until keyword succeeds  1  1  Page should contain  now logged in
+        Page should contain  now logged in
         click link  Continue to the Plone site home page
-        Wait until keyword succeeds  1  1  Page should contain  Manage portlets
+        Page should contain  Manage portlets
 
 
     *** Keywords ***
