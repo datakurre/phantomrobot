@@ -14,17 +14,15 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PROXY_PORT = 1338
-
 
 class PhantomProxy
 
     constructor: (port=1337, timeout=10, sleep=1, screenshots="./") ->
         @proxy = require("http").createServer()
-        @proxy.listen PROXY_PORT
+        @proxy.listen port + 1
 
         @io = io.listen(@proxy)
-        console.log "Listening for PhantomJS on port #{PROXY_PORT}"
+        console.log "Listening for PhantomJS on port #{port + 1}"
 
         @io.sockets.on "connection", (socket) ->
             console.log "Got connection from PhantomJS"
@@ -57,28 +55,28 @@ class PhantomProxy
 
         @phantom =\
             require("child_process").exec "phantomjs phantomrobot.js "\
-                + "#{timeout} #{sleep} #{screenshots}",
+                + "#{port + 1} #{timeout} #{sleep} #{screenshots}",
             (err, stdout, stderr) -> console.log stdout
         process.on "SIGTERM", -> do @phantom.kill
 
 
 class PhantomRobot
 
-    constructor: (@library=null, @timeout=10, @sleep=1, @screenshots="./") ->
-        @socket = io.connect "http://localhost:#{PROXY_PORT}/"
+    constructor: (@library=null, @port=1338, @wait=10, @sleep=1, @dir="./") ->
+        @socket = io.connect "http://localhost:#{port}/"
         for name, _ of this
-            if name not in ["library", "wait", "sleep", "screenshots",\
+            if name not in ["library", "port", "wait", "sleep", "dir",\
                             "socket", "create_callback"]
                 @create_callback name
 
     create_callback: (name) ->
         console.log "Listening for #{name}"
         @socket.on name, (params) =>
-            timeout = new Date().getTime() + @timeout * 1000
+            timeout = new Date().getTime() + @wait * 1000
 
             callback = (response) =>
                 if response?.status == "WAIT"
-                    # on WAIT, retry after @sleep until @timeout
+                    # on WAIT, retry after @sleep until timeout
                     if new Date().getTime() < timeout
                         setTimeout =>
                             @[name] params, (response) => callback response
@@ -89,8 +87,7 @@ class PhantomRobot
                 if response?.status == "FAIL"
                     # take a screenshot and embed it into the log
                     fs = require "fs"
-                    filename = "#{@screenshots}"\
-                        + "#{(new Date).getTime().toString()}.png"
+                    filename = "#{@dir}/#{new Date().getTime()}.png"
                     response.output =\
                         "*HTML* "\
                         + "<img src='#{fs.workingDirectory}#{fs.separator}"\
@@ -169,8 +166,9 @@ else do ->
             extend(this, new Page)
             extend(this, new TextField)
 
-    timeout = phantom.args.length > 0 and parseInt(phantom.args[0], 10) or 10
-    sleep = phantom.args.length > 1 and parseInt(phantom.args[1], 10) or 1
-    screenshots = phantom.args.length > 2 and phantom.args[2] or "./"
+    port = phantom.args.length > 0 and parseInt(phantom.args[0], 10) or 1338
+    timeout = phantom.args.length > 1 and parseInt(phantom.args[1], 10) or 10
+    sleep = phantom.args.length > 2 and parseInt(phantom.args[2], 10) or 1
+    screenshots = phantom.args.length > 3 and phantom.args[3] or "./"
 
-    new PhantomRobot(new PhantomLibrary, timeout, sleep, screenshots)
+    new PhantomRobot(new PhantomLibrary, port, timeout, sleep, screenshots)

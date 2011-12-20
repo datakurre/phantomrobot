@@ -51,6 +51,7 @@ Arguments
 
 ``--port=1337``
     a local port number for this Robot Framework remote library
+    (PhantomJS will connect to phantomrobot through port + 1, e.g. 1338)
 ``--implicit-wait=10``
     implicit timeout for certain keywords, e.g. "page contains";
     disable with ``implicit-wait=-1``
