@@ -75,6 +75,7 @@ A pybot-buildout
 ----------------
 
 ::
+
     [buildout]
     extends = buildout.cfg
     find-links += http://packages.affinitic.be/simple
@@ -100,6 +101,7 @@ An example test suite
 ---------------------
 
 ::
+
     *** Settings ***
     Library  Remote  http://localhost:1337/
 
