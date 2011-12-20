@@ -5,12 +5,12 @@ PhantomJS Remote Library for Robot Framework
 This is a proof-of-concept PhantomJS integration for Robot Framework.
 
 This package provides an XML-RPC-service, which implements Robot Framework's
-remove library API and relays its commands to PhantomJS using WebSocket.
+remote library API and relays its commands to PhantomJS using WebSocket.
 
-To be complete enough to be useful, the library should contain implementations
-for the same keywords as SeleniumLibrary_. Yet, I'm not sure if that's worth of
-the effort, because maybe one should just implement Selenium `WebDriver Wire
-Protocol`_ instead.
+**Disclaimer:** To be complete enough to be useful, the library should contain
+implementations for the same keywords as SeleniumLibrary_. Yet, I'm not sure
+if that's worth of the effort. Maybe one should just implement Selenium
+`WebDriver Wire Protocol`_ instead...
 
 This borrows many ideas from RoboZombie_ – a similar proof-of-concept remote
 library for Zombie.js_.
@@ -24,13 +24,13 @@ library for Zombie.js_.
 Requirements
 ============
 
-- PhantomJS_
-- node.js_ and  npm_ with
+- PhantomJS_ available on path
+- node.js_ and npm_ with
 
   * *xmlrpc*
   * *socket.io*
   * *optimist* and
-  * *coffee-script* installed
+  * *coffee-script* -modules installed
 
 - ``make`` to run ``Makefile``
 
@@ -46,11 +46,26 @@ Usage
 2. Run a Robot Framework -testsuite (e.g. ``pybot testsuite.txt``).
 
 
+Arguments
+=========
+
+``--port=1337``
+    a local port number for this Robot Framework remote library
+``--implicit-wait=10``
+    implicit timeout for certain keywords, e.g. "page contains";
+    disable with ``implicit-wait=-1``
+``--implicit-sleep=1``
+    time to sleep between trials until implicit timeout
+``--screenshots-dir=``
+    full path to directory to save screenshot of test failures
+    (defaults to PhantomJS' working directory)
+
+
 An example of use
 =================
 
 I'm developing and testing this with Plone_, which is usually put together
-using buildout_.
+using buildout_ as follows...
 
 .. _Plone: http://plone.org/
 .. _buildout: http://www.buildout.org/
@@ -85,7 +100,6 @@ An example test suite
 ---------------------
 
 ::
-
     *** Settings ***
     Library  Remote  http://localhost:1337/
 
