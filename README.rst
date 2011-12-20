@@ -59,7 +59,7 @@ Arguments
     time to sleep between trials until implicit timeout
 ``--screenshots-dir=``
     full path to directory to save screenshot of test failures
-    (defaults to PhantomJS' working directory)
+    (defaults to the parent of the PhantomJS' working directory)
 
 
 An example of use

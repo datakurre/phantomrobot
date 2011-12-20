@@ -17,7 +17,7 @@
 
 class PhantomProxy
 
-    constructor: (port=1337, timeout=10, sleep=1, screenshots="./") ->
+    constructor: (port=1337, timeout=10, sleep=1, screenshots="..") ->
         @proxy = require("http").createServer()
         @proxy.listen port + 1
 
@@ -62,7 +62,7 @@ class PhantomProxy
 
 class PhantomRobot
 
-    constructor: (@library=null, @port=1338, @wait=10, @sleep=1, @dir="./") ->
+    constructor: (@library=null, @port=1338, @wait=10, @sleep=1, @dir=".") ->
         @socket = io.connect "http://localhost:#{port}/"
         for name, _ of this
             if name not in ["library", "port", "wait", "sleep", "dir",\
@@ -140,7 +140,7 @@ if not phantom? then do ->
     port = argv?.port or 1337
     timeout = argv?["implicit-wait"] or 
     sleep = argv?["implicit-sleep"] or 1
-    screenshots = argv?["screenshots-dir"] or "./"
+    screenshots = argv?["screenshots-dir"] or ".."
 
     new PhantomProxy port, timeout, sleep, screenshots
 
@@ -169,6 +169,6 @@ else do ->
     port = phantom.args.length > 0 and parseInt(phantom.args[0], 10) or 1338
     timeout = phantom.args.length > 1 and parseInt(phantom.args[1], 10) or 10
     sleep = phantom.args.length > 2 and parseInt(phantom.args[2], 10) or 1
-    screenshots = phantom.args.length > 3 and phantom.args[3] or "./"
+    screenshots = phantom.args.length > 3 and phantom.args[3] or ".."
 
     new PhantomRobot(new PhantomLibrary, port, timeout, sleep, screenshots)
