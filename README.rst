@@ -28,7 +28,8 @@ Requirements
 - node.js_ and  npm_ with
 
   * *xmlrpc*
-  * *socket.io* and
+  * *socket.io*
+  * *optimist* and
   * *coffee-script* installed
 
 - ``make`` to run ``Makefile``

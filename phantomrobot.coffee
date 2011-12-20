@@ -14,13 +14,12 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-ROBOT_PORT = 1337
 PROXY_PORT = 1338
 
 
 class PhantomProxy
 
-    constructor: ->
+    constructor: (port=1337, timeout=10, sleep=1, screenshots="./") ->
         @proxy = require("http").createServer()
         @proxy.listen PROXY_PORT
 
@@ -30,7 +29,7 @@ class PhantomProxy
         @io.sockets.on "connection", (socket) ->
             console.log "Got connection from PhantomJS"
 
-            server = xmlrpc.createServer host: "localhost", port: ROBOT_PORT
+            server = xmlrpc.createServer host: "localhost", port: port
 
             # Because robot framework's remote API is synchronous, we may
             # simply overload a single callback-method for all return values.
@@ -54,53 +53,52 @@ class PhantomProxy
             for name in api_method_names
                 console.log "Listening for #{name}"
                 server.on name, create_callback name
-            console.log("Remote robot server is now available on "\
-                        + "port #{ROBOT_PORT}")
+            console.log "Remote robot server is now listening on port #{port}"
 
         @phantom =\
-            require("child_process").exec "phantomjs phantomrobot.js",
+            require("child_process").exec "phantomjs phantomrobot.js "\
+                + "#{timeout} #{sleep} #{screenshots}",
             (err, stdout, stderr) -> console.log stdout
         process.on "SIGTERM", -> do @phantom.kill
 
 
 class PhantomRobot
 
-    constructor: (@library=null, @implicit_wait=11, @implicit_sleep=1,\
-                  @screenshots_directory="./") ->
+    constructor: (@library=null, @timeout=10, @sleep=1, @screenshots="./") ->
         @socket = io.connect "http://localhost:#{PROXY_PORT}/"
         for name, _ of this
-            if name not in ["library",\
-                            "implicit_wait", "implicit_sleep",\
-                            "screenshots_directory",\
+            if name not in ["library", "wait", "sleep", "screenshots",\
                             "socket", "create_callback"]
                 @create_callback name
 
     create_callback: (name) ->
         console.log "Listening for #{name}"
         @socket.on name, (params) =>
-            timeout = new Date().getTime() + @implicit_wait * 1000
+            timeout = new Date().getTime() + @timeout * 1000
 
             callback = (response) =>
-                if response?.status == "RETRY"
-                    if (new Date().getTime()) < timeout
+                if response?.status == "WAIT"
+                    # on WAIT, retry after @sleep until @timeout
+                    if new Date().getTime() < timeout
                         setTimeout =>
                             @[name] params, (response) => callback response
-                        , @implicit_sleep * 1000
+                        , @sleep * 1000
                     else
                         response.status = "FAIL"
 
                 if response?.status == "FAIL"
-                    # take a screenshot and embed it to the log
+                    # take a screenshot and embed it into the log
                     fs = require "fs"
-                    filename = "#{@screenshots_directory}"\
+                    filename = "#{@screenshots}"\
                         + "#{(new Date).getTime().toString()}.png"
                     response.output =\
                         "*HTML* "\
                         + "<img src='#{fs.workingDirectory}#{fs.separator}"\
                         + "#{filename}'/>"
-                    @library.page?.render filename
+                    @library?.page?.render filename
 
-                if response?.status != "RETRY"
+                if response?.status != "WAIT"
+                    # on not WAIT, return the response
                     @socket.emit "callback", response
 
             @[name] params, (response) => callback response
@@ -127,7 +125,7 @@ if not phantom? then do ->
     # on node.js
     global.io = require "socket.io"
     if not io
-        console.log "requires socket.io"
+        console.log "requires node-socket.io"
         console.log "npm install socket.io"
 
     global.xmlrpc = require "xmlrpc"
@@ -135,7 +133,19 @@ if not phantom? then do ->
         console.log "Requires node-xmlrpc"
         console.log "npm install xmlrpc"
 
-    new PhantomProxy
+    optimist = require "optimist"
+    if not optimist
+        console.log "Requires node-optimist"
+        console.log "npm install optimist"
+
+    argv = optimist.argv
+
+    port = argv?.port or 1337
+    timeout = argv?["implicit-wait"] or 
+    sleep = argv?["implicit-sleep"] or 1
+    screenshots = argv?["screenshots-dir"] or "./"
+
+    new PhantomProxy port, timeout, sleep, screenshots
 
 else do ->
     # on phantomjs
@@ -159,8 +169,8 @@ else do ->
             extend(this, new Page)
             extend(this, new TextField)
 
-    wait = phantom.args.length > 0 and parseInt(phantom.args[0], 10) or 10
+    timeout = phantom.args.length > 0 and parseInt(phantom.args[0], 10) or 10
     sleep = phantom.args.length > 1 and parseInt(phantom.args[1], 10) or 1
-    dir = phantom.args.length > 2 and phantom.args[2] or "./"
+    screenshots = phantom.args.length > 2 and phantom.args[2] or "./"
 
-    new PhantomRobot(new PhantomLibrary, wait, sleep, dir)
+    new PhantomRobot(new PhantomLibrary, timeout, sleep, screenshots)

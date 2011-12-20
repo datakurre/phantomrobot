@@ -6,7 +6,7 @@ class Page
         if html.indexOf(needle) > -1
             respond status: "PASS"
         else
-            respond status: "RETRY", error: "Page did not contain '#{needle}'."
+            respond status: "WAIT", error: "Page did not contain '#{needle}'."
 
     Page_Should_Contain_Element: (params, respond) ->
         id = params[1][0]
@@ -22,4 +22,4 @@ class Page
         if contains_element
             respond status: "PASS"
         else
-            respond status: "RETRY", error: "Page did not contain '#{id}'."
+            respond status: "WAIT", error: "Page did not contain '#{id}'.",
