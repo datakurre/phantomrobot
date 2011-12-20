@@ -3,7 +3,7 @@ class Click
     Click_Link: (params, respond) ->
         needle = params[1][0]
 
-        # FIXME: PhantomJS >= 1.4 may allow passing variables into evaluate
+        # FIXME: PhantomJS >= 1.5 may allow passing variables into evaluate
         fn = null
         eval("fn = function() { document._tvar = '#{needle}'; }")
         @page.evaluate fn
@@ -29,7 +29,7 @@ class Click
     Click_Button: (params, respond) ->
         needle = params[1][0]
 
-        # FIXME: PhantomJS >= 1.4 may allow passing variables into evaluate
+        # FIXME: PhantomJS >= 1.5 may allow passing variables into evaluate
         fn = null
         eval("fn = function() { document._tvar = '#{needle}'; }")
         @page.evaluate fn

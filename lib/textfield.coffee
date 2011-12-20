@@ -4,7 +4,7 @@ class TextField
         id = params[1][0]
         value = params[1][1]
 
-        # FIXME: PhantomJS >= 1.4 may allow passing variables into evaluate
+        # FIXME: PhantomJS >= 1.5 may allow passing variables into evaluate
         fn = null
         eval("fn = function() { document._tvar = '#{id}'; }")
         @page.evaluate fn
