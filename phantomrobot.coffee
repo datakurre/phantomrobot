@@ -136,20 +136,26 @@ class PhantomRobot
 
 if not phantom? then do ->
     # on node.js
-    global.io = require "socket.io"
-    if not io
+    try
+        global.io = require "socket.io"
+    catch e
         console.log "requires node-socket.io"
         console.log "npm install socket.io"
+        process.exit 1
 
-    global.xmlrpc = require "xmlrpc"
-    if not xmlrpc
+    try
+        global.xmlrpc = require "xmlrpc"
+    catch e
         console.log "Requires node-xmlrpc"
         console.log "npm install xmlrpc"
+        process.exit 1
 
-    optimist = require "optimist"
-    if not optimist
+    try
+        optimist = require "optimist"
+    catch e
         console.log "Requires node-optimist"
         console.log "npm install optimist"
+        process.exit 1
 
     argv = optimist.argv
 
