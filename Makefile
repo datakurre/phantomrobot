@@ -1,4 +1,7 @@
-all: phantomrobot.js lib/browser.js lib/click.js lib/page.js lib/textfield.js
+all: phantomrobot.js lib/browser.js lib/click.js lib/page.js lib/textfield.js lib/robot.js
+
+lib/robot.js: lib/robot.coffee
+	coffee -b -c lib/robot.coffee
 
 phantomrobot.js: phantomrobot.coffee
 	coffee -b -c phantomrobot.coffee
