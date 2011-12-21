@@ -64,19 +64,19 @@ class PhantomRobot
 
     constructor: (@library=null, @port=1338, @timeout=10, @sleep=1,\
                   @screenshots_dir=".",\
-                  @on_failure="Capture Page Screenshot") ->
+                  @on_failure="Capture page screenshot") ->
         @socket = io.connect "http://localhost:#{port}/"
         for name, _ of this
             if name not in ["library", "port", "timeout", "sleep",
                             "screenshots_dir", "on_failure",
                             "socket", "create_callback"]
                 @create_callback name
-        window.robot = this
+        window.robot = this  # make me a global variable
 
     create_callback: (name) ->
         console.log "Listening for #{name}"
         @socket.on name, (params) =>
-            timeout = new Date().getTime() + @timeout* 1000
+            timeout = new Date().getTime() + @timeout * 1000
 
             callback = (response) =>
                 if response?.status == "WAIT"
@@ -96,8 +96,7 @@ class PhantomRobot
                     else
                         @socket.emit "callback", response
 
-                else if response?.status == "PASS"
-                    console.log response
+                if response?.status not in ["FAIL", "WAIT"]
                     @socket.emit "callback", response
 
             @[name] params, (response) => callback response

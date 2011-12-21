@@ -11,7 +11,7 @@ class Robot
                 + "<img src='#{fs.workingDirectory}#{fs.separator}"\
                 + "#{filename}'/>"
             @page.render filename
-            respond status: "PASS"
+            respond status: "PASS", output: output
         else
             respond status: "FAIL", error: "There's no page."
 
