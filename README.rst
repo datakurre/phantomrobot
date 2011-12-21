@@ -20,7 +20,6 @@ library for Zombie.js_.
 .. _RoboZombie: https://github.com/mkorpela/RoboZombie
 .. _Zombie.js: http://zombie.labnotes.org/
 
-
 Requirements
 ============
 
@@ -33,6 +32,9 @@ Requirements
   * *coffee-script* (>= 1.2.0) -modules installed
 
 - ``make`` to run ``Makefile``
+
+PS. If you need to compile PhantomJS yourself, beware of the old Qt WebKit -bug
+breaking its websockets: https://bugs.webkit.org/show_bug.cgi?id=47284
 
 .. _PhantomJS: http://www.phantomjs.org/
 .. _node.js: http://nodejs.org/
