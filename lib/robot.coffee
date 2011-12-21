@@ -1,4 +1,18 @@
 class Robot
+    "Capture Page Screenshot": (params, respond) ->
+        if @page?.render
+            # take a screenshot and embed it into the log
+            fs = require "fs"
+            filename =\
+                "#{robot.screenshots_dir}/#{new Date().getTime()}.png"
+            output =\
+                "*HTML* "\
+                + "<img src='#{fs.workingDirectory}#{fs.separator}"\
+                + "#{filename}'/>"
+            @page.render filename
+            respond status: "PASS"
+        else
+            respond status: "FAIL", error: "There's no page."
 
     "Start Selenium Server": (params, respond) ->
         respond status: "PASS"
@@ -19,11 +33,11 @@ class Robot
         names = (name.replace(/\_/g, " ") for name, _ of this\
             when name[0].toUpperCase() == name[0])
         if keyword in names
-            robot.on_failure.push(keyword)
-            respond status: "PASS"
+            previous = robot.on_failure
+            robot.on_failure = keyword
+            respond status: "PASS", output: previous
         else
-            # respond status: "FAIL", error: "There's no keyword '#{keyword}'."
-            respond status: "PASS"
+            respond status: "FAIL", error: "There's no keyword '#{keyword}'."
 
     "Stop Selenium Server": (params, respond) ->
         respond status: "PASS"

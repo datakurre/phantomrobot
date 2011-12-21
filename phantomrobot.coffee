@@ -63,7 +63,8 @@ class PhantomProxy
 class PhantomRobot
 
     constructor: (@library=null, @port=1338, @timeout=10, @sleep=1,\
-                  @screenshots_dir=".", @on_failure=[]) ->
+                  @screenshots_dir=".",\
+                  @on_failure="Capture Page Screenshot") ->
         @socket = io.connect "http://localhost:#{port}/"
         for name, _ of this
             if name not in ["library", "port", "timeout", "sleep",
@@ -88,27 +89,15 @@ class PhantomRobot
                         response.status = "FAIL"
 
                 if response?.status == "FAIL"
-                    # screenshot should be refactord into "Capture Page
-                    # Screenshot"-keyword, but it's not trivial to emit
-                    # response.output from a keyword in this phase...
-                    if @library?.page?.render
-                        # take a screenshot and embed it into the log
-                        fs = require "fs"
-                        filename =\
-                            "#{robot.screenshots_dir}/#{new Date().getTime()}.png"
-                        response.output =\
-                            "*HTML* "\
-                            + "<img src='#{fs.workingDirectory}#{fs.separator}"\
-                            + "#{filename}'/>"
-                        @library.page.render filename
-                    for keyword in @on_failure
-                        # these are not expected to fail
-                        @run_keyword [keyword, []], (sub_response) =>
-                            response.output ?=\
-                                subresponse?.output or response?.output
+                    if @on_failure
+                        @run_keyword [@on_failure, []], (sub) =>
+                            response.output = sub?.output or response?.output
+                            @socket.emit "callback", response
+                    else
+                        @socket.emit "callback", response
 
-                if response?.status != "WAIT"
-                    # on not WAIT, return the response
+                else if response?.status == "PASS"
+                    console.log response
                     @socket.emit "callback", response
 
             @[name] params, (response) => callback response
