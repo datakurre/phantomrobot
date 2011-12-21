@@ -17,7 +17,7 @@
 
 class PhantomProxy
 
-    constructor: (port=1337, timeout=10, sleep=1, screenshots="..") ->
+    constructor: (port=1337, timeout=10, sleep=1, screenshots_dir="..") ->
         @proxy = require("http").createServer()
         @proxy.listen port + 1
 
@@ -55,24 +55,27 @@ class PhantomProxy
 
         @phantom =\
             require("child_process").exec "phantomjs phantomrobot.js "\
-                + "#{port + 1} #{timeout} #{sleep} #{screenshots}",
+                + "#{port + 1} #{timeout} #{sleep} #{screenshots_dir}",
             (err, stdout, stderr) -> console.log stdout
         process.on "SIGTERM", -> do @phantom.kill
 
 
 class PhantomRobot
 
-    constructor: (@library=null, @port=1338, @wait=10, @sleep=1, @dir=".") ->
+    constructor: (@library=null, @port=1338, @timeout=10, @sleep=1,\
+                  @screenshots_dir=".", @on_failure=[]) ->
         @socket = io.connect "http://localhost:#{port}/"
         for name, _ of this
-            if name not in ["library", "port", "wait", "sleep", "dir",\
+            if name not in ["library", "port", "timeout", "sleep",
+                            "screenshots_dir", "on_failure",
                             "socket", "create_callback"]
                 @create_callback name
+        window.robot = this
 
     create_callback: (name) ->
         console.log "Listening for #{name}"
         @socket.on name, (params) =>
-            timeout = new Date().getTime() + @wait * 1000
+            timeout = new Date().getTime() + @timeout* 1000
 
             callback = (response) =>
                 if response?.status == "WAIT"
@@ -85,14 +88,24 @@ class PhantomRobot
                         response.status = "FAIL"
 
                 if response?.status == "FAIL"
-                    # take a screenshot and embed it into the log
-                    fs = require "fs"
-                    filename = "#{@dir}/#{new Date().getTime()}.png"
-                    response.output =\
-                        "*HTML* "\
-                        + "<img src='#{fs.workingDirectory}#{fs.separator}"\
-                        + "#{filename}'/>"
-                    @library?.page?.render filename
+                    # screenshot should be refactord into "Capture Page
+                    # Screenshot"-keyword, but it's not trivial to emit
+                    # response.output from a keyword in this phase...
+                    if @library?.page?.render
+                        # take a screenshot and embed it into the log
+                        fs = require "fs"
+                        filename =\
+                            "#{robot.screenshots_dir}/#{new Date().getTime()}.png"
+                        response.output =\
+                            "*HTML* "\
+                            + "<img src='#{fs.workingDirectory}#{fs.separator}"\
+                            + "#{filename}'/>"
+                        @library.page.render filename
+                    for keyword in @on_failure
+                        # these are not expected to fail
+                        @run_keyword [keyword, []], (sub_response) =>
+                            response.output ?=\
+                                subresponse?.output or response?.output
 
                 if response?.status != "WAIT"
                     # on not WAIT, return the response
@@ -113,7 +126,10 @@ class PhantomRobot
 
     run_keyword: (params, callback) ->
         try
-            @library[params[0].replace(/\s/g, "_")](params, callback)
+            if params[0] of @library
+                @library[params[0]](params, callback)
+            else
+                @library[params[0].replace(/\s/g, "_")](params, callback)
         catch e
             callback status: "FAIL", error: e.toString()
 
@@ -138,17 +154,18 @@ if not phantom? then do ->
     argv = optimist.argv
 
     port = argv?.port or 1337
-    timeout = argv?["implicit-wait"] or 
+    timeout = argv?["implicit-wait"] or 10
     sleep = argv?["implicit-sleep"] or 1
-    screenshots = argv?["screenshots-dir"] or ".."
+    screenshots_dir = argv?["screenshots-dir"] or ".."
 
-    new PhantomProxy port, timeout, sleep, screenshots
+    new PhantomProxy port, timeout, sleep, screenshots_dir
 
 else do ->
     # on phantomjs
     phantom.injectJs "lib/socket.io.js"
 
     # XXX: new keyword libraries (mixins) must be loaded here:
+    phantom.injectJs "lib/robot.js"
     phantom.injectJs "lib/browser.js"
     phantom.injectJs "lib/click.js"
     phantom.injectJs "lib/page.js"
@@ -161,6 +178,7 @@ else do ->
     class PhantomLibrary
         constructor: ->
             # XXX: ... and merged into main library here:
+            extend(this, new Robot)
             extend(this, new Browser)
             extend(this, new Click)
             extend(this, new Page)
@@ -169,6 +187,6 @@ else do ->
     port = phantom.args.length > 0 and parseInt(phantom.args[0], 10) or 1338
     timeout = phantom.args.length > 1 and parseInt(phantom.args[1], 10) or 10
     sleep = phantom.args.length > 2 and parseInt(phantom.args[2], 10) or 1
-    screenshots = phantom.args.length > 3 and phantom.args[3] or ".."
+    screenshots_dir = phantom.args.length > 3 and phantom.args[3] or ".."
 
-    new PhantomRobot(new PhantomLibrary, port, timeout, sleep, screenshots)
+    new PhantomRobot(new PhantomLibrary, port, timeout, sleep, screenshots_dir)
