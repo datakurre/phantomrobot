@@ -30,7 +30,7 @@ Requirements
   * *xmlrpc*
   * *socket.io*
   * *optimist* and
-  * *coffee-script* -modules installed
+  * *coffee-script* (>= 1.2.0) -modules installed
 
 - ``make`` to run ``Makefile``
 
@@ -50,11 +50,11 @@ Arguments
 =========
 
 ``--port=1337``
-    a local port number for this Robot Framework remote library
-    (PhantomJS will connect to phantomrobot through port + 1, e.g. 1338)
+    a local port number for this Robot Framework remote library (PhantomJS will
+    connect to phantomrobot through ``port + 1``, e.g. ``1338``)
 ``--implicit-wait=10``
-    implicit timeout for certain keywords, e.g. "page contains";
-    disable with ``implicit-wait=-1``
+    implicit timeout for supporting keywords, e.g. *page contains* (can be
+    disabled with ``implicit-wait=-1``)
 ``--implicit-sleep=1``
     time to sleep between trials until implicit timeout
 ``--screenshots-dir=``
@@ -81,13 +81,13 @@ A pybot-buildout
     extends = buildout.cfg
     find-links += http://packages.affinitic.be/simple
     allow-hosts +=
+        packages.affinitic.be
         robotframework.googlecode.com
         robotframework.org
         code.google.com
         selenium.googlecode.com
         seleniumhq.org
         www.openqa.org
-        packages.affinitic.be
     parts += robot
 
     [versions]
@@ -127,7 +127,6 @@ An example test suite
         Page should contain  now logged in
         click link  Continue to the Plone site home page
         Page should contain  Manage portlets
-
 
     *** Keywords ***
 
