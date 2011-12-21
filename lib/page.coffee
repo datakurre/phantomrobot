@@ -1,6 +1,6 @@
 class Page
 
-    Page_Should_Contain: (params, respond) ->
+    "Page should contain": (params, respond) ->
         needle = params[1][0]
         html = @page.evaluate -> document.documentElement.innerHTML
         if html.indexOf(needle) > -1
@@ -8,7 +8,7 @@ class Page
         else
             respond status: "WAIT", error: "Page did not contain '#{needle}'."
 
-    Page_Should_Contain_Element: (params, respond) ->
+    "Page should contain element": (params, respond) ->
         id = params[1][0]
 
         # FIXME: PhantomJS >= 1.5 may allow passing variables into evaluate

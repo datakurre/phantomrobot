@@ -1,6 +1,6 @@
 class TextField
 
-    Input_Text: (params, respond) ->
+    "Input Text": (params, respond) ->
         id = params[1][0]
         value = params[1][1]
 

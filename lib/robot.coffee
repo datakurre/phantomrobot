@@ -1,5 +1,6 @@
 class Robot
-    "Capture Page Screenshot": (params, respond) ->
+
+    "Capture page screenshot": (params, respond) ->
         if @page?.render
             # take a screenshot and embed it into the log
             fs = require "fs"
@@ -14,10 +15,10 @@ class Robot
         else
             respond status: "FAIL", error: "There's no page."
 
-    "Start Selenium Server": (params, respond) ->
+    "Start Selenium server": (params, respond) ->
         respond status: "PASS"
 
-    "Set Phantom Timeout": (params, respond) ->
+    "Set Phantom timeout": (params, respond) ->
         timeout = params[1][0]
         seconds = /(\d)+s/
         if seconds.test(timeout)
@@ -25,10 +26,10 @@ class Robot
             respond status: "PASS"
         respond status: "FAIL", error: "Unsupported timeout '#{timeout}'."
 
-    "Set Selenium Timeout": (params, respond) ->
-        @["Set Phantom Timeout"] params, respond
+    "Set Selenium timeout": (params, respond) ->
+        @["Set Phantom timeout"] params, respond
 
-    "Register Keyword to Run on Failure": (params, respond) ->
+    "Register keyword to run on failure": (params, respond) ->
         keyword = params[1][0]
         names = (name.replace(/\_/g, " ") for name, _ of this\
             when name[0].toUpperCase() == name[0])
@@ -39,6 +40,6 @@ class Robot
         else
             respond status: "FAIL", error: "There's no keyword '#{keyword}'."
 
-    "Stop Selenium Server": (params, respond) ->
+    "Stop Selenium server": (params, respond) ->
         respond status: "PASS"
 

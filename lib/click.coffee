@@ -1,6 +1,6 @@
 class Click
 
-    Click_Link: (params, respond) ->
+    "Click link": (params, respond) ->
         needle = params[1][0]
 
         # FIXME: PhantomJS >= 1.5 may allow passing variables into evaluate
@@ -26,7 +26,7 @@ class Click
         else
             respond status: "FAIL", error: "Link '#{needle}' was not found."
 
-    Click_Button: (params, respond) ->
+    "Click button": (params, respond) ->
         needle = params[1][0]
 
         # FIXME: PhantomJS >= 1.5 may allow passing variables into evaluate
