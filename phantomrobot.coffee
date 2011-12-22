@@ -53,10 +53,12 @@ class PhantomProxy
                 server.on name, create_callback name
             console.log "Remote robot server is now listening on port #{port}"
 
+        console.log "Starting phantomjs phantomrobot.js "\
+                + "#{port + 1} #{timeout} #{sleep} #{screenshots_dir}"
         @phantom =\
             require("child_process").exec "phantomjs phantomrobot.js "\
                 + "#{port + 1} #{timeout} #{sleep} #{screenshots_dir}",
-            (err, stdout, stderr) -> console.log stdout
+            (err, stdout, stderr) -> console.log err or stdout
         process.on "SIGTERM", -> do @phantom.kill
 
 
