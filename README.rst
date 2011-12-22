@@ -29,12 +29,12 @@ Requirements
   * *xmlrpc*
   * *socket.io*
   * *optimist* and
-  * *coffee-script* (``>= 1.2.0``) -modules installed
+  * *coffee-script* (>= 1.2.0) -modules installed
 
 - ``make`` to run ``Makefile``
 
 **Note:** On RHEL5 / CentOS5 I needed to build a more recent version of GNU Tar
-(``>= 1.2.6``) to make npm installing modules successfully.  Yet, because
+(>= 1.2.6) to make npm installing modules successfully.  Yet, because
 websockets-support was broken in all existing QtWebKit-RPMs (thanks to
 https://bugs.webkit.org/show_bug.cgi?id=47284), I had to build my own WebKit to
 be able to compile working PhantomJS and get this running.
