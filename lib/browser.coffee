@@ -6,6 +6,11 @@ class Browser
         @page.onConsoleMessage = (msg) -> console.log msg
         respond status: "PASS"
 
+    "Maximize browser window": (params, respond) ->
+        # FIXME: Maximize
+        @page.viewportSize = width: 1024, height: 768
+        respond status: "PASS"
+
     "Close browser": (params, respond) ->
         @page = null
         respond status: "PASS"
