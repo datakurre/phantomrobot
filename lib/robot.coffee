@@ -36,7 +36,7 @@ class Robot
         if keyword in names
             previous = robot.on_failure
             robot.on_failure = keyword
-            respond status: "PASS", output: previous
+            respond status: "PASS", return: previous
         else
             respond status: "FAIL", error: "There's no keyword '#{keyword}'."
 
