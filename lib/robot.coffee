@@ -20,20 +20,21 @@ class Robot
 
     "Set Phantom timeout": (params, respond) ->
         timeout = params[1][0]
-        seconds = /(\d)+s/
+        seconds = /(\d+)s?/
         if seconds.test(timeout)
-            robot.timeout = timeout.match(seconds)[1]
+            robot.timeout = parseInt timeout.match(seconds)[1], 10
             respond status: "PASS"
-        respond status: "FAIL", error: "Unsupported timeout '#{timeout}'."
+        else
+            respond status: "FAIL", error: "Unsupported timeout '#{timeout}'."
 
     "Set Selenium timeout": (params, respond) ->
         @["Set Phantom timeout"] params, respond
 
     "Register keyword to run on failure": (params, respond) ->
         keyword = params[1][0]
-        names = (name.replace(/\_/g, " ") for name, _ of this\
+        names = (name.replace(/\_/g, " ").toLowerCase() for name, _ of this\
             when name[0].toUpperCase() == name[0])
-        if keyword in names
+        if keyword.toLowerCase() in names
             previous = robot.on_failure
             robot.on_failure = keyword
             respond status: "PASS", return: previous
