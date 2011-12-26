@@ -17,4 +17,4 @@ class TextField
         if set_value == value
             respond status: "PASS"
         else
-            respond status: "FAIL", error: "Input '#{id}' was not found."
+            respond status: "WAIT", error: "Input '#{id}' was not found."
