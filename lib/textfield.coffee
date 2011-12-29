@@ -12,7 +12,7 @@ class TextField
         @page.evaluate fn
 
         set_value = @page.evaluate ->
-            document.getElementById(document._tvar).value = document._tvar2
+            document.getElementById(document._tvar)?.value = document._tvar2
 
         if set_value == value
             respond status: "PASS"
