@@ -1,28 +1,26 @@
 class Browser
 
     "Open browser": (params, respond) ->
-        @page = do require("webpage").create
-        @page.viewportSize = width: 1024, height: 768
-        @page.onConsoleMessage = (msg) -> console.log msg
+        page = do require("webpage").create
+        page.viewportSize = width: 1024, height: 768
+        page.onConsoleMessage = (msg) -> console.log msg
 
         # Prevent "Go to" to be executed before a POST has been completed
-        @page._robotIsPosting = false
-        @page.onResourceRequested = (request) =>
+        page._robotIsPosting = false
+        page.onResourceRequested = (request) ->
             if request.method == "POST"
-                @page._robotIsPosting = request.url
-        @page.onResourceReceived = (request) =>
-            if @page._robotIsPosting and @page._robotIsPosting == request.url
-                @page._robotIsPosting = false
+                page._robotIsPosting = request.url
+        page.onResourceReceived = (request) ->
+            if page._robotIsPosting and page._robotIsPosting == request.url
+                page._robotIsPosting = false
+        @page = page
 
         respond status: "PASS"
 
     "Maximize browser window": (params, respond) ->
-        # FIXME: Maximize
-        @page.viewportSize = width: 1024, height: 768
         respond status: "PASS"
 
     "Close browser": (params, respond) ->
-        @page = null
         respond status: "PASS"
 
     "Go to": (params, respond) ->
@@ -34,7 +32,7 @@ class Browser
         else
             @page.open url, (status) =>
                 # Prevent "onbeforeunload" (not supported by phantomjs)
-                @page.evaluate -> window.onbeforeunload = undefined
+                @page.evaluate -> window.onbeforeunload = ->  # I'm dumb
                 if not has_been_completed
                     has_been_completed = true
                     respond status: "PASS"

@@ -49,6 +49,9 @@ class Page
         else
             respond status: "WAIT", error: "Page did not contain '#{needle}'."
 
+    "Wait until page contains element": (params, respond) ->
+        @["Page should contain element"](params, respond)
+
     "Element should be visible": (params, respond) ->
         needle = params[1][0]
 
