@@ -5,6 +5,7 @@ class Browser
         @page.viewportSize = width: 1024, height: 768
         @page.onConsoleMessage = (msg) -> console.log msg
 
+        # Prevent "Go to" to be executed before a POST has been completed
         @page._robotIsPosting = false
         @page.onResourceRequested = (request) =>
             if request.method == "POST"
@@ -29,9 +30,11 @@ class Browser
         has_been_completed = false
 
         if @page._robotIsPosting
-            respond status: "WAIT", "There is an incomplete POST in progress."
+            respond status: "WAIT", "There was an incomplete POST in progress."
         else
-            @page.open url, (status) ->
+            @page.open url, (status) =>
+                # Prevent "onbeforeunload" (not supported by phantomjs)
+                @page.evaluate -> window.onbeforeunload = undefined
                 if not has_been_completed
                     has_been_completed = true
                     respond status: "PASS"
