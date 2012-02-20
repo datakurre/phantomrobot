@@ -17,89 +17,92 @@
 
 class PhantomProxy
 
-    constructor: (port=1337, timeout=10, sleep=1, screenshots_dir="..") ->
+    constructor: (port, timeout, sleep) ->
+        ###
+        @proxy is a http-server connected by PhantomJS via WebSockets (@io)
+        ###
         @proxy = require("http").createServer()
         @proxy.listen port + 1
-
         @io = io.listen(@proxy)
         console.log "Listening for PhantomJS on port #{port + 1}"
 
         @io.sockets.on "connection", (socket) ->
             console.log "Got connection from PhantomJS"
 
+            socket.on "log", (msg) -> socket.log.info msg
+
+            ###
+            server is an xmlrpc server connected by Robot Framework
+            ###
             server = xmlrpc.createServer host: "localhost", port: port
 
-            # Because robot framework's remote API is synchronous, we may
-            # simply overload a single callback-method for all return values.
-            sync_callback = null
+            create_callback = (name) -> (err, params, callback) ->
+                callback_id = new Date().getTime()
+                socket.on callback_id, (data) -> callback null, data
+                socket.emit name, params.concat [callback_id]
 
-            create_callback = (name) ->
-                (err, params, callback) ->
-                    sync_callback = callback
-                    socket.emit name, params
-
-            socket.on "callback", (data) ->
-                sync_callback null, data
-
-            api_method_names = [
-                "get_keyword_names"
-                "get_keyword_documentation"
-                "get_keyword_arguments"
-                "run_keyword"
-            ]
-
-            for name in api_method_names
+            for name in ["get_keyword_names", "get_keyword_documentation",\
+                         "get_keyword_arguments", "run_keyword"]
                 console.log "Listening for #{name}"
                 server.on name, create_callback name
+
             console.log "Remote robot server is now listening on port #{port}"
 
-        console.log "Starting phantomjs phantomrobot.js "\
-                + "#{port + 1} #{timeout} #{sleep} #{screenshots_dir}"
-        @phantom =\
-            require("child_process").exec "phantomjs phantomrobot.js "\
-                + "#{port + 1} #{timeout} #{sleep} #{screenshots_dir}",
-            (err, stdout, stderr) -> console.log err or stdout
+        path = require "path"
+        fullpath = path.join __dirname, "phantomrobot.js"
+        # relpath = path.relative process.cwd(), fullpath
+        phantomjs = "phantomjs #{fullpath} #{port + 1} #{timeout} #{sleep}"
+        child_process = require "child_process"
+
+        console.log phantomjs
+        @phantom = child_process.exec phantomjs, (err, stdout, stderr) ->
+            console.log err or stdout
         process.on "SIGTERM", -> do @phantom.kill
 
 
 class PhantomRobot
 
-    constructor: (@library=null, @port=1338, @timeout=10, @sleep=1,\
-                  @screenshots_dir=".",\
+    constructor: (@library=null, @port, @timeout, @sleep,\
                   @on_failure="Capture page screenshot") ->
         @socket = io.connect "http://localhost:#{port}/"
+        @log "port #{@port} timeout #{@timeout} sleep #{@sleep}"
         for name, _ of this
             if name not in ["library", "port", "timeout", "sleep",
-                            "screenshots_dir", "on_failure",
-                            "socket", "create_callback"]
+                            "on_failure", "socket", "log", "create_callback"]
                 @create_callback name
         window.robot = this  # make me a global variable
 
+    log: (msg, level="INFO") -> @socket.emit "log", msg
+
     create_callback: (name) ->
-        console.log "Listening for #{name}"
+        @log "listening for #{name}"
         @socket.on name, (params) =>
             timeout = new Date().getTime() + @timeout * 1000
+            callback_id = do params.pop
 
             callback = (response) =>
-                if response?.status == "WAIT"
-                    # on WAIT, retry after @sleep until timeout
-                    if new Date().getTime() < timeout
-                        setTimeout =>
-                            @[name] params, (response) => callback response
-                        , @sleep * 1000
-                    else
-                        response.status = "FAIL"
-
+                timenow = new Date().getTime()
+                # on FAIL, retry after @sleep until the timeout
+                if response?.status == "FAIL" and timenow < timeout
+                    setTimeout =>
+                        @[name] params, (response) => callback response
+                    , @sleep * 1000
+                    response.status = "RETRY"
+                # on FAIL and the timeout, run @on_failure keyword and return
                 if response?.status == "FAIL"
                     if @on_failure
                         @run_keyword [@on_failure, []], (sub) =>
                             response.output = sub?.output or response?.output
-                            @socket.emit "callback", response
+                            @socket.emit callback_id, response
                     else
-                        @socket.emit "callback", response
+                        @socket.emit callback_id, response
+                # on any success, return the result
+                if response?.status not in ["FAIL", "RETRY"]
+                    @socket.emit callback_id, response
 
-                if response?.status not in ["FAIL", "WAIT"]
-                    @socket.emit "callback", response
+                # on RETRY, log it
+                else if response?.status == "RETRY"
+                    @log "RETRY #{response.error}"
 
             @[name] params, (response) => callback response
 
@@ -115,17 +118,23 @@ class PhantomRobot
         callback ["*args"]
 
     run_keyword: (params, callback) ->
-        try
-            if params[0] of @library
-                @library[params[0]](params, callback)
-            else
-                @library[params[0].replace(/\s/g, "_")](params, callback)
-        catch e
-            callback status: "FAIL", error: e.toString()
+        @log "run_keyword #{params}"
+        if params?.length
+            try
+                if params[0] of @library
+                    @library[params[0]](params, callback)
+                else
+                    @library[params[0].replace(/\s/g, "_")](params, callback)
+            catch e
+                callback status: "FAIL", error: e.toString()
+        else
+            callback status: "FAIL", "Got run_keyword without any parameters."
 
 
 if not phantom? then do ->
-    # on node.js
+    ###
+    Executed on node.js
+    ###
     try
         global.io = require "socket.io"
     catch e
@@ -141,31 +150,32 @@ if not phantom? then do ->
         process.exit 1
 
     try
-        optimist = require "optimist"
+        optimist = require("optimist").default
+            port: 1337
+            "implicit-wait": 10
+            "implicit-sleep": 0.1
+        argv = optimist.argv
     catch e
         console.log "Requires node-optimist"
         console.log "npm install optimist"
         process.exit 1
 
-    argv = optimist.argv
-
-    port = argv?.port or 1337
-    timeout = argv?["implicit-wait"] or 10
-    sleep = argv?["implicit-sleep"] or 1
-    screenshots_dir = argv?["screenshots-dir"] or ".."
-
-    new PhantomProxy port, timeout, sleep, screenshots_dir
+    new PhantomProxy argv.port, argv["implicit-wait"], argv["implicit-sleep"]
 
 else do ->
-    # on phantomjs
-    phantom.injectJs "lib/socket.io.js"
+    ###
+    Executed on phantomjs
+    ###
+    fs = require "fs"
+
+    phantom.injectJs "lib#{fs.separator}socket.io.js"
 
     # XXX: new keyword libraries (mixins) must be loaded here:
-    phantom.injectJs "lib/robot.js"
-    phantom.injectJs "lib/browser.js"
-    phantom.injectJs "lib/click.js"
-    phantom.injectJs "lib/page.js"
-    phantom.injectJs "lib/textfield.js"
+    phantom.injectJs "lib#{fs.separator}robot.js"
+    phantom.injectJs "lib#{fs.separator}browser.js"
+    phantom.injectJs "lib#{fs.separator}click.js"
+    phantom.injectJs "lib#{fs.separator}page.js"
+    phantom.injectJs "lib#{fs.separator}textfield.js"
 
     extend = (obj, mixin) ->
       for name, method of mixin
@@ -180,9 +190,8 @@ else do ->
             extend(this, new Page)
             extend(this, new TextField)
 
-    port = phantom.args.length > 0 and parseInt(phantom.args[0], 10) or 1338
-    timeout = phantom.args.length > 1 and parseInt(phantom.args[1], 10) or 10
-    sleep = phantom.args.length > 2 and parseInt(phantom.args[2], 10) or 1
-    screenshots_dir = phantom.args.length > 3 and phantom.args[3] or ".."
+    port = parseInt(phantom.args[0], 10)
+    timeout = parseFloat(phantom.args[1], 10)
+    sleep = parseFloat(phantom.args[2], 10)
 
-    new PhantomRobot(new PhantomLibrary, port, timeout, sleep, screenshots_dir)
+    new PhantomRobot(new PhantomLibrary, port, timeout, sleep)

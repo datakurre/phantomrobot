@@ -13,8 +13,19 @@ class Browser
         page.onResourceReceived = (request) ->
             if page._robotIsPosting and page._robotIsPosting == request.url
                 page._robotIsPosting = false
-        @page = page
 
+        # page.call is our page.evaluate with support for params
+        # http://code.google.com/p/phantomjs/issues/detail?id=132#c44
+        page.call  = (func) ->
+            str = "function() { return (#{do func.toString})("
+            for arg in [].slice.call arguments, 1
+                str += (/object|string/.test typeof arg)\
+                    and "JSON.parse(#{JSON.stringify(JSON.stringify(arg))}),"\
+                    or arg + ","
+            str = str.replace /,$/, "); }"
+            @evaluate str
+
+        @page = page
         respond status: "PASS"
 
     "Maximize browser window": (params, respond) ->
@@ -28,7 +39,7 @@ class Browser
         has_been_completed = false
 
         if @page._robotIsPosting
-            respond status: "WAIT", "There was an incomplete POST in progress."
+            respond status: "FAIL", "There was already a POST in progress."
         else
             @page.open url, (status) =>
                 # Prevent "onbeforeunload" (not supported by phantomjs)

@@ -4,13 +4,10 @@ class Robot
         if @page?.render
             # take a screenshot and embed it into the log
             fs = require "fs"
-            filename =\
-                "#{robot.screenshots_dir}/#{new Date().getTime()}.png"
-            output =\
-                "*HTML* "\
-                + "<img src='#{fs.workingDirectory}#{fs.separator}"\
-                + "#{filename}'/>"
-            @page.render filename
+            path = "#{fs.workingDirectory}#{fs.separator}"
+            filename = "#{new Date().getTime()}.png"
+            output = "*HTML* <img src='#{path}#{filename}'/>"
+            @page.render "#{path}#{filename}"
             respond status: "PASS", output: output
         else
             respond status: "FAIL", error: "There's no page."
@@ -43,4 +40,3 @@ class Robot
 
     "Stop Selenium server": (params, respond) ->
         respond status: "PASS"
-

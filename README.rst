@@ -26,7 +26,7 @@ Requirements
 - PhantomJS_ available on path
 - node.js_ and npm_ with
 
-  * *xmlrpc*
+  * *xmlrpc* >= 0.9.4
   * *socket.io*
   * *optimist* and
   * *coffee-script* >= 1.2.0 -modules installed
@@ -60,11 +60,8 @@ Arguments
 ``--implicit-wait=10``
     implicit timeout for supporting keywords, e.g. *page contains* (can be
     disabled with ``implicit-wait=-1``)
-``--implicit-sleep=1``
+``--implicit-sleep=0.1``
     time to sleep between trials until implicit timeout
-``--screenshots-dir=``
-    full path to directory to save screenshot of test failures
-    (defaults to the parent of the PhantomJS' working directory)
 
 
 An example of use
