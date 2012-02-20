@@ -29,7 +29,13 @@ class PhantomProxy
         @io.sockets.on "connection", (socket) ->
             console.log "Got connection from PhantomJS"
 
-            socket.on "log", (msg) -> socket.log.info msg
+            ###
+            setup logger by re-using socket.io's logger
+            ###
+            socket.on "info", (msg) -> socket.log.info msg
+            socket.on "debug", (msg) -> socket.log.debug msg
+            socket.on "warn", (msg) -> socket.log.warn msg
+            socket.on "error", (msg) -> socket.log.error msg
 
             ###
             server is an xmlrpc server connected by Robot Framework
@@ -43,7 +49,6 @@ class PhantomProxy
 
             for name in ["get_keyword_names", "get_keyword_documentation",\
                          "get_keyword_arguments", "run_keyword"]
-                console.log "Listening for #{name}"
                 server.on name, create_callback name
 
             console.log "Remote robot server is now listening on port #{port}"
@@ -54,7 +59,7 @@ class PhantomProxy
         phantomjs = "phantomjs #{fullpath} #{port + 1} #{timeout} #{sleep}"
         child_process = require "child_process"
 
-        console.log phantomjs
+        # console.log phantomjs
         @phantom = child_process.exec phantomjs, (err, stdout, stderr) ->
             console.log err or stdout
         process.on "SIGTERM", -> do @phantom.kill
@@ -65,17 +70,27 @@ class PhantomRobot
     constructor: (@library=null, @port, @timeout, @sleep,\
                   @on_failure="Capture page screenshot") ->
         @socket = io.connect "http://localhost:#{port}/"
-        @log "port #{@port} timeout #{@timeout} sleep #{@sleep}"
+        @info "port #{@port} timeout #{@timeout} sleep #{@sleep}"
         for name, _ of this
             if name not in ["library", "port", "timeout", "sleep",
-                            "on_failure", "socket", "log", "create_callback"]
+                            "on_failure", "socket", "create_callback",
+                            "info", "debug", "warn", "error"]
                 @create_callback name
         window.robot = this  # make me a global variable
 
-    log: (msg, level="INFO") -> @socket.emit "log", msg
+    ###
+    setup logger by re-using socket.io's logger
+    ###
+    info: (msg) -> @socket.emit "info", msg
+    debug: (msg) -> @socket.emit "debug", msg
+    warn: (msg) -> @socket.emit "warn", msg
+    error: (msg) -> @socket.emit "error", msg
 
+    ###
+    main execution loop to retry commands until success or timeout
+    ###
     create_callback: (name) ->
-        @log "listening for #{name}"
+        @info "listening for #{name}"
         @socket.on name, (params) =>
             timeout = new Date().getTime() + @timeout * 1000
             callback_id = do params.pop
@@ -102,7 +117,7 @@ class PhantomRobot
 
                 # on RETRY, log it
                 else if response?.status == "RETRY"
-                    @log "RETRY #{response.error}"
+                    @debug "RETRY #{response.error}"
 
             @[name] params, (response) => callback response
 
@@ -118,7 +133,6 @@ class PhantomRobot
         callback ["*args"]
 
     run_keyword: (params, callback) ->
-        @log "run_keyword #{params}"
         if params?.length
             try
                 if params[0] of @library
