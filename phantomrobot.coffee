@@ -187,8 +187,8 @@ else do ->
     # XXX: new keyword libraries (mixins) must be loaded here:
     phantom.injectJs "lib#{fs.separator}robot.js"
     phantom.injectJs "lib#{fs.separator}browser.js"
-    phantom.injectJs "lib#{fs.separator}click.js"
     phantom.injectJs "lib#{fs.separator}page.js"
+    phantom.injectJs "lib#{fs.separator}click.js"
     phantom.injectJs "lib#{fs.separator}form.js"
 
     extend = (obj, mixin) ->
@@ -200,9 +200,9 @@ else do ->
             # XXX: ... and merged into main library here:
             extend(this, new Robot)
             extend(this, new Browser)
-            extend(this, new Click)
             extend(this, new Page)
-            extend(this, new TextField)
+            extend(this, new Click)
+            extend(this, new Form)
 
     port = parseInt(phantom.args[0], 10)
     timeout = parseFloat(phantom.args[1], 10)
