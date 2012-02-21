@@ -81,6 +81,14 @@ class Page
     "Wait until page contains element": (params, respond) ->
         @["Page should contain element"](params, respond)
 
+    "Page should not contain element": (params, respond) ->
+        needle = params[1][0]
+        @["Element should be visible"] params, (response) ->
+            if response?.status == "PASS"
+                respond status: "FAIL", error: "Page did contain '#{needle}'.",
+            else
+                respond status: "PASS"
+
     "Element should be visible": (params, respond) ->
         needle = params[1][0]
 
