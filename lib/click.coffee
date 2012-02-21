@@ -26,6 +26,31 @@ class Click
         else
             respond status: "FAIL", error: "Link '#{needle}' was not found."
 
+    "Click element": (params, respond) ->
+        needle = params[1][0]
+
+        get_element = (needle) ->
+            if /css=(.*)/.test needle
+                query = needle.match(/css=(.*)/)[1]
+                for elem in document.querySelectorAll query
+                    result = elem
+                    break
+            else
+                for elem in document.getElementById(needle)
+                    result = elem
+                    break
+            if result
+                rect = result.getBoundingClientRect()
+                left: rect.left + rect.width / 2,
+                top: rect.top + rect.height / 2
+            else false
+
+        if element = @page.execute get_element, needle
+            @page.sendEvent "click", element.left, element.top
+            respond status: "PASS"
+        else
+            respond status: "FAIL", error: "Element '#{needle}' was not found."
+
     "Click button": (params, respond) ->
         needle = params[1][0]
 
