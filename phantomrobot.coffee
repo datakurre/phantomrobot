@@ -189,7 +189,7 @@ else do ->
     phantom.injectJs "lib#{fs.separator}browser.js"
     phantom.injectJs "lib#{fs.separator}click.js"
     phantom.injectJs "lib#{fs.separator}page.js"
-    phantom.injectJs "lib#{fs.separator}textfield.js"
+    phantom.injectJs "lib#{fs.separator}form.js"
 
     extend = (obj, mixin) ->
       for name, method of mixin
