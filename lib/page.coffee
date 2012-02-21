@@ -40,6 +40,26 @@ class Page
             respond status: "FAIL",\
                     error: "Element '#{element}' did not contain '#{content}'."
 
+    "Element text should be": (params, respond) ->
+        element = params[1][0]
+        text = params[1][1]
+
+        element_text = (element, content) ->
+            if /css=(.*)/.test element
+                query = element.match(/css=(.*)/)[1]
+                results = document.querySelectorAll(query)
+                elem = results.length and results[0] or null
+            else
+                elem = document.getElementById(element)
+            elem and elem.text or ""
+
+        found_text = @page.eval element_text, element, text
+        if found_text == text
+            respond status: "PASS"
+        else
+            respond status: "FAIL",\
+                    error: "Element '#{element}' had text '#{found_text}'."
+
     "Page should contain element": (params, respond) ->
         needle = params[1][0]
 
