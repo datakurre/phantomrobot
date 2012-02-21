@@ -15,6 +15,9 @@ class Page
         else
             respond status: "FAIL", error: "Page did not contain '#{needle}'."
 
+    "Wait until page contains": (params, respond) ->
+        @["Page should contain"](params, respond)
+
     "Element should contain": (params, respond) ->
         element = params[1][0]
         content = params[1][1]
