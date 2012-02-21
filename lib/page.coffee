@@ -8,7 +8,7 @@ class Page
                 query = needle.match(/css=(.*)/)[1]
                 document.querySelectorAll(query).length > 0
             else
-                document.documentElement.innerHTML.indexOf(needle) > -1
+                document.body.innerText.indexOf(needle) > -1
 
         if @page.execute page_contains, needle
             respond status: "PASS"
@@ -84,3 +84,25 @@ class Page
                 respond status: "FAIL", error: "Page had visible '#{needle}'.",
             else
                 respond status: "PASS"
+
+    "XPath should match X times": (params, respond) ->
+        xpath = params[1][0]
+        times = parseInt params[1][1], 10
+
+        # Evaluate an XPath expression aExpression against a given DOM node
+        # or Document object (aNode), returning the results as an array
+        # thanks wanderingstan at morethanwarm dot mail dot com for the
+        # initial work. https://developer.mozilla.org/en/Using_XPath
+        xpath_match_length = (expr) ->
+            xpe = do new XPathEvaluator
+            nsResolver = xpe.createNSResolver document
+            result = xpe.evaluate expr, document, nsResolver, 0, null
+            [res for res in result.iterateNext()].length or 0
+
+        length = @page.execute xpath_match_length, xpath
+        if length == times
+            respond status: "PASS"
+        else
+            respond status: "FAIL",\
+                    error: "XPath '#{xpath}' matched only '#{length}' times.",
+
