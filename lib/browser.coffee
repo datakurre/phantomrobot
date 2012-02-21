@@ -19,7 +19,7 @@ class Browser
 
         # Define custom page.evaluate with support for params
         # http://code.google.com/p/phantomjs/issues/detail?id=132#c44
-        page.call = (func) ->
+        page.execute = (func) ->
             # Prevent "onbeforeunload" (not supported by phantomjs)
             page.evaluate -> window.onbeforeunload = ->  # I'm dumb
 

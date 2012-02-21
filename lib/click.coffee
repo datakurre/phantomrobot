@@ -20,7 +20,7 @@ class Click
                 top: rect.top + rect.height / 2
             else false
 
-        if link = @page.call get_link, needle
+        if link = @page.execute get_link, needle
             @page.sendEvent "click", link.left, link.top
             respond status: "PASS"
         else
@@ -44,7 +44,7 @@ class Click
                 do result.click or true
             else false
 
-        if @page.call button_clicked, needle
+        if @page.execute button_clicked, needle
             respond status: "PASS"
         else
             respond status: "FAIL", error: "Button '#{needle}' was not found."
