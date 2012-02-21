@@ -6,7 +6,11 @@ class Browser
         page.onAlert = (msg) -> robot.debug msg
         page.onConsoleMessage = (msg) -> robot.debug msg
 
-        # Prevent new actions before the current page has been loaded
+        ###
+        prevent new actions before the current page has been loaded;
+        the magic here is to store the last resource request before
+        onLoadStarted and follow that request to be completed
+        ###
         page.robotIsLoading = false
         page.robotIsLoadingURL = null
         page.onLoadStarted = -> page.robotIsLoading = true
@@ -17,9 +21,11 @@ class Browser
             if page.robotIsLoading and request.url == page.robotIsLoadingURL
                 page.robotIsLoading = false
 
-        # Define custom page.evaluate with support for params
-        # http://code.google.com/p/phantomjs/issues/detail?id=132#c44
-        page.execute = (func) ->
+        ###
+        define custom page.evaluate with support for params
+        http://code.google.com/p/phantomjs/issues/detail?id=132#c44
+        ###
+        page.eval = (func) ->  # 'evaluate with parameters'
             # Prevent "onbeforeunload" (not supported by phantomjs)
             page.evaluate -> window.onbeforeunload = ->  # I'm dumb
 

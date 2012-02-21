@@ -6,7 +6,7 @@ class TextField
 
         set_value = (id, value) -> document.getElementById(id)?.value = value
 
-        if @page.execute(set_value, id, value) == value
+        if @page.eval(set_value, id, value) == value
             respond status: "PASS"
         else
             respond status: "FAIL", error: "Input '#{id}' was not found."

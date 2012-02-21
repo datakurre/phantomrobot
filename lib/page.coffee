@@ -10,7 +10,7 @@ class Page
             else
                 document.body.innerText.indexOf(needle) > -1
 
-        if @page.execute page_contains, needle
+        if @page.eval page_contains, needle
             respond status: "PASS"
         else
             respond status: "FAIL", error: "Page did not contain '#{needle}'."
@@ -34,7 +34,7 @@ class Page
                 elem.innerHTML.indexOf(content) > -1
             else false
 
-        if @page.execute element_contains, element, content
+        if @page.eval element_contains, element, content
             respond status: "PASS"
         else
             respond status: "FAIL",\
@@ -50,7 +50,7 @@ class Page
             else
                 document.getElementById(needle) and true or false
 
-        if @page.execute page_contains, needle
+        if @page.eval page_contains, needle
             respond status: "PASS"
         else
             respond status: "FAIL", error: "Page did not contain '#{needle}'."
@@ -72,7 +72,7 @@ class Page
                 elem = document.getElementById needle
                 elem and elem.offsetWidth > 0 and elem.offsetHeight > 0
 
-        if @page.execute visible_element_found, needle
+        if @page.eval visible_element_found, needle
             respond status: "PASS"
         else
             respond status: "FAIL", error: "Page had no visible '#{needle}'.",
@@ -99,7 +99,7 @@ class Page
             result = xpe.evaluate expr, document, nsResolver, 0, null
             [res for res in result.iterateNext()].length or 0
 
-        length = @page.execute xpath_match_length, xpath
+        length = @page.eval xpath_match_length, xpath
         if length == times
             respond status: "PASS"
         else
