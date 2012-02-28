@@ -23,11 +23,11 @@ library for Zombie.js_.
 Requirements
 ============
 
-- PhantomJS_ available on path
+- PhantomJS_ >= 1.3 available on path
 - node.js_ and npm_ with
 
-  * *xmlrpc* >= 0.9.4
-  * *socket.io*
+  * *xmlrpc* >= 0.9.4 (fails with 0.9.3)
+  * *socket.io* == 0.8.7 (fails with 0.9.0)
   * *optimist* and
   * *coffee-script* >= 1.2.0 -modules installed
 
