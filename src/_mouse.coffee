@@ -4,12 +4,13 @@ class Mouse
         needle = params[1][0]
 
         getLinkCoords = (needle) ->
-            trim = (s) -> s.replace /^\s+|\s+$/g, ""
-            for result in queryAll document, needle
+            visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
+            for result in queryAll document, needle when visible(result)
                 rect = result.getBoundingClientRect()
                 return x: rect.left + rect.width / 2,\
                        y: rect.top + rect.height / 2
-            for result in queryAll document, "xpath=//a"
+            trim = (s) -> s.replace /^\s+|\s+$/g, ""
+            for result in queryAll document, "xpath=//a" when visible(result)
                 if trim(result.innerText) == needle
                     rect = result.getBoundingClientRect()
                     return x: rect.left + rect.width / 2,\
