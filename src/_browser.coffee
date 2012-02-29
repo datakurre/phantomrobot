@@ -28,6 +28,21 @@ class Browser
             if /css=(.*)/.test query
                 selector = query.match(/css=(.*)/)[1]
                 element.querySelectorAll(selector) or []
+            else if /xpath=(.*)/.test query
+                selector = query.match(/xpath=(.*)/)[1]
+                # Evaluate an XPath expression aExpression against a given DOM
+                # node or Document object (aNode), returning the results as an
+                # array thanks wanderingstan at morethanwarm dot mail dot com
+                # for the initial work.
+                # https://developer.mozilla.org/en/Using_XPath
+                xpe = do new XPathEvaluator
+                nsResolver = xpe.createNSResolver document
+                iterator = xpe.evaluate selector, document, nsResolver, 0, null
+                results = []
+                loop
+                    result = do iterator.iterateNext
+                    if result then results.push result else break
+                return results
             else if /id=(.*)/.test query
                 selector = query.match(/id=(.*)/)[1]
                 result = document.getElementById selector
