@@ -24,16 +24,17 @@ class Browser
         ###
         define generic query-method to be available in eval
         ###
-        queryAll = (dom, query) ->
-            if /css=(.*)/.test selector
+        queryAll = (element, query) ->
+            if /css=(.*)/.test query
                 selector = query.match(/css=(.*)/)[1]
-                dom.querySelectorAll(selector)
-            else if /id=(.*)/.test selector
+                element.querySelectorAll(selector) or []
+            else if /id=(.*)/.test query
                 selector = query.match(/id=(.*)/)[1]
-                result = document.getElementById(selector)
+                result = document.getElementById selector
                 result and [result] or []
             else
-                result = document.getElementById(selector)
+                selector = query
+                result = document.getElementById selector
                 result and [result] or []
         ###
         define custom page.evaluate with support for params

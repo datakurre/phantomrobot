@@ -3,11 +3,11 @@ class Page
     "Page should contain": (params, respond) ->
         needle = params[1][0]
 
-        page_contains = (needle) ->
+        pageContains = (needle) ->
             queryAll(document, needle).length > 0\
                 or document.body.innerText.indexOf(needle) > -1
 
-        if @page.eval page_contains, needle
+        if @page.eval pageContains, needle
             respond status: "PASS"
         else
             respond status: "FAIL", error: "Page did not contain '#{needle}'."
@@ -19,16 +19,22 @@ class Page
         element = params[1][0]
         content = params[1][1]
 
-        element_contains = (element, content) ->
-            results = queryAll(document, element)
-            for result in results
-                if queryAll(result, content).length > 0\
-                    or result.innerText.indexOf(content) > -1
-                        return true
-            false
+        elementContains = (element, content) ->
+            results = queryAll document, element
+            if results.length
+                for result in results
+                    if queryAll(result, content).length > 0\
+                        or result.innerText.indexOf(content) > -1
+                            return true
+                return false
+            return null
 
-        if @page.eval element_contains, element, content
+        result = @page.eval elementContains, element, content
+        if result
             respond status: "PASS"
+        else if result == null
+            respond status: "FAIL",\
+                    error: "Element '#{element}' was not found."
         else
             respond status: "FAIL",\
                     error: "Element '#{element}' did not contain '#{content}'."
@@ -37,21 +43,20 @@ class Page
         element = params[1][0]
         text = params[1][1]
 
-        element_text = (element, content) ->
-            if /css=(.*)/.test element
-                query = element.match(/css=(.*)/)[1]
-                results = document.querySelectorAll(query)
-                elem = results.length and results[0] or null
-            else
-                elem = document.getElementById(element)
-            elem and elem.text or ""
+        getElementText = (element, text) ->
+            for result in queryAll document, element
+                result.text
 
-        found_text = @page.eval element_text, element, text
-        if found_text == text
+        results = @page.eval getElementText, element, text
+        if text in results
             respond status: "PASS"
-        else
+        else if results.length == 0
             respond status: "FAIL",\
-                    error: "Element '#{element}' had text '#{found_text}'."
+                    error: "Element '#{element}' text was not found."
+        else
+            text = results[0]
+            respond status: "FAIL",\
+                    error: "Element '#{element}' text was '#{text}'."
 
     "Page should contain element": (params, respond) ->
         needle = params[1][0]
