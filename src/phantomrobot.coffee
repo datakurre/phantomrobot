@@ -191,7 +191,7 @@ else do ->
             extend(this, new Robot)
             extend(this, new Browser)
             extend(this, new Page)
-            extend(this, new Click)
+            extend(this, new Mouse)
             extend(this, new Form)
 
     port = parseInt(phantom.args[0], 10)

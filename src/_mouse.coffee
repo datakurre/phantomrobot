@@ -1,27 +1,23 @@
-class Click
+class Mouse
 
     "Click link": (params, respond) ->
         needle = params[1][0]
 
-        get_link = (needle) ->
-            if /css=(.*)/.test needle
-                query = needle.match(/css=(.*)/)[1]
-                for elem in document.querySelectorAll query
-                    result = elem
-                    break
-            else
-                for elem in document.querySelectorAll "a"
-                    text = elem.innerText.replace(/^\s\s*/, "")\
-                                         .replace(/\s\s*$/, "")
-                    if text == needle then result = elem
-            if result
+        getLinkCoords = (needle) ->
+            trim = (s) -> s.replace /^\s+|\s+$/g, ""
+            for result in queryAll document, needle
                 rect = result.getBoundingClientRect()
-                left: rect.left + rect.width / 2,
-                top: rect.top + rect.height / 2
-            else false
+                return x: rect.left + rect.width / 2,\
+                       y: rect.top + rect.height / 2
+            for result in queryAll document, "xpath=//a"
+                if trim(result.innerText) == needle
+                    rect = result.getBoundingClientRect()
+                    return x: rect.left + rect.width / 2,\
+                           y: rect.top + rect.height / 2
+            return null
 
-        if link = @page.eval get_link, needle
-            @page.sendEvent "click", link.left, link.top
+        if coords = @page.eval getLinkCoords, needle
+            @page.sendEvent "click", coords.x, coords.y
             respond status: "PASS"
         else
             respond status: "FAIL", error: "Link '#{needle}' was not found."
@@ -73,3 +69,35 @@ class Click
             respond status: "PASS"
         else
             respond status: "FAIL", error: "Button '#{needle}' was not found."
+
+    "Mouse down": (params, respond) ->
+        needle = params[1][0]
+
+        getCoords = (needle) ->
+            for result in queryAll document, needle
+                rect = result.getBoundingClientRect()
+                return x: rect.left + rect.width / 2,\
+                       y: rect.top + rect.height / 2
+            return null
+
+        if coords = @page.eval getCoords, needle
+            @page.sendEvent "mousedown", coords.x, coords.y
+            respond status: "PASS"
+        else
+            respond status: "FAIL", error: "Element '#{needle}' was not found."
+
+    "Mouse up": (params, respond) ->
+        needle = params[1][0]
+
+        getCoords = (needle) ->
+            for result in queryAll document, needle
+                rect = result.getBoundingClientRect()
+                return x: rect.left + rect.width / 2,\
+                       y: rect.top + rect.height / 2
+            return null
+
+        if coords = @page.eval getCoords, needle
+            @page.sendEvent "mouseup", coords.x, coords.y
+            respond status: "PASS"
+        else
+            respond status: "FAIL", error: "Element '#{needle}' was not found."
