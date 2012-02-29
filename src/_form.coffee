@@ -1,37 +1,65 @@
 class Form
 
     "Input text": (params, respond) ->
-        id = params[1][0]
-        value = params[1][1]
+        input = params[1][0]
+        text = params[1][1]
 
-        set_value = (id, value) -> document.getElementById(id)?.value = value
+        inputText = (input, text) ->
+            for element in queryAll document, input
+                console.log element
+                element.value = text
+                return true
+            return false
 
-        if @page.eval(set_value, id, value) == value
+        if result = @page.eval inputText, input, text
             respond status: "PASS"
         else
-            respond status: "FAIL", error: "Input '#{id}' was not found."
+            respond status: "FAIL", error: "Input '#{input}' was not found."
 
     "Select from list": (params, respond) ->
-        needle = params[1][0]
+        list = params[1][0]
         value = params[1][1]
 
-        select_from_list = (needle, value) ->
-            if /css=(.*)/.test needle
-                query = needle.match(/css=(.*)/)[1]
-                for element in document.querySelectorAll query
-                    return element.value = value
-            else
-                elem = document.getElementById needle
-                elem and element.value = value
+        selectFromList = (list, value) ->
+            for element in queryAll document, list
+                # try select by values
+                for i in [0...element?.options.length or 0]
+                    if element.options[i].value == value
+                        element.selectedIndex = i
+                        return true
+                # and only then by labels
+                trim = (s) -> s.replace /^\s+|\s+$/g, ""
+                if element?.value != value
+                    for i in [0...element?.options.length or 0]
+                        if trim(element.options[i].text) == value
+                            element.selectedIndex = i
+                            return true
+                return false
             return null
 
-        new_value = @page.eval select_from_list, needle, value
-
-        if new_value == value
+        if result = @page.eval selectFromList, list, value
             respond status: "PASS"
-        if not new_value
-            respond status: "FAIL", error: "List '#{needle}' was not found."
+        else if result == null
+            respond status: "FAIL", error: "List '#{list}' was not found."
         else
-            respond status: "FAIL", error: "Item '#{new_value}' was selected."
+            respond status: "FAIL", error: "List '#{list}' did not " +
+                                           "contain '#{value}'."
 
+    "Select radio button": (params, respond) ->
+        name = params[1][0]
+        value = params[1][1]
 
+        getRadioButtonCoords = (name, value) ->
+            for result in queryAll document, "xpath=//input[@name='#{name}']"
+                if result.value == value
+                    rect = result.getBoundingClientRect()
+                    return x: rect.left + rect.width / 2,\
+                           y: rect.top + rect.height / 2
+            return null
+
+        if coords = @page.eval getRadioButtonCoords, name, value
+            @page.sendEvent "click", coords.x, coords.y
+            respond status: "PASS"
+        else
+            respond status: "FAIL", error: "Radio button '#{value}' " +
+                                           "for '#{name}' was not found."
