@@ -4,10 +4,15 @@ class Page
         needle = params[1][0]
 
         pageContains = (needle) ->
-            queryAll(document, needle).length > 0\
-                or document.body.innerText.indexOf(needle) > -1
+            if queryAll(document, needle).length > 0
+                return true
+            xpath = "xpath=//*[contains(text(), '#{needle}')]"
+            for result in queryAll document, xpath
+                if result.offsetWidth > 0 and result.offsetHeight > 0
+                    return true
+            return false
 
-        if @page.eval pageContains, needle
+        if result = @page.eval pageContains, needle
             respond status: "PASS"
         else
             respond status: "FAIL", error: "Page did not contain '#{needle}'."
@@ -17,46 +22,46 @@ class Page
 
     "Element should contain": (params, respond) ->
         element = params[1][0]
-        content = params[1][1]
+        needle = params[1][1]
 
-        elementContains = (element, content) ->
-            results = queryAll document, element
-            if results.length
+        elementContains = (element, needle) ->
+            if (results = queryAll document, element).length
                 for result in results
-                    if queryAll(result, content).length > 0\
-                        or result.innerText.indexOf(content) > -1
+                    if queryAll(document, needle).length > 0
+                        return true
+                    xpath = "xpath=//*[contains(text(), '#{needle}')]"
+                    for subres in queryAll document, xpath
+                        if subres.offsetWidth > 0 and subres.offsetHeight > 0
                             return true
                 return false
             return null
 
-        result = @page.eval elementContains, element, content
-        if result
+        if result = @page.eval elementContains, element, needle
             respond status: "PASS"
         else if result == null
-            respond status: "FAIL",\
-                    error: "Element '#{element}' was not found."
+            respond status: "FAIL", error: "Element '#{element}' " +
+                                           "was not found."
         else
-            respond status: "FAIL",\
-                    error: "Element '#{element}' did not contain '#{content}'."
+            respond status: "FAIL", error: "Element '#{element}' did not " +
+                                           "contain '#{needle}'."
 
     "Element text should be": (params, respond) ->
         element = params[1][0]
         text = params[1][1]
 
-        getElementText = (element, text) ->
+        getElementText = (element) ->
             for result in queryAll document, element
-                result.text
+                return result.innerText.replace /^\s+|\s+$/g, ""
+            return null
 
-        results = @page.eval getElementText, element, text
-        if text in results
+        if (result = @page.eval getElementText, element) == text
             respond status: "PASS"
-        else if results.length == 0
-            respond status: "FAIL",\
-                    error: "Element '#{element}' text was not found."
+        else if result == null
+            respond status: "FAIL", error: "Element '#{element}' text " +
+                                           "was not found."
         else
-            text = results[0]
-            respond status: "FAIL",\
-                    error: "Element '#{element}' text was '#{text}'."
+            respond status: "FAIL", error: "Element '#{element}' text " +
+                                           "'#{result}' != #{text}."
 
     "Page should contain element": (params, respond) ->
         needle = params[1][0]
@@ -112,23 +117,13 @@ class Page
                 respond status: "PASS"
 
     "XPath should match X times": (params, respond) ->
-        xpath = params[1][0]
+        xpath = "xpath=" + params[1][0]
         times = parseInt params[1][1], 10
 
-        # Evaluate an XPath expression aExpression against a given DOM node
-        # or Document object (aNode), returning the results as an array
-        # thanks wanderingstan at morethanwarm dot mail dot com for the
-        # initial work. https://developer.mozilla.org/en/Using_XPath
-        xpath_match_length = (expr) ->
-            xpe = do new XPathEvaluator
-            nsResolver = xpe.createNSResolver document
-            result = xpe.evaluate expr, document, nsResolver, 0, null
-            [res for res in result.iterateNext()].length or 0
+        getXPathMatchTimes = (xpath) -> queryAll(document, xpath).length
 
-        length = @page.eval xpath_match_length, xpath
-        if length == times
+        if (result = @page.eval getXPathMatchTimes, xpath) == times
             respond status: "PASS"
         else
-            respond status: "FAIL",\
-                    error: "XPath '#{xpath}' matched only '#{length}' times.",
-
+            respond status: "FAIL", error: "XPath '#{xpath}' matched only " +
+                                           "'#{result}' times."
