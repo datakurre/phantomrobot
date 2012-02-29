@@ -22,6 +22,20 @@ class Browser
                 page.robotIsLoading = false
 
         ###
+        define generic query-method to be available in eval
+        ###
+        queryAll = (dom, query) ->
+            if /css=(.*)/.test selector
+                selector = query.match(/css=(.*)/)[1]
+                dom.querySelectorAll(selector)
+            else if /id=(.*)/.test selector
+                selector = query.match(/id=(.*)/)[1]
+                result = document.getElementById(selector)
+                result and [result] or []
+            else
+                result = document.getElementById(selector)
+                result and [result] or []
+        ###
         define custom page.evaluate with support for params
         http://code.google.com/p/phantomjs/issues/detail?id=132#c44
         ###
@@ -34,7 +48,8 @@ class Browser
                 throw "Browser was busy (loading in progress)."
 
             # Evaluate with parameters
-            str = "function() { return (#{do func.toString})("
+            str = "function() { queryAll = #{do queryAll.toString};"
+            str += "return (#{do func.toString})("
             for arg in [].slice.call arguments, 1
                 str += (/object|string/.test typeof arg)\
                     and "JSON.parse(#{JSON.stringify(JSON.stringify(arg))}),"\

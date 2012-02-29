@@ -4,11 +4,8 @@ class Page
         needle = params[1][0]
 
         page_contains = (needle) ->
-            if /css=(.*)/.test needle
-                query = needle.match(/css=(.*)/)[1]
-                document.querySelectorAll(query).length > 0
-            else
-                document.body.innerText.indexOf(needle) > -1
+            queryAll(document, needle).length > 0\
+                or document.body.innerText.indexOf(needle) > -1
 
         if @page.eval page_contains, needle
             respond status: "PASS"
@@ -23,19 +20,12 @@ class Page
         content = params[1][1]
 
         element_contains = (element, content) ->
-            if /css=(.*)/.test element
-                query = element.match(/css=(.*)/)[1]
-                results = document.querySelectorAll(query)
-                elem = results.length and results[0] or null
-            else
-                elem = document.getElementById(element)
-
-            if elem and /css=(.*)/.test content
-                query = content.match(/css=(.*)/)[1]
-                elem.querySelectorAll(query).length > 0
-            else if elem
-                elem.innerHTML.indexOf(content) > -1
-            else false
+            results = queryAll(document, element)
+            for result in results
+                if queryAll(result, content).length > 0\
+                    or result.innerText.indexOf(content) > -1
+                        return true
+            false
 
         if @page.eval element_contains, element, content
             respond status: "PASS"
