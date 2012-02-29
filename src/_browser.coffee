@@ -87,8 +87,8 @@ class Browser
         has_been_completed = false
 
         if @page.robotIsLoading
-            respond status: "FAIL",\
-                    error: "Browser was busy (loading in progress)."
+            respond status: "FAIL", error: "Browser was busy " +
+                                           "(loading in progress)."
         else
             @page.open url, (status) =>
                 if not has_been_completed

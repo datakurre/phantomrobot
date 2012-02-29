@@ -6,7 +6,6 @@ class Form
 
         inputText = (input, text) ->
             for element in queryAll document, input
-                console.log element
                 element.value = text
                 return true
             return false
@@ -50,8 +49,9 @@ class Form
         value = params[1][1]
 
         getRadioButtonCoords = (name, value) ->
+            visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
             for result in queryAll document, "xpath=//input[@name='#{name}']"
-                if result.value == value
+                if result.value == value and visible(result)
                     rect = result.getBoundingClientRect()
                     return x: rect.left + rect.width / 2,\
                            y: rect.top + rect.height / 2
