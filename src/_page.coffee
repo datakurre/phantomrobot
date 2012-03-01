@@ -56,6 +56,9 @@ class Page
     "Wait until page contains": (params, respond) ->
         @["Page should contain"] params, respond
 
+    "Wait until page contains visible": (params, respond) ->
+        @["Page should contain visible"] params, respond
+
     "Page should contain element": (params, respond) ->
         @["Page should contain"] params, respond
 
