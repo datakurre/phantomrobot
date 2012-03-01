@@ -102,3 +102,22 @@ class Form
             respond status: "PASS"
         else
             respond status: "FAIL", error: "Button '#{needle}' was not found."
+
+    "Submit form": (params, respond) ->
+        needle = params[1][0]
+
+        submitForm = (needle) ->
+            if not /^[a-z]+=(.*)/.test needle
+                xpath = "xpath=//form[@action='#{needle}']"
+                for result in queryAll document, xpath when result?.submit
+                    do result.submit
+                    return true
+            for result in queryAll document, needle when result?.submit
+                do result.submit
+                return true
+            return null
+
+        if result = @page.eval submitForm, needle
+            respond status: "PASS"
+        else
+            respond status: "FAIL", error: "Form '#{needle}' was not found."
