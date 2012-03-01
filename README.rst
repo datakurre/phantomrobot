@@ -5,7 +5,8 @@ PhantomJS Remote Library for Robot Framework
 This is a proof-of-concept PhantomJS integration for Robot Framework.
 
 This package provides an XML-RPC-service, which implements Robot Framework's
-remote library API and relays its commands to PhantomJS using WebSocket.
+remote library API, spawns a headless PhantomJS client and relays its commands
+to that client using WebSockets.
 
 **Disclaimer:** To be complete enough to be useful, the library should contain
 implementations for the same keywords as SeleniumLibrary_. Yet, I'm not sure

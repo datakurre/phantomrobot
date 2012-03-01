@@ -1,3 +1,21 @@
+###
+Copyright (C) 2011  Asko Soukka <asko.soukka@iki.fi>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+###
+
 class Form
 
     "Input text": (params, respond) ->
@@ -51,7 +69,7 @@ class Form
         getRadioButtonCoords = (name, value) ->
             visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
             for result in queryAll document, "xpath=//input[@name='#{name}']"
-                if result.value == value and visible(result)
+                if result.value == value and visible result
                     rect = result.getBoundingClientRect()
                     return x: rect.left + rect.width / 2,\
                            y: rect.top + rect.height / 2
@@ -63,3 +81,24 @@ class Form
         else
             respond status: "FAIL", error: "Radio button '#{value}' " +
                                            "for '#{name}' was not found."
+
+    "Click button": (params, respond) ->
+        needle = params[1][0]
+
+        clickButton = (needle) ->
+            if not /^[a-z]+=(.*)/.test needle
+                xpath = "xpath=//input[@type='submit']"
+                for result in queryAll document, xpath when result?.click
+                    trim = (s) -> s.replace /^\s+|\s+$/g, ""
+                    if trim(result?.value) == needle
+                        do result.click
+                        return true
+            for result in queryAll document, needle when result?.click
+                do result.click
+                return true
+            return null
+
+        if result = @page.eval clickButton, needle
+            respond status: "PASS"
+        else
+            respond status: "FAIL", error: "Button '#{needle}' was not found."

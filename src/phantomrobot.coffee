@@ -16,6 +16,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ###
 
+###
+This package provides an XML-RPC-service, which implements Robot Framework's
+remote library API, spawns a headless PhantomJS client and relays its commands
+to that client using WebSockets.
+###
 
 class PhantomProxy
 
