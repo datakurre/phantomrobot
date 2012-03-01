@@ -22,10 +22,9 @@ class Robot
         if @page?.render
             # take a screenshot and embed it into the log
             fs = require "fs"
-            path = "#{fs.workingDirectory}#{fs.separator}"
             filename = "#{new Date().getTime()}.png"
-            output = "*HTML* <img src='#{path}#{filename}'/>"
-            @page.render "#{path}#{filename}"
+            output = "*HTML* <img src='#{filename}'/>"
+            @page.render filename
             respond status: "PASS", output: output
         else
             respond status: "FAIL", error: "There's no page."
