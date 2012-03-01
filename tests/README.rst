@@ -6,4 +6,4 @@
 
     node ../phantomrobot.js
 
-    bin/pybot example-suite.txt
+    pybot example-suite.txt
