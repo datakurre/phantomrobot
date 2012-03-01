@@ -1,2 +1,10 @@
-*.js
 .DS_Store
+.installed.cfg
+*.js
+*.log
+*.xml
+*.html
+*.png
+bin
+parts
+develop-eggs
