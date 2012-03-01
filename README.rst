@@ -82,16 +82,9 @@ A pybot-buildout
 
     [buildout]
     extends = buildout.cfg
-    find-links += http://packages.affinitic.be/simple
-    allow-hosts +=
-        packages.affinitic.be
-        robotframework.googlecode.com
-        robotframework.org
-        code.google.com
-        selenium.googlecode.com
-        seleniumhq.org
-        www.openqa.org
     parts += robot
+    find-links += http://packages.affinitic.be/simple
+    versions=versions
 
     [versions]
     robotframework = 2.5.7-st1
