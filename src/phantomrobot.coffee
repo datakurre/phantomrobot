@@ -60,11 +60,11 @@ class PhantomProxy
 
         path = require "path"
         fullpath = path.join __dirname, "phantomrobot.js"
-        # relpath = path.relative process.cwd(), fullpath
-        phantomjs = "phantomjs #{fullpath} #{port + 1} #{timeout} #{sleep}"
+        relpath = path.relative process.cwd(), fullpath
+        phantomjs = "phantomjs #{relpath} #{port + 1} #{timeout} #{sleep}"
         child_process = require "child_process"
 
-        # console.log phantomjs
+        console.log phantomjs
         @phantom = child_process.exec phantomjs, (err, stdout, stderr) ->
             console.log err or stdout
         process.on "SIGTERM", -> do @phantom.kill
