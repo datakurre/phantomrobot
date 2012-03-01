@@ -43,10 +43,10 @@ class Browser
         define generic query-method to be available in eval
         ###
         queryAll = (element, query) ->
-            if /css=(.*)/.test query
-                selector = query.match(/css=(.*)/)[1]
+            if /^css=(.*)/.test query
+                selector = query.match(/^css=(.*)/)[1]
                 element.querySelectorAll(selector) or []
-            else if /xpath=(.*)/.test query
+            else if /^xpath=(.*)/.test query
                 selector = query.match(/xpath=(.*)/)[1]
                 # Evaluate an XPath expression aExpression against a given DOM
                 # node or Document object (aNode), returning the results as an
@@ -61,8 +61,8 @@ class Browser
                     result = do iterator.iterateNext
                     if result then results.push result else break
                 return results
-            else if /id=(.*)/.test query
-                selector = query.match(/id=(.*)/)[1]
+            else if /^id=(.*)/.test query
+                selector = query.match(/^id=(.*)/)[1]
                 result = document.getElementById selector
                 result and [result] or []
             else
