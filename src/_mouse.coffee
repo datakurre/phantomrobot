@@ -16,6 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ###
 
+
 "Click link": (params, respond) ->
     needle = params[1][0]
 
@@ -39,6 +40,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     else
         respond status: "FAIL", error: "Link '#{needle}' was not found."
 
+
 "Click element": (params, respond) ->
     needle = params[1][0]
 
@@ -56,6 +58,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     else
         respond status: "FAIL", error: "Element '#{needle}' was not found."
 
+
 "Mouse down": (params, respond) ->
     needle = params[1][0]
 
@@ -71,6 +74,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         respond status: "PASS"
     else
         respond status: "FAIL", error: "Element '#{needle}' was not found."
+
 
 "Mouse up": (params, respond) ->
     needle = params[1][0]

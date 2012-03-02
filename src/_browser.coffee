@@ -16,6 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ###
 
+
 "Open browser": (params, respond) ->
     page = do require("webpage").create
     page.viewportSize = width: 1024, height: 768
@@ -92,11 +93,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     @page = page
     respond status: "PASS"
 
+
 "Maximize browser window": (params, respond) ->
     respond status: "PASS"
 
+
 "Close browser": (params, respond) ->
     respond status: "PASS"
+
 
 "Go to": (params, respond) ->
     url = params[1][0]

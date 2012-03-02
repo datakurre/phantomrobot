@@ -16,6 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ###
 
+
 "Capture page screenshot": (params, respond) ->
     if @page?.render
         # take a screenshot and embed it into the log
@@ -27,8 +28,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     else
         respond status: "FAIL", error: "There's no page."
 
+
 "Start Selenium server": (params, respond) ->
     respond status: "PASS"
+
 
 "Set Phantom timeout": (params, respond) ->
     timeout = params[1][0]
@@ -39,8 +42,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     else
         respond status: "FAIL", error: "Unsupported timeout '#{timeout}'."
 
+
 "Set Selenium timeout": (params, respond) ->
     @["Set Phantom timeout"] params, respond
+
 
 "Register keyword to run on failure": (params, respond) ->
     keyword = params[1][0]
@@ -52,6 +57,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         respond status: "PASS", return: previous
     else
         respond status: "FAIL", error: "There's no keyword '#{keyword}'."
+
 
 "Stop Selenium server": (params, respond) ->
     respond status: "PASS"

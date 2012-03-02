@@ -16,6 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ###
 
+
 "Page should contain": (params, respond) ->
     needle = params[1][0]
 
@@ -32,6 +33,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         respond status: "PASS"
     else
         respond status: "FAIL", error: "Page did not contain '#{needle}'."
+
 
 "Page should contain visible": (params, respond) ->
     needle = params[1][0]
@@ -51,17 +53,22 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     else
         respond status: "FAIL", error: "Page did not contain '#{needle}'."
 
+
 "Wait until page contains": (params, respond) ->
     @["Page should contain"] params, respond
+
 
 "Wait until page contains visible": (params, respond) ->
     @["Page should contain visible"] params, respond
 
+
 "Page should contain element": (params, respond) ->
     @["Page should contain"] params, respond
 
+
 "Wait until page contains element": (params, respond) ->
     @["Page should contain"] params, respond
+
 
 "Page should not contain element": (params, respond) ->
     needle = params[1][0]
@@ -71,8 +78,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         else
             respond status: "PASS"
 
+
 "Element should be visible": (params, respond) ->
     @["Page should contain visible"] params, respond
+
 
 "Element should not be visible": (params, respond) ->
     needle = params[1][0]
@@ -82,6 +91,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
                                            "'#{needle}'.",
         else
             respond status: "PASS"
+
 
 "Element should contain": (params, respond) ->
     element = params[1][0]
@@ -107,6 +117,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         respond status: "FAIL", error: "Element '#{element}' did not " +
                                        "contain '#{needle}'."
 
+
 "Element text should be": (params, respond) ->
     element = params[1][0]
     text = params[1][1]
@@ -124,6 +135,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     else
         respond status: "FAIL", error: "Element '#{element}' text " +
                                        "'#{result}' != #{text}."
+
 
 "XPath should match X times": (params, respond) ->
     xpath = "xpath=" + params[1][0]
