@@ -1,4 +1,7 @@
+ROBOT = src/phantomrobot.coffee
+KEYWORDS = `find src/_*.coffee|sort`
+
 all: phantomrobot.js
 
-phantomrobot.js: src/*.coffee
-	cat `find src/_*.coffee` src/phantomrobot.coffee|coffee -s -b -c > phantomrobot.js
+phantomrobot.js: $(MY_KEYWORDS) src/*.coffee
+	cat $(KEYWORDS) $(MY_KEYWORDS) $(ROBOT)|coffee -s -b -c > phantomrobot.js

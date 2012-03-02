@@ -1,5 +1,5 @@
 ###
-Copyright (C) 2011  Asko Soukka <asko.soukka@iki.fi>
+Copyright (C) 2011-2012  Asko Soukka <asko.soukka@iki.fi>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -185,22 +185,15 @@ else do ->
     ###
     Executed on phantomjs
     ###
+
     phantom.injectJs "socket.io.js"
-
-    extend = (obj, mixin) ->
-      for name, method of mixin
-          obj[name] = method
-
-    class PhantomLibrary
-        constructor: ->
-            extend(this, new Robot)
-            extend(this, new Browser)
-            extend(this, new Page)
-            extend(this, new Mouse)
-            extend(this, new Form)
 
     port = parseInt(phantom.args[0], 10)
     timeout = parseFloat(phantom.args[1], 10)
     sleep = parseFloat(phantom.args[2], 10)
+
+    class PhantomLibrary
+        constructor: ->
+            for name, func of PhantomKeywords then @[name] = func
 
     new PhantomRobot(new PhantomLibrary, port, timeout, sleep)

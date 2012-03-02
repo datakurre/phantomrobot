@@ -1,5 +1,5 @@
 ###
-Copyright (C) 2011  Asko Soukka <asko.soukka@iki.fi>
+Copyright (C) 2011-2012  Asko Soukka <asko.soukka@iki.fi>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,44 +16,42 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ###
 
-class Robot
+"Capture page screenshot": (params, respond) ->
+    if @page?.render
+        # take a screenshot and embed it into the log
+        fs = require "fs"
+        filename = "#{new Date().getTime()}.png"
+        output = "*HTML* <img src='#{filename}'/>"
+        @page.render filename
+        respond status: "PASS", output: output
+    else
+        respond status: "FAIL", error: "There's no page."
 
-    "Capture page screenshot": (params, respond) ->
-        if @page?.render
-            # take a screenshot and embed it into the log
-            fs = require "fs"
-            filename = "#{new Date().getTime()}.png"
-            output = "*HTML* <img src='#{filename}'/>"
-            @page.render filename
-            respond status: "PASS", output: output
-        else
-            respond status: "FAIL", error: "There's no page."
+"Start Selenium server": (params, respond) ->
+    respond status: "PASS"
 
-    "Start Selenium server": (params, respond) ->
+"Set Phantom timeout": (params, respond) ->
+    timeout = params[1][0]
+    seconds = /(\d+)s?/
+    if seconds.test(timeout)
+        robot.timeout = parseInt timeout.match(seconds)[1], 10
         respond status: "PASS"
+    else
+        respond status: "FAIL", error: "Unsupported timeout '#{timeout}'."
 
-    "Set Phantom timeout": (params, respond) ->
-        timeout = params[1][0]
-        seconds = /(\d+)s?/
-        if seconds.test(timeout)
-            robot.timeout = parseInt timeout.match(seconds)[1], 10
-            respond status: "PASS"
-        else
-            respond status: "FAIL", error: "Unsupported timeout '#{timeout}'."
+"Set Selenium timeout": (params, respond) ->
+    @["Set Phantom timeout"] params, respond
 
-    "Set Selenium timeout": (params, respond) ->
-        @["Set Phantom timeout"] params, respond
+"Register keyword to run on failure": (params, respond) ->
+    keyword = params[1][0]
+    names = (name.replace(/\_/g, " ").toLowerCase() for name, _ of this\
+        when name[0].toUpperCase() == name[0])
+    if keyword.toLowerCase() in names
+        previous = robot.on_failure
+        robot.on_failure = keyword
+        respond status: "PASS", return: previous
+    else
+        respond status: "FAIL", error: "There's no keyword '#{keyword}'."
 
-    "Register keyword to run on failure": (params, respond) ->
-        keyword = params[1][0]
-        names = (name.replace(/\_/g, " ").toLowerCase() for name, _ of this\
-            when name[0].toUpperCase() == name[0])
-        if keyword.toLowerCase() in names
-            previous = robot.on_failure
-            robot.on_failure = keyword
-            respond status: "PASS", return: previous
-        else
-            respond status: "FAIL", error: "There's no keyword '#{keyword}'."
-
-    "Stop Selenium server": (params, respond) ->
-        respond status: "PASS"
+"Stop Selenium server": (params, respond) ->
+    respond status: "PASS"
