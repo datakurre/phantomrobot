@@ -44,6 +44,25 @@ be able to compile working PhantomJS and get this running.
 .. _node.js: http://nodejs.org/
 .. _npm: http://npmjs.org/
 
+Installation
+============
+
+(This is experimental and will be updated soon...)
+
+::
+
+    python bootstrap.py
+    bin/buildout -c buildout-linux-x64.cfg
+    source bin/activate
+    make
+
+    # start phantomrobot as a foreground process
+    node phantomrobot.js
+
+    # on a new console
+    source bin/activate
+    pybot tests
+
 
 Usage
 =====
