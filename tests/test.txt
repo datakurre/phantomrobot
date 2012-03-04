@@ -1,0 +1,10 @@
+*** Settings ***
+Library  Remote  http://localhost:1337/
+
+*** Test cases ***
+
+Minimal test case
+    Open browser
+    Go to  file:///Users/datakurre/Desktop/Sandbox/phantomrobot/tests/test.html
+    Page should contain  Jee!
+    Capture page screenshot
