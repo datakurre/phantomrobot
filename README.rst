@@ -52,7 +52,7 @@ Installation
 ::
 
     python bootstrap.py
-    bin/buildout -c buildout-linux-x64.cfg
+    bin/buildout -c buildout-linux-x86.cfg
     source bin/activate
     make
 
