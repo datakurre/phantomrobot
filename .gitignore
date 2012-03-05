@@ -3,8 +3,9 @@
 *.js
 *.log
 *.xml
-*.html
 *.png
 bin
 parts
 develop-eggs
+log.html
+report.html
