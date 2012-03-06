@@ -219,8 +219,8 @@ remote library for Zombie.js_.
 .. _Zombie.js: http://zombie.labnotes.org/
 
 
-Basic use
----------
+Basic usage
+-----------
 
 1. Launch ``phantomrobot`` onto foreground by ``node phantomrobot.js``.
 2. Run a Robot Framework -testsuite (e.g. ``pybot testsuite.txt``).
