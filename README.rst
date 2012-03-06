@@ -108,7 +108,7 @@ easily done in just two steps:
                                            "not defined."
 
 2. Run make with environment variable ``MY_KEYWORDS`` containing a relative
-   path to your cusotm keyword files, e.g.::
+   path to your custom keyword files, e.g.::
 
     MY_KEYWORDS=*.coffee make
 
