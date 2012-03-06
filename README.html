@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<title>PhantomJS Remote Library for Robot Framework</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 7056 2011-06-17 10:50:48Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
+  overflow: hidden;
+}
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block, pre.math {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document" id="phantomjs-remote-library-for-robot-framework">
+<h1 class="title">PhantomJS Remote Library for Robot Framework</h1>
+
+<p>PhantomRobot is an extendable <a class="reference external" href="http://code.google.com/p/robotframework/">Robot Framework</a> remote library for running
+acceptance tests on a headless <a class="reference external" href="http://www.phantomjs.org/">PhantomJS</a> (WebKit) browser. PhantomRobot is
+written in and is extendable with <a class="reference external" href="http://coffeescript.org/">CoffeeScript</a>.</p>
+<div class="section" id="try-it-out">
+<h1>Try it out</h1>
+<p>Checkout the code:</p>
+<pre class="literal-block">
+git clone git://github.com/datakurre/phantomrobot.git
+</pre>
+<p>Go to the checkout directory and run the <a class="reference external" href="http://www.buildout.org/">buildout</a> for installing the
+dependencies (buildout keeps them under the checkout directory):</p>
+<pre class="literal-block">
+cd phantomrobot
+python bootstrap.py --distribute
+</pre>
+<p>Next:</p>
+<ol class="loweralpha">
+<li><p class="first">On a 32-bit Linux, continue with:</p>
+<pre class="literal-block">
+bin/buildout -c buildout-linux-x86.cfg
+</pre>
+</li>
+<li><p class="first">On a 64-bit Linux, continue with:</p>
+<pre class="literal-block">
+bin/buildout -c buildout-linux-x86_64.cfg
+</pre>
+</li>
+<li><p class="first">On an OSX, continue with:</p>
+<pre class="literal-block">
+bin/buildout
+</pre>
+</li>
+</ol>
+<p>After the buildout has compiled <a class="reference external" href="http://nodejs.org/">node.js</a> and installed required
+node.js-packages using <a class="reference external" href="http://npmjs.org/">npm</a>, you should be able to activate the environment
+and compile PhantomRobot:</p>
+<pre class="literal-block">
+source bin/activate
+make
+</pre>
+<p>Then launch it (as a blocking foreground process):</p>
+<pre class="literal-block">
+node phantomrobot.js
+</pre>
+<p>Finally, to run some Robot Framework tests using PhantomRobot, you could open
+a new console, change to the checkout/buildout-directory of PhantomRobot, and:</p>
+<pre class="literal-block">
+source bin/activate
+pybot tests
+</pre>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p>PhantomRobot requires <tt class="docutils literal">phantomjs</tt>-binary, which is provided by
+<a class="reference external" href="http://www.phantomjs.org/">PhantomJS</a>' developers for 32-bit Linux, 64-bit Linux, OSX and Windows.
+If the binary distribution doesn't work for you, PhantomJS could be
+<a class="reference external" href="http://code.google.com/p/phantomjs/wiki/BuildInstructions">compiled manually</a>, at least in theory.</p>
+<p class="last">I've done the compiling once on Cent OS 5 / RHEL 5. I needed to build a more
+recent version of GNU Tar &gt;= 1.2.6 to make npm installing modules
+successfully. Yet, because websockets-support was broken in all existing
+QtWebKit-RPMs (thanks to <a class="reference external" href="https://bugs.webkit.org/show_bug.cgi?id=47284">https://bugs.webkit.org/show_bug.cgi?id=47284</a>), I
+had to build my own WebKit to be able to compile working PhantomJS and get
+PhantomRobot running.</p>
+</div>
+</div>
+<div class="section" id="selenium-keywords">
+<h1>Selenium keywords</h1>
+<p>My secret goal is to provide full and fully tested set of keywords available in
+Robot Framework <a class="reference external" href="http://code.google.com/p/robotframework-seleniumlibrary/">SeleniumLibrary</a>. Unfortunately, it may take most of the 2012
+for me to find enough free time to get that completed.</p>
+<p>Meanwhile, you a free to either help or implement your custom keywords, e.g.
+for testing your JavaScript-application directly.</p>
+</div>
+<div class="section" id="custom-keywords">
+<h1>Custom keywords</h1>
+<p>Developing and including your own custom Robot Framework keyword definitions is
+easily done in just two steps:</p>
+<ol class="arabic">
+<li><p class="first">Create a <tt class="docutils literal">.coffee</tt>-ending file with your custom keywords as follows:</p>
+<pre class="literal-block">
+&quot;Is defined&quot;: (params, respond) -&gt;
+    name = params[1][0]
+
+    isDefined exists = (name) -&gt; not (typeof x == &quot;undefined&quot;)
+
+    if &#64;page.eval isDefined, name  # don't forget the commas between args
+        respond status: &quot;PASS&quot;
+    else
+        respond status: &quot;FAIL&quot;, error: &quot;Variable '#{needle}' was &quot; +
+                                       &quot;not defined.&quot;
+</pre>
+</li>
+<li><p class="first">Run make with environment variable <tt class="docutils literal">MY_KEYWORDS</tt> containing a relative
+path to your cusotm keyword files, e.g.:</p>
+<pre class="literal-block">
+MY_KEYWORDS=*.coffee make
+</pre>
+</li>
+</ol>
+<p>This should result a new <tt class="docutils literal">phantomrobot.js</tt> including your custom keywords.</p>
+<div class="section" id="custom-keywords-in-detail">
+<h2>Custom keywords in detail</h2>
+<p>Keyword-definition always starts with its name as a JavaScript hash property
+containing a function with two parameters:</p>
+<pre class="literal-block">
+&quot;Is defined&quot;: (params, respond) -&gt;
+</pre>
+<ol class="arabic simple">
+<li>two dimensional parameter array <tt class="docutils literal">params</tt> from Robot Framework</li>
+<li>a respond callback method <tt class="docutils literal">respond</tt>.</li>
+</ol>
+<p>Then keyword definition usually extracts the parameter array into meaningful
+variables:</p>
+<pre class="literal-block">
+... name = params[1][0]
+</pre>
+<p>Next follows usually the definition of the function that is evaluated with the
+extracted parameters by <tt class="docutils literal">&#64;page.eval</tt> on the tested page opened on <a class="reference external" href="http://www.phantomjs.org/">PhantomJS</a>.
+The function can only accept simple JavaScript-objects (not functions or
+closures) as its parameters. Also the function can only return similar simple
+JavaScript objects as its results (not functions or closures):</p>
+<pre class="literal-block">
+... isDefined exists = (name) -&gt; not (typeof x == &quot;undefined&quot;)
+</pre>
+<p>Finally, the function is called with <tt class="docutils literal">&#64;page.eval</tt>, the result is interpreted
+and the <tt class="docutils literal">respond</tt>-callback is called with either <tt class="docutils literal">status: &quot;PASS&quot;</tt> or with
+<tt class="docutils literal">status: &quot;FAIL&quot;</tt> and a descriptive error message:</p>
+<pre class="literal-block">
+... if &#64;page.eval isDefined, name  # don't forget the commas between args
+...     respond status: &quot;PASS&quot;
+... else
+...     respond status: &quot;FAIL&quot;, error: &quot;Variable '#{needle}' was &quot; +
+...                                    &quot;not defined.&quot;
+</pre>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last"><tt class="docutils literal">&#64;page.eval</tt> is a thin wrapper around <a class="reference external" href="http://www.phantomjs.org/">PhantomJS</a>
+<em>WebPage.evaluate</em>. It can accept parameters any number of parameters.
+Besides that, it defines a special function <tt class="docutils literal">queryAll</tt> to be usable to
+make DOM queries with CSS-selector, XPATH-expression or DOM element id.
+Please, see built-in keyword definitions for examples of using <tt class="docutils literal">queryAll</tt>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="an-example-test-suite">
+<h1>An example test suite</h1>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">Even this example uses directly <a class="reference external" href="http://code.google.com/p/robotframework-seleniumlibrary/">SeleniumLibrary</a>-keywords in
+a classic Robot Framework -style, please, note that Robot framework
+<a class="reference external" href="http://robotframework.googlecode.com/svn/tags/robotframework-2.1.2/doc/userguide/RobotFrameworkUserGuide.html#behavior-driven-style">supports given–when–then</a> style tests also.</p>
+</div>
+<pre class="literal-block">
+*** Settings ***
+Library  Remote  http://localhost:1337/
+
+Suite Setup  Start browser
+Suite Teardown  Close browser
+
+*** Variables ***
+
+*** Test cases ***
+
+Plone Accessibility
+    Goto homepage
+    Click link  Accessibility
+    Page should contain  Accessibility
+
+Plone Log In
+    Go to  http://localhost:8080/Plone/login_form
+    Page should contain element  __ac_name
+    Input text  __ac_name  admin
+    Input text  __ac_password  admin
+    Click Button  Log in
+    Page should contain  now logged in
+    click link  Continue to the Plone site home page
+    Page should contain  Manage portlets
+
+*** Keywords ***
+
+Start browser
+    Open browser  http://localhost:8080/Plone/
+
+Goto homepage
+    Go to  http://localhost:8080/Plone/
+    Page should contain  Plone site
+</pre>
+</div>
+<div class="section" id="how-does-it-work">
+<h1>How does it work?</h1>
+<p>PhantomRobot 1) provides an XML-RPC-service, which 2) implements Robot
+Framework's remote library API, 3) spawns a headless PhantomJS client and 4)
+relays its commands to that client using WebSockets.</p>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">Insert a nice diagram here :+)</p>
+</div>
+<p>PhantomRobot borrows some ideas from <a class="reference external" href="https://github.com/mkorpela/RoboZombie">RoboZombie</a> – a similar proof-of-concept
+remote library for <a class="reference external" href="http://zombie.labnotes.org/">Zombie.js</a>.</p>
+<div class="section" id="basic-use">
+<h2>Basic use</h2>
+<ol class="arabic simple">
+<li>Launch <tt class="docutils literal">phantomrobot</tt> onto foreground by <tt class="docutils literal">node phantomrobot.js</tt>.</li>
+<li>Run a Robot Framework -testsuite (e.g. <tt class="docutils literal">pybot testsuite.txt</tt>).</li>
+</ol>
+<p><cite>node phantomrobot.js</cite> accepts the following arguments:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">--port=1337</span></tt></dt>
+<dd>a local port number for this Robot Framework remote library (PhantomJS will
+connect to phantomrobot through <tt class="docutils literal">port + 1</tt>, e.g. <tt class="docutils literal">1338</tt>)</dd>
+<dt><tt class="docutils literal"><span class="pre">--implicit-wait=10</span></tt></dt>
+<dd>implicit timeout for supporting keywords, e.g. <em>page contains</em> (can be
+disabled with <tt class="docutils literal"><span class="pre">implicit-wait=-1</span></tt>)</dd>
+<dt><tt class="docutils literal"><span class="pre">--implicit-sleep=0.1</span></tt></dt>
+<dd>time to sleep between trials until implicit timeout</dd>
+</dl>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies</h2>
+<p>All of the following dependencies for running PhantomRobot should now be
+installed automatically by running the provided buildout:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.phantomjs.org/">PhantomJS</a> &gt;= 1.3 available on path</li>
+<li><a class="reference external" href="http://nodejs.org/">node.js</a> and <a class="reference external" href="http://npmjs.org/">npm</a> with<ul>
+<li><em>xmlrpc</em> &gt;= 0.9.4</li>
+<li><em>socket.io</em> == 0.8.7 (unknown error with 0.9.0)</li>
+<li><em>optimist</em> and</li>
+<li><em>coffee-script</em> &gt;= 1.2.0</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="todo">
+<h1>TODO</h1>
+<ul class="simple">
+<li>implement rest of the <a class="reference external" href="http://code.google.com/p/robotframework-seleniumlibrary/">SeleniumLibrary</a>-keywords and test them</li>
+<li>support <tt class="docutils literal">get_keyword_documentation</tt> in Robot Framework remote library API</li>
+<li>support <tt class="docutils literal">get_keyword_arguments</tt> in Robot Framework remote library API</li>
+<li>...</li>
+</ul>
+</div>
+</div>
+</body>
+</html>
