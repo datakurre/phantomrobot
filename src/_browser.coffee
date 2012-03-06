@@ -20,8 +20,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 "Open browser": (params, respond) ->
     page = do require("webpage").create
     page.viewportSize = width: 1024, height: 768
-    page.onAlert = (msg) -> robot.debug msg
-    page.onConsoleMessage = (msg) -> robot.debug msg
+    page.onAlert = (msg) -> robot.debug "alert: #{msg}"
+    page.onConsoleMessage = (msg) -> robot.debug "console.log: #{msg}"
 
     ###
     prevent new actions before the current page has been loaded;
@@ -95,10 +95,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Maximize browser window": (params, respond) ->
+    page.viewportSize = width: 1024, height: 768
     respond status: "PASS"
 
 
 "Close browser": (params, respond) ->
+    do @page.release
     respond status: "PASS"
 
 
