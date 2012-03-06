@@ -8,3 +8,4 @@ Minimal test case
     Go to  file:///Users/datakurre/Desktop/Sandbox/phantomrobot/tests/test.html
     Page should contain  Jee!
     Capture page screenshot
+    Close browser
