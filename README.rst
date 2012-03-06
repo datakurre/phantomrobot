@@ -241,7 +241,7 @@ Dependencies
 ------------
 
 All of the following dependencies for running PhantomRobot should now be
-installed automatically by running the provided buildout::
+installed automatically by running the provided buildout:
 
 - PhantomJS_ >= 1.3 available on path
 - node.js_ and npm_ with
