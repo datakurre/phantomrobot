@@ -399,7 +399,7 @@ easily done in just two steps:</p>
 &quot;Is defined&quot;: (params, respond) -&gt;
     name = params[1][0]
 
-    isDefined exists = (name) -&gt; not (typeof x == &quot;undefined&quot;)
+    isDefined exists = (name) -&gt; not (typeof name == &quot;undefined&quot;)
 
     if &#64;page.eval isDefined, name  # don't forget the commas between args
         respond status: &quot;PASS&quot;
@@ -438,7 +438,7 @@ The function can only accept simple JavaScript-objects (not functions or
 closures) as its parameters. Also the function can only return similar simple
 JavaScript objects as its results (not functions or closures):</p>
 <pre class="literal-block">
-... isDefined exists = (name) -&gt; not (typeof x == &quot;undefined&quot;)
+... isDefined exists = (name) -&gt; not (typeof name == &quot;undefined&quot;)
 </pre>
 <p>Finally, the function is called with <tt class="docutils literal">&#64;page.eval</tt>, the result is interpreted
 and the <tt class="docutils literal">respond</tt>-callback is called with either <tt class="docutils literal">status: &quot;PASS&quot;</tt> or with
