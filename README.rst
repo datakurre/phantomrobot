@@ -12,7 +12,7 @@ written in and is extendable with CoffeeScript_.
 
 
 Try it out
-----------
+==========
 
 Checkout the code::
 

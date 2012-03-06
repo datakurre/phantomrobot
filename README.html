@@ -380,8 +380,9 @@ QtWebKit-RPMs (thanks to <a class="reference external" href="https://bugs.webkit
 had to build my own WebKit to be able to compile working PhantomJS and get
 PhantomRobot running.</p>
 </div>
+</div>
 <div class="section" id="selenium-keywords">
-<h2>Selenium keywords</h2>
+<h1>Selenium keywords</h1>
 <p>My secret goal is to provide full and fully tested set of keywords available in
 Robot Framework <a class="reference external" href="http://code.google.com/p/robotframework-seleniumlibrary/">SeleniumLibrary</a>. Unfortunately, it may take most of the 2012
 for me to find enough free time to get that completed.</p>
@@ -389,7 +390,7 @@ for me to find enough free time to get that completed.</p>
 for testing your JavaScript-application directly.</p>
 </div>
 <div class="section" id="custom-keywords">
-<h2>Custom keywords</h2>
+<h1>Custom keywords</h1>
 <p>Developing and including your own custom Robot Framework keyword definitions is
 easily done in just two steps:</p>
 <ol class="arabic">
@@ -415,10 +416,8 @@ MY_KEYWORDS=*.coffee make
 </li>
 </ol>
 <p>This should result a new <tt class="docutils literal">phantomrobot.js</tt> including your custom keywords.</p>
-</div>
-</div>
 <div class="section" id="custom-keywords-in-detail">
-<h1>Custom keywords in detail</h1>
+<h2>Custom keywords in detail</h2>
 <p>Keyword-definition always starts with its name as a JavaScript hash property
 containing a function with two parameters:</p>
 <pre class="literal-block">
@@ -459,8 +458,10 @@ Besides that, it defines a special function <tt class="docutils literal">queryAl
 make DOM queries with CSS-selector, XPATH-expression or DOM element id.
 Please, see built-in keyword definitions for examples of using <tt class="docutils literal">queryAll</tt>.</p>
 </div>
+</div>
+</div>
 <div class="section" id="an-example-test-suite">
-<h2>An example test suite</h2>
+<h1>An example test suite</h1>
 <div class="note">
 <p class="first admonition-title">Note</p>
 <p class="last">Even this example uses directly <a class="reference external" href="http://code.google.com/p/robotframework-seleniumlibrary/">SeleniumLibrary</a>-keywords in
@@ -504,7 +505,7 @@ Goto homepage
 </pre>
 </div>
 <div class="section" id="how-does-it-work">
-<h2>How does it work?</h2>
+<h1>How does it work?</h1>
 <p>PhantomRobot 1) provides an XML-RPC-service, which 2) implements Robot
 Framework's remote library API, 3) spawns a headless PhantomJS client and 4)
 relays its commands to that client using WebSockets.</p>
@@ -514,10 +515,8 @@ relays its commands to that client using WebSockets.</p>
 </div>
 <p>PhantomRobot borrows some ideas from <a class="reference external" href="https://github.com/mkorpela/RoboZombie">RoboZombie</a> – a similar proof-of-concept
 remote library for <a class="reference external" href="http://zombie.labnotes.org/">Zombie.js</a>.</p>
-</div>
-</div>
 <div class="section" id="basic-use">
-<h1>Basic use</h1>
+<h2>Basic use</h2>
 <ol class="arabic simple">
 <li>Launch <tt class="docutils literal">phantomrobot</tt> onto foreground by <tt class="docutils literal">node phantomrobot.js</tt>.</li>
 <li>Run a Robot Framework -testsuite (e.g. <tt class="docutils literal">pybot testsuite.txt</tt>).</li>
@@ -535,7 +534,7 @@ disabled with <tt class="docutils literal"><span class="pre">implicit-wait=-1</s
 </dl>
 </div>
 <div class="section" id="dependencies">
-<h1>Dependencies</h1>
+<h2>Dependencies</h2>
 <p>All of the following dependencies for running PhantomRobot should now be
 installed automatically by running the provided buildout:</p>
 <pre class="literal-block">
@@ -550,15 +549,16 @@ installed automatically by running the provided buildout:</p>
 <li><em>coffee-script</em> &gt;= 1.2.0</li>
 </ul>
 </blockquote>
+</div>
+</div>
 <div class="section" id="todo">
-<h2>TODO</h2>
+<h1>TODO</h1>
 <ul class="simple">
 <li>implement rest of the <a class="reference external" href="http://code.google.com/p/robotframework-seleniumlibrary/">SeleniumLibrary</a>-keywords and test them</li>
 <li>support <tt class="docutils literal">get_keyword_documentation</tt> in Robot Framework remote library API</li>
 <li>support <tt class="docutils literal">get_keyword_arguments</tt> in Robot Framework remote library API</li>
 <li>...</li>
 </ul>
-</div>
 </div>
 </div>
 </body>
