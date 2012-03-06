@@ -99,7 +99,7 @@ easily done in just two steps:
     "Is defined": (params, respond) ->
         name = params[1][0]
 
-        isDefined exists = (name) -> not (typeof name == "undefined")
+        isDefined exists = (name) -> not eval("typeof #{name} === 'undefined'")
 
         if @page.eval isDefined, name  # don't forget the commas between args
             respond status: "PASS"
@@ -138,7 +138,7 @@ The function can only accept simple JavaScript-objects (not functions or
 closures) as its parameters. Also the function can only return similar simple
 JavaScript objects as its results (not functions or closures)::
 
-    ... isDefined exists = (name) -> not (typeof name == "undefined")
+    ... isDefined exists = (name) -> not eval("typeof #{name} === 'undefined'")
 
 Finally, the function is called with ``@page.eval``, the result is interpreted
 and the ``respond``-callback is called with either ``status: "PASS"`` or with
