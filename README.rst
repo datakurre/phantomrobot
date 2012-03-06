@@ -2,9 +2,74 @@
 PhantomJS Remote Library for Robot Framework
 ============================================
 
-This is a proof-of-concept PhantomJS integration for Robot Framework.
+PhantomRobot is an extendable `Robot Framework`_ remote library to run your
+acceptance tests on a headless `PhantomJS`_ (WebKit) browser. PhantomRobot is
+written in and is extendable with `CoffeeScript`_.
 
-This package provides an XML-RPC-service, which implements Robot Framework's
+.. _Robot Framework: http://code.google.com/p/robotframework/
+.. _PhantomJS: http://www.phantomjs.org/
+.. _CoffeeScript: http://coffeescript.org/
+
+
+Try it out
+----------
+
+Checkout the code::
+
+    git clone git://github.com/datakurre/phantomrobot.git
+
+Change to the checkout directory to the buildout to install dependencies (under
+the checkout directory)::
+
+    cd phantomrobot
+    python bootstrap.py --distribute
+
+On a 32-bit Linux [1]_, continue with::
+
+    bin/buildout -c buildout-linux-x86.cfg
+
+On a 64-bit Linux [1]_, continue with::
+
+    bin/buildout -c buildout-linux-x86_64.cfg
+
+On a OSX [1]_, continue with::
+
+    bin/buildout
+
+After the buildout has compiled `node.js`_ and installed required
+node.js-packages using `npm`_, you should be able to compile PhantomRobot::
+
+    source bin/activate
+    make
+
+And launch it (as a blocking foreground process)::
+
+    node phantomrobot.js
+
+To run some Robot Framework tests using PhantomRobot, you could open a new
+console, change to the checkout/buildout-directory of PhantomRobot, and::
+
+    source bin/activate
+    pybot tests
+
+.. _node.js: http://nodejs.org/
+.. _npm: http://npmjs.org/
+
+.. [1] PhantomRobot requires ``phantomjs``-binary, which is provided by
+   `PhantomJS`_' developers for 32-bit Linux, 64-bit Linux, OSX and Windows.
+   If the binary distribution doesn't work PhantomJS could be compiled
+   manually, in theory.
+
+   **Note:** On RHEL5 / CentOS5 I needed to build a more recent version of GNU
+   Tar >= 1.2.6 to make npm installing modules successfully.  Yet, because
+   websockets-support was broken in all existing QtWebKit-RPMs (thanks to
+   https://bugs.webkit.org/show_bug.cgi?id=47284), I had to build my own WebKit
+   to be able to compile working PhantomJS and get this running.
+
+About
+=====
+
+PhantomRobot provides an XML-RPC-service, which implements Robot Framework's
 remote library API, spawns a headless PhantomJS client and relays its commands
 to that client using WebSockets.
 
@@ -21,6 +86,7 @@ library for Zombie.js_.
 .. _RoboZombie: https://github.com/mkorpela/RoboZombie
 .. _Zombie.js: http://zombie.labnotes.org/
 
+
 Requirements
 ============
 
@@ -34,34 +100,6 @@ Requirements
 
 - ``make`` to run ``Makefile``
 
-**Note:** On RHEL5 / CentOS5 I needed to build a more recent version of GNU Tar
->= 1.2.6 to make npm installing modules successfully.  Yet, because
-websockets-support was broken in all existing QtWebKit-RPMs (thanks to
-https://bugs.webkit.org/show_bug.cgi?id=47284), I had to build my own WebKit to
-be able to compile working PhantomJS and get this running.
-
-.. _PhantomJS: http://www.phantomjs.org/
-.. _node.js: http://nodejs.org/
-.. _npm: http://npmjs.org/
-
-Installation
-============
-
-(This is experimental and will be updated soon...)
-
-::
-
-    python bootstrap.py
-    bin/buildout -c buildout-linux-x86.cfg
-    source bin/activate
-    make
-
-    # start phantomrobot as a foreground process
-    node phantomrobot.js
-
-    # on a new console
-    source bin/activate
-    pybot tests
 
 
 Usage
