@@ -26,6 +26,8 @@ dependencies (buildout keeps them under the checkout directory)::
 
 .. _buildout: http://www.buildout.org/
 
+Next:
+
 a) On a 32-bit Linux, continue with::
 
     bin/buildout -c buildout-linux-x86.cfg
@@ -99,7 +101,7 @@ easily done in just two steps:
 
         isDefined exists = (name) -> not (typeof x == "undefined")
 
-        if @page.eval isDefined, name
+        if @page.eval isDefined, name  # don't forget the commas between args
             respond status: "PASS"
         else
             respond status: "FAIL", error: "Variable '#{needle}' was " +
@@ -134,11 +136,19 @@ Next follows usually the definition of the function that is evaluated with the
 extracted parameters by ``@page.eval`` on the tested page opened on PhantomJS_.
 The function can only accept simple JavaScript-objects (not functions or
 closures) as its parameters. Also the function can only return similar simple
-JavaScript objects as its results (not functions or closures).
+JavaScript objects as its results (not functions or closures)::
+
+    ... isDefined exists = (name) -> not (typeof x == "undefined")
 
 Finally, the function is called with ``@page.eval``, the result is interpreted
 and the ``respond``-callback is called with either ``status: "PASS"`` or with
-``status: "FAIL"`` and a descriptive error message.
+``status: "FAIL"`` and a descriptive error message::
+
+    ... if @page.eval isDefined, name  # don't forget the commas between args
+    ...     respond status: "PASS"
+    ... else
+    ...     respond status: "FAIL", error: "Variable '#{needle}' was " +
+    ...                                    "not defined."
 
 .. note:: ``@page.eval`` is a thin wrapper around PhantomJS_
    *WebPage.evaluate*. It can accept parameters any number of parameters.
