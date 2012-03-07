@@ -95,7 +95,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Maximize browser window": (params, respond) ->
-    page.viewportSize = width: 1024, height: 768
+    @page.viewportSize = width: 1024, height: 768
     respond status: "PASS"
 
 
