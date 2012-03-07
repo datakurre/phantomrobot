@@ -41,12 +41,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     ###
     define generic query-method to be available in eval
     ###
-    queryAll = (element, query) ->
-        if /^css=(.*)/.test query
-            selector = query.match(/^css=(.*)/)[1]
-            element.querySelectorAll(selector) or []
-        else if /^xpath=(.*)/.test query
-            selector = query.match(/xpath=(.*)/)[1]
+    queryAll = (element, locator) ->
+        if /^css=(.*)/.test locator
+            css = locator.match(/^css=(.*)/)[1]
+            element.querySelectorAll(css) or []
+        else if /^xpath=(.*)/.test locator
+            xpath = locator.match(/xpath=(.*)/)[1]
             # Evaluate an XPath expression aExpression against a given DOM
             # node or Document object (aNode), returning the results as an
             # array thanks wanderingstan at morethanwarm dot mail dot com
@@ -54,19 +54,19 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             # https://developer.mozilla.org/en/Using_XPath
             xpe = do new XPathEvaluator
             nsResolver = xpe.createNSResolver document
-            iterator = xpe.evaluate selector, document, nsResolver, 0, null
+            iterator = xpe.evaluate xpath, document, nsResolver, 0, null
             results = []
             loop
                 result = do iterator.iterateNext
                 if result then results.push result else break
             return results
-        else if /^id=(.*)/.test query
-            selector = query.match(/^id=(.*)/)[1]
-            result = document.getElementById selector
+        else if /^dom=(.*)/.test locator
+            path = locator.match(/^dom=(.*)/)[1]
+            try result = eval(path)
+            catch error then result = null
             result and [result] or []
         else
-            selector = query
-            result = document.getElementById selector
+            result = document.getElementById locator
             result and [result] or []
     ###
     define custom page.evaluate with support for params
