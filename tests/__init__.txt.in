@@ -1,2 +1,0 @@
-*** Variables ***
-$${TESTS_PATH} =  ${buildout:directory}/tests/
