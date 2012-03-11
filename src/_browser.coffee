@@ -87,15 +87,21 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             str += (/object|string/.test typeof arg)\
                 and "JSON.parse(#{JSON.stringify(JSON.stringify(arg))}),"\
                 or arg + ","
-        str = str.replace /,$/, "); }"
+        if str.match /,$/
+            str = str.replace /,$/, "); }"
+        else
+            str += "); }"
         page.evaluate str
 
     @page = page
-    respond status: "PASS"
+    if params.length > 1
+        @["Go to"] params, respond
+    else
+        respond status: "PASS"
 
 
 "Maximize browser window": (params, respond) ->
-    @page.viewportSize = width: 1024, height: 768
+    @page.viewportSize = width: 1280, height: 1024
     respond status: "PASS"
 
 
