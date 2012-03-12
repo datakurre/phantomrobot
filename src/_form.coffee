@@ -18,24 +18,22 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Input text": (params, respond) ->
-    input = params[1][0]
-    text = params[1][1]
+    [locator, text] = params
 
-    inputText = (input, text) ->
-        for element in queryAll document, input
+    inputText = (locator, text) ->
+        for element in queryAll document, locator
             element.value = text
             return true
         return false
 
-    if result = @page.eval inputText, input, text
+    if result = @page.eval inputText, locator, text
         respond status: "PASS"
     else
-        respond status: "FAIL", error: "Input '#{input}' was not found."
+        respond status: "FAIL", error: "Input '#{locator}' was not found."
 
 
 "Select from list": (params, respond) ->
-    list = params[1][0]
-    value = params[1][1]
+    [list, value] = params
 
     selectFromList = (list, value) ->
         for element in queryAll document, list
@@ -64,8 +62,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Select radio button": (params, respond) ->
-    name = params[1][0]
-    value = params[1][1]
+    [name, value] = params
 
     getRadioButtonCoords = (name, value) ->
         visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
@@ -84,42 +81,42 @@ with this program; if not, write to the Free Software Foundation, Inc.,
                                        "for '#{name}' was not found."
 
 "Click button": (params, respond) ->
-    needle = params[1][0]
+    [locator] = params
 
-    clickButton = (needle) ->
-        if not /^[a-z]+=(.*)/.test needle
+    clickButton = (locator) ->
+        if not /^[a-z]+=(.*)/.test locator
             xpath = "xpath=//input[@type='submit']"
             for result in queryAll document, xpath when result?.click
                 trim = (s) -> s.replace /^\s+|\s+$/g, ""
-                if trim(result?.value) == needle
+                if trim(result?.value) == locator
                     do result.click
                     return true
-        for result in queryAll document, needle when result?.click
+        for result in queryAll document, locator when result?.click
             do result.click
             return true
         return null
 
-    if result = @page.eval clickButton, needle
+    if result = @page.eval clickButton, locator
         respond status: "PASS"
     else
-        respond status: "FAIL", error: "Button '#{needle}' was not found."
+        respond status: "FAIL", error: "Button '#{locator}' was not found."
 
 
 "Submit form": (params, respond) ->
-    needle = params[1][0]
+    [locator] = params
 
-    submitForm = (needle) ->
-        if not /^[a-z]+=(.*)/.test needle
-            xpath = "xpath=//form[@action='#{needle}']"
+    submitForm = (locator) ->
+        if not /^[a-z]+=(.*)/.test locator
+            xpath = "xpath=//form[@action='#{locator}']"
             for result in queryAll document, xpath when result?.submit
                 do result.submit
                 return true
-        for result in queryAll document, needle when result?.submit
+        for result in queryAll document, locator when result?.submit
             do result.submit
             return true
         return null
 
-    if result = @page.eval submitForm, needle
+    if result = @page.eval submitForm, locator
         respond status: "PASS"
     else
-        respond status: "FAIL", error: "Form '#{needle}' was not found."
+        respond status: "FAIL", error: "Form '#{locator}' was not found."

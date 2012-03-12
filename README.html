@@ -397,7 +397,7 @@ easily done in just two steps:</p>
 <li><p class="first">Create a <tt class="docutils literal">.coffee</tt>-ending file with your custom keywords as follows:</p>
 <pre class="literal-block">
 &quot;Is defined&quot;: (params, respond) -&gt;
-    name = params[1][0]
+    [name] = params
 
     isDefined exists = (name) -&gt; not eval(&quot;typeof #{name} === 'undefined'&quot;)
 
@@ -430,7 +430,7 @@ containing a function with two parameters:</p>
 <p>Then keyword definition usually extracts the parameter array into meaningful
 variables:</p>
 <pre class="literal-block">
-... name = params[1][0]
+... [name] = params
 </pre>
 <p>Next follows usually the definition of the function that is evaluated with the
 extracted parameters by <tt class="docutils literal">&#64;page.eval</tt> on the tested page opened on <a class="reference external" href="http://www.phantomjs.org/">PhantomJS</a>.

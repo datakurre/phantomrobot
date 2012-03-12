@@ -34,5 +34,5 @@ Dummy keywords to please Selenium-tests
 
 
 "Set Selenium speed": (params, respond) ->
-    speed = params[1][0]
+    [speed] = params
     respond status: "PASS", return: speed

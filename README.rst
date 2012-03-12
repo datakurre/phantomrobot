@@ -97,7 +97,7 @@ easily done in just two steps:
 1. Create a ``.coffee``-ending file with your custom keywords as follows::
 
     "Is defined": (params, respond) ->
-        name = params[1][0]
+        [name] = params
 
         isDefined exists = (name) -> not eval("typeof #{name} === 'undefined'")
 
@@ -130,7 +130,7 @@ containing a function with two parameters::
 Then keyword definition usually extracts the parameter array into meaningful
 variables::
 
-    ... name = params[1][0]
+    ... [name] = params
 
 Next follows usually the definition of the function that is evaluated with the
 extracted parameters by ``@page.eval`` on the tested page opened on PhantomJS_.

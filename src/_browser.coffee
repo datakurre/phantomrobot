@@ -121,7 +121,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         page.evaluate str
 
     @page = page
-    if params.length > 1
+    if params.length
         @["Go to"] params, respond
     else
         respond status: "PASS"
@@ -142,7 +142,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Go to": (params, respond) ->
-    [keyword, [url]] = params
+    [url] = params
     has_been_completed = false
 
     if @page.robotIsLoading

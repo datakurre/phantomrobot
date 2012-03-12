@@ -141,9 +141,9 @@ class PhantomRobot
         if params?.length
             try
                 if params[0] of @library
-                    @library[params[0]](params, callback)
+                    @library[params[0]](params[1], callback)
                 else
-                    @library[params[0].replace(/\s/g, "_")](params, callback)
+                    @library[params[0].replace(/\s/g, "_")](params[1], callback)
             catch e
                 callback status: "FAIL", error: e.toString()
         else

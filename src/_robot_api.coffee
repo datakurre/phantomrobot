@@ -30,7 +30,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Set Phantom timeout": (params, respond) ->
-    timeout = params[1][0]
+    [timeout] = params
     seconds = /(\d+)s?/
     if seconds.test(timeout)
         robot.timeout = parseInt timeout.match(seconds)[1], 10
@@ -40,7 +40,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Register keyword to run on failure": (params, respond) ->
-    keyword = params[1][0]
+    [keyword] = params
     names = (name.replace(/\_/g, " ").toLowerCase() for name, _ of this\
         when name[0].toUpperCase() == name[0])
     if keyword.toLowerCase() in names

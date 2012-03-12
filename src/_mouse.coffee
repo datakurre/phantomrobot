@@ -18,76 +18,76 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Click link": (params, respond) ->
-    needle = params[1][0]
+    [locator] = params
 
-    getLinkCoords = (needle) ->
+    getLinkCoords = (locator) ->
         visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
-        for result in queryAll document, needle when visible result
+        for result in queryAll document, locator when visible result
             rect = result.getBoundingClientRect()
             return x: rect.left + rect.width / 2,\
                    y: rect.top + rect.height / 2
         trim = (s) -> s.replace /^\s+|\s+$/g, ""
         for result in queryAll document, "xpath=//a" when visible result
-            if trim(result.innerText) == needle
+            if trim(result.innerText) == locator
                 rect = result.getBoundingClientRect()
                 return x: rect.left + rect.width / 2,\
                        y: rect.top + rect.height / 2
         return null
 
-    if coords = @page.eval getLinkCoords, needle
+    if coords = @page.eval getLinkCoords, locator
         @page.sendEvent "click", coords.x, coords.y
         respond status: "PASS"
     else
-        respond status: "FAIL", error: "Link '#{needle}' was not found."
+        respond status: "FAIL", error: "Link '#{locator}' was not found."
 
 
 "Click element": (params, respond) ->
-    needle = params[1][0]
+    [locator] = params
 
-    getElementCoords = (needle) ->
+    getElementCoords = (locator) ->
         visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
-        for result in queryAll document, needle when visible result
+        for result in queryAll document, locator when visible result
             rect = result.getBoundingClientRect()
             return x: rect.left + rect.width / 2,\
                    y: rect.top + rect.height / 2
         return null
 
-    if coords = @page.eval getElementCoords, needle
+    if coords = @page.eval getElementCoords, locator
         @page.sendEvent "click", coords.x, coords.y
         respond status: "PASS"
     else
-        respond status: "FAIL", error: "Element '#{needle}' was not found."
+        respond status: "FAIL", error: "Element '#{locator}' was not found."
 
 
 "Mouse down": (params, respond) ->
-    needle = params[1][0]
+    [locator] = params
 
-    getCoords = (needle) ->
-        for result in queryAll document, needle
+    getCoords = (locator) ->
+        for result in queryAll document, locator
             rect = result.getBoundingClientRect()
             return x: rect.left + rect.width / 2,\
                    y: rect.top + rect.height / 2
         return null
 
-    if coords = @page.eval getCoords, needle
+    if coords = @page.eval getCoords, locator
         @page.sendEvent "mousedown", coords.x, coords.y
         respond status: "PASS"
     else
-        respond status: "FAIL", error: "Element '#{needle}' was not found."
+        respond status: "FAIL", error: "Element '#{locator}' was not found."
 
 
 "Mouse up": (params, respond) ->
-    needle = params[1][0]
+    [locator] = params
 
-    getCoords = (needle) ->
-        for result in queryAll document, needle
+    getCoords = (locator) ->
+        for result in queryAll document, locator
             rect = result.getBoundingClientRect()
             return x: rect.left + rect.width / 2,\
                    y: rect.top + rect.height / 2
         return null
 
-    if coords = @page.eval getCoords, needle
+    if coords = @page.eval getCoords, locator
         @page.sendEvent "mouseup", coords.x, coords.y
         respond status: "PASS"
     else
-        respond status: "FAIL", error: "Element '#{needle}' was not found."
+        respond status: "FAIL", error: "Element '#{locator}' was not found."

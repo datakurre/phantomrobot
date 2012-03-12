@@ -18,7 +18,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Assign id to element": (params, respond) ->
-    [keyword, [locator, id]] = params
+    [locator, id] = params
 
     assignIdToElement = (locator, id) ->
         for result in queryAll document, locator, id
@@ -32,7 +32,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Page should contain": (params, respond) ->
-    [keyword, [locator]] = params
+    [locator] = params
 
     pageContains = (locator) ->
         for result in queryAll document, locator
@@ -50,7 +50,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Page should contain visible": (params, respond) ->
-    [keyword, [locator]] = params
+    [locator] = params
 
     pageContainsVisible = (locator) ->
         visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
@@ -85,7 +85,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Page should not contain element": (params, respond) ->
-    [keyword, [locator]] = params
+    [locator] = params
 
     @["Page should contain"] params, (response) ->
         if response?.status == "PASS"
@@ -99,7 +99,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Element should not be visible": (params, respond) ->
-    [keyword, [locator]] = params
+    [locator] = params
 
     @["Page should contain visible"] params, (response) ->
         if response?.status == "PASS"
@@ -110,7 +110,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Element should contain": (params, respond) ->
-    [keyword, [element, locator]] = params
+    [element, locator] = params
 
     elementContains = (element, locator) ->
         if (results = queryAll document, element).length
@@ -134,7 +134,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Element text should be": (params, respond) ->
-    [keyword, [locator, text]] = params
+    [locator, text] = params
 
     getlocatorText = (locator) ->
         for result in queryAll document, locator
@@ -152,7 +152,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Get element attribute": (params, respond) ->
-    [keyword, [locator]] = params
+    [locator] = params
     [locator, attribute] = locator.split "@"
 
     getElementAttribute = (locator, attribute) ->
@@ -168,7 +168,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Get matching XPath count": (params, respond) ->
-    [keyword, [xpath]] = params
+    [xpath] = params
 
     locator = "xpath=" + xpath
 
@@ -179,7 +179,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "XPath should match X times": (params, respond) ->
-    [keyword, [xpath, times]] = params
+    [xpath, times] = params
 
     locator = "xpath=" + xpath
     times = parseInt times, 10
@@ -194,7 +194,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Get horizontal position": (params, respond) ->
-    [keyword, [locator]] = params
+    [locator] = params
 
     getElementCoords = (locator) ->
         visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
@@ -211,7 +211,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Get vertical position": (params, respond) ->
-    [keyword, [locator]] = params
+    [locator] = params
 
     getElementCoords = (locator) ->
         visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
