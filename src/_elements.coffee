@@ -17,41 +17,55 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 ###
 
 
-"Page should contain": (params, respond) ->
-    needle = params[1][0]
+"Assign id to element": (params, respond) ->
+    [keyword, [locator, id]] = params
 
-    pageContains = (needle) ->
-        for result in queryAll document, needle
+    assignIdToElement = (locator, id) ->
+        for result in queryAll document, locator, id
             return true
-        if not /^[a-z]+=(.*)/.test needle
-            xpath = "xpath=//*[contains(text(), '#{needle}')]"
+        return false
+
+    if @page.eval assignIdToElement, locator, id
+        respond status: "PASS"
+    else
+        respond status: "FAIL", error: "Page did not contain '#{locator}'."
+
+
+"Page should contain": (params, respond) ->
+    [keyword, [locator]] = params
+
+    pageContains = (locator) ->
+        for result in queryAll document, locator
+            return true
+        if not /^[a-z]+=(.*)/.test locator
+            xpath = "xpath=//*[contains(text(), '#{locator}')]"
             for result in queryAll document, xpath
                 return true
         return false
 
-    if result = @page.eval pageContains, needle
+    if result = @page.eval pageContains, locator
         respond status: "PASS"
     else
-        respond status: "FAIL", error: "Page did not contain '#{needle}'."
+        respond status: "FAIL", error: "Page did not contain '#{locator}'."
 
 
 "Page should contain visible": (params, respond) ->
-    needle = params[1][0]
+    [keyword, [locator]] = params
 
-    pageContainsVisible = (needle) ->
+    pageContainsVisible = (locator) ->
         visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
-        for result in queryAll document, needle when visible result
+        for result in queryAll document, locator when visible result
             return true
-        if not /^[a-z]+=(.*)/.test needle
-            xpath = "xpath=//*[contains(text(), '#{needle}')]"
+        if not /^[a-z]+=(.*)/.test locator
+            xpath = "xpath=//*[contains(text(), '#{locator}')]"
             for result in queryAll document, xpath when visible result
                 return true
         return false
 
-    if result = @page.eval pageContainsVisible, needle
+    if result = @page.eval pageContainsVisible, locator
         respond status: "PASS"
     else
-        respond status: "FAIL", error: "Page did not contain '#{needle}'."
+        respond status: "FAIL", error: "Page did not contain '#{locator}'."
 
 
 "Wait until page contains": (params, respond) ->
@@ -71,10 +85,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Page should not contain element": (params, respond) ->
-    needle = params[1][0]
+    [keyword, [locator]] = params
+
     @["Page should contain"] params, (response) ->
         if response?.status == "PASS"
-            respond status: "FAIL", error: "Page did contain '#{needle}'.",
+            respond status: "FAIL", error: "Page did contain '#{locator}'.",
         else
             respond status: "PASS"
 
@@ -84,67 +99,129 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 "Element should not be visible": (params, respond) ->
-    needle = params[1][0]
+    [keyword, [locator]] = params
+
     @["Page should contain visible"] params, (response) ->
         if response?.status == "PASS"
             respond status: "FAIL", error: "Page did contain visible " +
-                                           "'#{needle}'.",
+                                           "'#{locator}'.",
         else
             respond status: "PASS"
 
 
 "Element should contain": (params, respond) ->
-    element = params[1][0]
-    needle = params[1][1]
+    [keyword, [element, locator]] = params
 
-    elementContains = (element, needle) ->
+    elementContains = (element, locator) ->
         if (results = queryAll document, element).length
             for result in results
-                if queryAll(document, needle).length > 0
+                if queryAll(document, locator).length > 0
                     return true
-                xpath = "xpath=//*[contains(text(), '#{needle}')]"
+                xpath = "xpath=//*[contains(text(), '#{locator}')]"
                 for subres in queryAll document, xpath
                     return true
             return false
         return null
 
-    if result = @page.eval elementContains, element, needle
+    if result = @page.eval elementContains, element, locator
         respond status: "PASS"
     else if result == null
         respond status: "FAIL", error: "Element '#{element}' " +
                                        "was not found."
     else
         respond status: "FAIL", error: "Element '#{element}' did not " +
-                                       "contain '#{needle}'."
+                                       "contain '#{locator}'."
 
 
 "Element text should be": (params, respond) ->
-    element = params[1][0]
-    text = params[1][1]
+    [keyword, [locator, text]] = params
 
-    getElementText = (element) ->
-        for result in queryAll document, element
+    getlocatorText = (locator) ->
+        for result in queryAll document, locator
             return result.innerText.replace /^\s+|\s+$/g, ""
         return null
 
-    if (result = @page.eval getElementText, element) == text
+    if (result = @page.eval getElementText, locator) == text
         respond status: "PASS"
     else if result == null
-        respond status: "FAIL", error: "Element '#{element}' text " +
+        respond status: "FAIL", error: "Element '#{locator}' text " +
                                        "was not found."
     else
-        respond status: "FAIL", error: "Element '#{element}' text " +
+        respond status: "FAIL", error: "Element '#{locator}' text " +
                                        "'#{result}' != #{text}."
 
 
+"Get element attribute": (params, respond) ->
+    [keyword, [locator]] = params
+    [locator, attribute] = locator.split "@"
+
+    getElementAttribute = (locator, attribute) ->
+        for result in queryAll document, locator
+            return result.getAttribute attribute
+        return null
+
+    if result = @page.eval getElementAttribute, locator, attribute
+        respond status: "PASS", return: result
+    else
+        respond status: "FAIL", error: "Element '#{locator}' " +
+                                       "was not found."
+
+
+"Get matching XPath count": (params, respond) ->
+    [keyword, [xpath]] = params
+
+    locator = "xpath=" + xpath
+
+    getXPathMatchTimes = (locator) ->
+        do queryAll(document, locator).length.toString
+
+    respond status: "PASS", return: @page.eval getXPathMatchTimes, locator
+
+
 "XPath should match X times": (params, respond) ->
-    xpath = "xpath=" + params[1][0]
-    times = parseInt params[1][1], 10
+    [keyword, [xpath, times]] = params
 
-    getXPathMatchTimes = (xpath) -> queryAll(document, xpath).length
+    locator = "xpath=" + xpath
+    times = parseInt times, 10
 
-    if (result = @page.eval getXPathMatchTimes, xpath) == times
+    getXPathMatchTimes = (locator) -> queryAll(document, locator).length
+
+    if (result = @page.eval getXPathMatchTimes, locator) == times
         respond status: "PASS"
     else
-        respond status: "FAIL", error: "XPath '#{xpath}' matched only " +
+        respond status: "FAIL", error: "XPath '#{locator}' matched only " +
                                        "'#{result}' times."
+
+
+"Get horizontal position": (params, respond) ->
+    [keyword, [locator]] = params
+
+    getElementCoords = (locator) ->
+        visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
+        for result in queryAll document, locator when visible result
+            rect = result.getBoundingClientRect()
+            return x: rect.left, y: rect.top
+        return null
+
+    if coords = @page.eval getElementCoords, locator
+        respond status: "PASS", return: coords.x
+    else
+        respond status: "FAIL", error: "Could not determine position for " +
+                                       "'#{locator}'"
+
+
+"Get vertical position": (params, respond) ->
+    [keyword, [locator]] = params
+
+    getElementCoords = (locator) ->
+        visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
+        for result in queryAll document, locator when visible result
+            rect = result.getBoundingClientRect()
+            return x: rect.left, y: rect.top
+        return null
+
+    if coords = @page.eval getElementCoords, locator
+        respond status: "PASS", return: coords.y
+    else
+        respond status: "FAIL", error: "Element '#{locator}' was not found."
+

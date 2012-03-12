@@ -20,8 +20,20 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 "Open browser": (params, respond) ->
     page = do require("webpage").create
     page.viewportSize = width: 1024, height: 768
-    page.onAlert = (msg) -> robot.debug "alert: #{msg}"
-    page.onConsoleMessage = (msg) -> robot.debug "console.log: #{msg}"
+
+    ###
+    store and log an alert message
+    ###
+    page.onAlert = (msg) ->
+        page._lastAlertMessage = msg
+        robot.debug "alert: #{msg}"
+
+    ###
+    store and log a console message
+    ###
+    page.onConsoleMessage = (msg) ->
+        page._lastConsoleMessage = msg
+        robot.debug "console.log: #{msg}"
 
     ###
     prevent new actions before the current page has been loaded;
@@ -41,10 +53,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     ###
     define generic query-method to be available in eval
     ###
-    queryAll = (element, locator) ->
-        if /^css=(.*)/.test locator
+    queryAll = (element, locator, assign_to_id=null) ->
+        results = []
+        if locator of (document._robotIds or {})
+            results.push document._robotIds[locator]
+        else if /^css=(.*)/.test locator
             css = locator.match(/^css=(.*)/)[1]
-            element.querySelectorAll(css) or []
+            for result in element.querySelectorAll(css)
+                results.push result
         else if /^xpath=(.*)/.test locator
             xpath = locator.match(/xpath=(.*)/)[1]
             # Evaluate an XPath expression aExpression against a given DOM
@@ -55,26 +71,37 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             xpe = do new XPathEvaluator
             nsResolver = xpe.createNSResolver document
             iterator = xpe.evaluate xpath, document, nsResolver, 0, null
-            results = []
             loop
                 result = do iterator.iterateNext
                 if result then results.push result else break
-            return results
+        else if /^link=(.*)/.test locator
+            href_or_text = locator.match(/^link=(.*)/)[1]
+            for link in queryAll document, "xpath=//a"
+                if href_or_text in [link.href, link.text]
+                    results.push link
         else if /^dom=(.*)/.test locator
             path = locator.match(/^dom=(.*)/)[1]
             try result = eval(path)
             catch error then result = null
-            result and [result] or []
+            if result then results.push result
         else
-            result = document.getElementById locator
-            result and [result] or []
+            if result = document.getElementById locator
+                results.push result
+            else
+                for result in document.getElementsByName locator
+                    results.push result
+        if results.length and assign_to_id
+            document._robotIds ?= {}
+            document._robotIds[assign_to_id] = results[0]
+        results
+
     ###
     define custom page.evaluate with support for params
     http://code.google.com/p/phantomjs/issues/detail?id=132#c44
     ###
     page.eval = (func) ->  # 'evaluate with parameters'
         # Prevent "onbeforeunload" (not supported by phantomjs)
-        page.evaluate -> window.onbeforeunload = ->  # I'm dumb
+        page.evaluate -> window.onbeforeunload = ->  # I do nothing
 
         # Exit quicly when the browser is still loading the html
         if page.robotIsLoading
@@ -87,7 +114,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             str += (/object|string/.test typeof arg)\
                 and "JSON.parse(#{JSON.stringify(JSON.stringify(arg))}),"\
                 or arg + ","
-        if str.match /,$/
+        if /,$/.test str
             str = str.replace /,$/, "); }"
         else
             str += "); }"
@@ -110,8 +137,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     respond status: "PASS"
 
 
+"Close all browsers": (params, respond) ->
+    @["Close browser"] params, respond
+
+
 "Go to": (params, respond) ->
-    url = params[1][0]
+    [keyword, [url]] = params
     has_been_completed = false
 
     if @page.robotIsLoading
@@ -122,3 +153,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             if not has_been_completed
                 has_been_completed = true
                 respond status: "PASS"
+
+
+"Reload page": (params, respond) ->
+    @page.eval -> do document.location.reload
+    respond status: "PASS"

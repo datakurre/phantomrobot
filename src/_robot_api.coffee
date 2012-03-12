@@ -29,22 +29,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         respond status: "FAIL", error: "There's no page."
 
 
-"Start Selenium server": (params, respond) ->
-    respond status: "PASS"
-
-
 "Set Phantom timeout": (params, respond) ->
     timeout = params[1][0]
     seconds = /(\d+)s?/
     if seconds.test(timeout)
         robot.timeout = parseInt timeout.match(seconds)[1], 10
-        respond status: "PASS"
+        respond status: "PASS", return: timeout
     else
         respond status: "FAIL", error: "Unsupported timeout '#{timeout}'."
-
-
-"Set Selenium timeout": (params, respond) ->
-    @["Set Phantom timeout"] params, respond
 
 
 "Register keyword to run on failure": (params, respond) ->
@@ -57,7 +49,3 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         respond status: "PASS", return: previous
     else
         respond status: "FAIL", error: "There's no keyword '#{keyword}'."
-
-
-"Stop Selenium server": (params, respond) ->
-    respond status: "PASS"
