@@ -1,0 +1,37 @@
+*Setting*
+Library  Remote  http://localhost:1337/
+
+
+*Variable*
+${SERVER}  localhost:7272
+${BROWSER}  *firefox
+${ROOT}  file://${CURDIR}/html
+${FRONT PAGE}  ${ROOT}/index.html
+${SPEED}  0
+
+
+*Keyword*
+Open Browser To Start Page
+  Open Browser  ${FRONT PAGE}  ${BROWSER}
+
+Cannot Be Executed In IE
+  ${runsInIE}=  Set Variable If  "${BROWSER}".replace(' ', '').lower() in ['ie', '*iexplore', 'internetexplorer']  ${TRUE}
+  Run Keyword If   ${runsInIE}  Set Tags  ie-incompatible
+  Run Keyword If   ${runsInIE}  Fail And Set Non-Critical  This test does not work in Internet Explorer
+
+Fail And Set Non-Critical
+  [Arguments]  ${msg}
+  Remove Tags  regression
+  Fail  ${msg}
+
+Go to Front Page
+  Go To  ${FRONT PAGE}
+
+Go To Page "${relative url}"
+  Go To  ${ROOT}/${relative url}
+
+Set ${level} Loglevel
+  Set Log Level  ${level}
+
+Verify Location Is "${relative url}"
+  Location Should Be  ${ROOT}/${relative url}

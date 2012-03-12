@@ -1,0 +1,3 @@
+*** Setting ***
+Resource          resource.txt
+Force Tags        Regression
