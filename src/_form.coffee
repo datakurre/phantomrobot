@@ -17,19 +17,16 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 ###
 
 
-"Input text": (params, respond) ->
-    [locator, text] = params
 
-    inputText = (locator, text) ->
-        for element in queryAll document, locator
-            element.value = text
-            return true
-        return false
-
-    if result = @page.eval inputText, locator, text
-        respond status: "PASS"
-    else
-        respond status: "FAIL", error: "Input '#{locator}' was not found."
+keyword "Input text",
+"""
+Types the given text into text field identified by locator.
+""",
+([locator, text], respond) ->
+    for element in queryAll document, locator
+        element.value = text
+        return status: "PASS"
+    return status: "FAIL", error: "Input '#{locator}' was not found."
 
 
 "Select from list": (params, respond) ->

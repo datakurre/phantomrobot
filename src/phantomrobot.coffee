@@ -25,26 +25,26 @@ to that client using WebSockets.
 class PhantomProxy
 
     constructor: (port, timeout, sleep) ->
-        ###
-        @io is a socket.io-server connected by PhantomJS via WebSockets
-        ###
+        #
+        # @io is a socket.io-server connected by PhantomJS via WebSockets.
+        #
         @io = io.listen(port + 1)
         console.log "Listening for PhantomJS on port #{port + 1}"
 
         @io.sockets.on "connection", (socket) ->
             console.log "Got connection from PhantomJS"
 
-            ###
-            setup logger by re-using socket.io's logger
-            ###
+            #
+            # Setup logger by re-using socket.io's logger.
+            #
             socket.on "info", (msg) -> socket.log.info msg
             socket.on "debug", (msg) -> socket.log.debug msg
             socket.on "warn", (msg) -> socket.log.warn msg
             socket.on "error", (msg) -> socket.log.error msg
 
-            ###
-            server is an xmlrpc server connected by Robot Framework
-            ###
+            #
+            # Server is an xmlrpc server connected by Robot Framework.
+            #
             server = xmlrpc.createServer host: "localhost", port: port
 
             create_callback = (name) -> (err, params, callback) ->
@@ -52,9 +52,17 @@ class PhantomProxy
                 socket.on callback_id, (data) -> callback null, data
                 socket.emit name, params.concat [callback_id]
 
-            for name in ["get_keyword_names", "get_keyword_documentation",\
-                         "get_keyword_arguments", "run_keyword"]
-                server.on name, create_callback name
+            server.on "get_keyword_names",
+                create_callback "get_keyword_names"
+
+            server.on "get_keyword_documentation",
+                create_callback "get_keyword_documentation"
+
+            server.on "get_keyword_arguments",
+                create_callback "get_keyword_arguments"
+
+            server.on "run_keyword",
+                create_callback "run_keyword"
 
             console.log "Remote robot server is now listening on port #{port}"
 
@@ -76,24 +84,23 @@ class PhantomRobot
                   @on_failure="Capture page screenshot") ->
         @socket = io.connect "http://localhost:#{port}/"
         @info "port #{@port} timeout #{@timeout} sleep #{@sleep}"
-        for name, _ of this
-            if name not in ["library", "port", "timeout", "sleep",
-                            "on_failure", "socket", "create_callback",
-                            "info", "debug", "warn", "error"]
-                @create_callback name
+        @create_callback "get_keyword_names"
+        @create_callback "get_keyword_documentation"
+        @create_callback "get_keyword_arguments"
+        @create_callback "run_keyword"
         window.robot = this  # make me a global variable
 
-    ###
-    setup logger by re-using socket.io's logger
-    ###
+    #
+    # Setup logger by re-using socket.io's logger.
+    #
     info: (msg) -> @socket.emit "info", msg
     debug: (msg) -> @socket.emit "debug", msg
     warn: (msg) -> @socket.emit "warn", msg
     error: (msg) -> @socket.emit "error", msg
 
-    ###
-    main execution loop to retry commands until success or timeout
-    ###
+    #
+    # Main execution loop to retry commands until success or timeout.
+    #
     create_callback: (name) ->
         @info "listening for #{name}"
         @socket.on name, (params) =>
@@ -102,13 +109,13 @@ class PhantomRobot
 
             callback = (response) =>
                 timenow = new Date().getTime()
-                # on FAIL, retry after @sleep until the timeout
+                # On FAIL, retry after @sleep until the timeout.
                 if response?.status == "FAIL" and timenow < timeout
                     setTimeout =>
                         @[name] params, (response) => callback response
                     , @sleep * 1000
                     response.status = "RETRY"
-                # on FAIL and the timeout, run @on_failure keyword and return
+                # On FAIL and the timeout, run @on_failure keyword and return.
                 if response?.status == "FAIL"
                     if @on_failure
                         @run_keyword [@on_failure, []], (sub) =>
@@ -116,44 +123,44 @@ class PhantomRobot
                             @socket.emit callback_id, response
                     else
                         @socket.emit callback_id, response
-                # on any success, return the result
+                # On any success, return the result.
                 if response?.status not in ["FAIL", "RETRY"]
                     @socket.emit callback_id, response
 
-                # on RETRY, log it
+                # On RETRY, log it.
                 else if response?.status == "RETRY"
                     @debug "RETRY #{response.error}"
 
             @[name] params, (response) => callback response
 
-    get_keyword_names: (params, callback) ->
+    get_keyword_names: ([], callback) ->
         names = (name.replace(/\_/g, " ") for name, _ of @library\
             when name[0].toUpperCase() == name[0])
         callback names
 
-    get_keyword_documentation: (params, callback) ->
-        callback "n/a"
+    get_keyword_documentation: ([keyword], callback) ->
+        if not keyword of @library
+            keyword = keyword.replace(/\s/g, "_")
+        callback @library[keyword].__doc__
 
-    get_keyword_arguments: (params, callback) ->
-        callback ["*args"]
+    get_keyword_arguments: ([keyword], callback) ->
+        if not keyword of @library
+            keyword = keyword.replace(/\s/g, "_")
+        callback @library[keyword].__args__
 
-    run_keyword: (params, callback) ->
-        if params?.length
-            try
-                if params[0] of @library
-                    @library[params[0]](params[1], callback)
-                else
-                    @library[params[0].replace(/\s/g, "_")](params[1], callback)
-            catch e
-                callback status: "FAIL", error: e.toString()
-        else
-            callback status: "FAIL", "Got run_keyword without any parameters."
+    run_keyword: ([keyword, params], callback) ->
+        try
+            if not keyword of @library
+                keyword = keyword.replace(/\s/g, "_")
+            @library[keyword] params, callback
+        catch e
+            callback status: "FAIL", error: e.toString()
 
 
 if not phantom? then do ->
-    ###
-    Executed on node.js
-    ###
+    #
+    # Executed on node.js.
+    #
     try
         global.io = require "socket.io"
     catch e
@@ -182,9 +189,9 @@ if not phantom? then do ->
     new PhantomProxy argv.port, argv["implicit-wait"], argv["implicit-sleep"]
 
 else do ->
-    ###
-    Executed on phantomjs
-    ###
+    #
+    # Executed on phantomjs.
+    #
 
     phantom.injectJs "socket.io.js"
 

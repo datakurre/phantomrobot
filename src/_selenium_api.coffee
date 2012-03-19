@@ -16,23 +16,45 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ###
 
-###
-Dummy keywords to please Selenium-tests
-###
+
+advanced_keyword "Start Selenium server",
+"""
+Starts the Selenium Server provided with SeleniumLibrary.
+
+.. note:: Does nothing on phantomrobot.
+""",
+([], callback) -> callback status: "PASS"
 
 
-"Start Selenium server": (params, respond) ->
-    respond status: "PASS"
+advanced_keyword "Stop Selenium server",
+"""
+Stops the selenium server (and closes all browsers).
+""",
+([], callback) -> @["Close all browsers"] [], callback
 
 
-"Stop Selenium server": (params, respond) ->
-    rspond status: "PASS"
+advanced_keyword "Set Selenium timeout",
+"""
+Sets the timeout used by various keywords.
+
+Keywords that expect a page load to happen will fail if the page is not loaded
+within the timeout specified with seconds.
+
+The previous timeout value is returned by this keyword and can be used to set
+the old value back later. The default timeout is 5 seconds, but it can be
+altered in importing.
+""",
+([seconds], callback) -> @["Set Phantom timeout"] [seconds], callback
 
 
-"Set Selenium timeout": (params, respond) ->
-    @["Set Phantom timeout"] params, respond
+advanced_keyword "Set Selenium speed",
+"""
+Sets the delay that is waited after each Selenium command.
 
+This is useful mainly in slowing down the test execution to be able to view the
+execution. seconds may be given in Robot Framework time format. Returns the
+previous speed value.
 
-"Set Selenium speed": (params, respond) ->
-    [speed] = params
-    respond status: "PASS", return: speed
+.. note:: Sets the sleep between retries until timeout on phantomrobot.
+""",
+([seconds], callback) -> @["Set Phantom sleep"] [seconds], callback
