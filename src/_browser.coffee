@@ -55,7 +55,7 @@ details about that.
         #
         browser.onConsoleMessage = (msg) ->
             browser._lastConsoleMessage = msg
-            robot.debug "console.log: #{msg}"
+            robot.warn "console.log: #{msg}"
 
         #
         # Prevent new actions before the current page has been loaded;
