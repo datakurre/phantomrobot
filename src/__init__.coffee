@@ -50,7 +50,7 @@ keyword = (name, doc=null, fn=null, post_fn=null) ->
                                                 "not found."
             # Call post_fn-func of the keyword when defined.
             if fn and post_fn
-                results = post_fn results
+                results = post_fn params[1...].concat [results]
 
             # Fail whenresults don't seem to be correct, otherwise ret results.
             if not results?.status
