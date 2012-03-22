@@ -198,134 +198,164 @@ disables logging.
     status: "PASS"
 
 
-"Element should be visible": (params, respond) ->
-    @["Page should contain visible"] params, respond
+keyword "Get element attribute",
+"""
+Return value of element attribute.
+
+``attribute_locator`` consists of element locator followed by an @ sign and
+attribute name, for example "element_id@class".
+""",
+(attribute_locator) ->
+    [locator, attribute] = attribute_locator.split "@"
+    for result in queryAll document, locator
+        return status: "PASS",\
+               return: result.getAttribute attribute
+    status: "FAIL",\
+    error: "Page did contain #{locator}."
 
 
-"Element should not be visible": (params, respond) ->
-    [locator] = params
+keyword "Element should be visible",
+"""
+Verifies that the element identified by ``locator`` is visible.
 
-    @["Page should contain visible"] params, (response) ->
-        if response?.status == "PASS"
-            respond status: "FAIL", error: "Page did contain visible " +
-                                           "'#{locator}'.",
-        else
-            respond status: "PASS"
+Herein, visible means that the element is logically visible, not optically
+visible in the current browser viewport. For example, an element that carries
+display:none is not logically visible, so using this keyword on that element
+would fail.
+
+``message`` can be used to override the default error message.
+
+Key attributes for arbitrary elements are ``id`` and ``name``.
+""",
+(locator, message) ->
+    visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
+    for result in queryAll document, locator when visible result
+        return status: "PASS"
+    status: "FAIL",\
+    error: message or "Page did not contain visible '#{locator}'."
 
 
-"Element should contain": (params, respond) ->
-    [element, locator] = params
+keyword "Element should not be visible",
+"""
+Verifies that the element identified by ``locator`` is NOT visible.
 
-    elementContains = (element, locator) ->
-        if (results = queryAll document, element).length
-            for result in results
-                if queryAll(document, locator).length > 0
-                    return true
-                xpath = "xpath=//*[contains(text(), '#{locator}')]"
-                for subres in queryAll document, xpath
-                    return true
-            return false
-        return null
+This is the opposite of *Element should be visible*.
 
-    if result = @page.eval elementContains, element, locator
-        respond status: "PASS"
-    else if result == null
-        respond status: "FAIL", error: "Element '#{element}' " +
-                                       "was not found."
+``message`` can be used to override the default error message.
+
+Key attributes for arbitrary elements are ``id`` and ``name``.
+""",
+(locator, message) ->
+    visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
+    for result in queryAll document, locator when visible result
+        return status: "FAIL",\
+               error: message or "Page did contain visible '#{locator}'."
+    status: "PASS"
+
+
+keyword "Element should contain",
+"""
+Verifies element identified by ``locator`` contains text expected.
+
+If you wish to assert an exact (not a substring) match on the text of the
+element, use *Element text should be*
+
+``message`` can be used to override the default error message.
+
+Key attributes for arbitrary elements are ``id`` and ``name``.
+""",
+(locator, expected, message) ->
+    if (results = queryAll document, locator).length
+        for result in results
+            xpath = "xpath=//*[contains(text(), '#{expected}')]"
+            for subres in queryAll document, xpath
+                return status: "PASS"
+        return status: "FAIL",\
+               error: "Element '#{locator}' did not contain '#{expected}'."
+    status: "FAIL",\
+    error: "Element '#{locator}' was not found."
+
+
+keyword "Element text should be",
+"""
+Verifies element identified by ``locator`` exactly contains text expected.
+
+In contrast to Element Should Contain, this keyword does not try a substring
+match but an exact match on the element identified by locator.
+
+``message`` can be used to override the default error message.
+
+Key attributes for arbitrary elements are ``id`` and ``name``.
+""",
+(locator, expected, message) ->
+    if (results = queryAll document, locator).length
+        for result in results
+            result = result.innerText.replace /^\s+|\s+$/g, ""
+            if result == expected
+                return status: "PASS"
+        return status: "FAIL",\
+               error: "Element '#{locator}' was not '#{expected}'."
+    status: "FAIL",\
+    error: "Element '#{locator}' was not found."
+
+
+keyword "Get matching XPath count",
+"""
+Returns number of elements matching ``xpath``
+
+If you wish to assert the number of matching elements, use *Xpath should match
+X times*.
+""",
+(xpath) ->
+    count = queryAll(document, "xpath=#{xpath}").length
+    status: "PASS",
+    return: do count.toString
+
+
+keyword "XPath should match X times",
+"""
+Verifies that the page contains the given number of elements located by the
+given ``xpath``.
+""",
+(xpath, expected_xpath_count, message, loglevel="INFO") ->
+    count = queryAll(document, "xpath=#{xpath}").length
+    times = parseInt expected_xpath_count, 10
+    if count == times
+        status: "PASS"
     else
-        respond status: "FAIL", error: "Element '#{element}' did not " +
-                                       "contain '#{locator}'."
+        status: "FAIL",\
+        error: message or "XPath '#{locator}' matched '#{times}' times."
 
 
-"Element text should be": (params, respond) ->
-    [locator, text] = params
+keyword "Get horizontal position",
+"""
+Returns horizontal position of element identified by ``locator``.
 
-    getlocatorText = (locator) ->
-        for result in queryAll document, locator
-            return result.innerText.replace /^\s+|\s+$/g, ""
-        return null
-
-    if (result = @page.eval getElementText, locator) == text
-        respond status: "PASS"
-    else if result == null
-        respond status: "FAIL", error: "Element '#{locator}' text " +
-                                       "was not found."
-    else
-        respond status: "FAIL", error: "Element '#{locator}' text " +
-                                       "'#{result}' != #{text}."
-
-
-"Get element attribute": (params, respond) ->
-    [locator] = params
-    [locator, attribute] = locator.split "@"
-
-    getElementAttribute = (locator, attribute) ->
-        for result in queryAll document, locator
-            return result.getAttribute attribute
-        return null
-
-    if result = @page.eval getElementAttribute, locator, attribute
-        respond status: "PASS", return: result
-    else
-        respond status: "FAIL", error: "Element '#{locator}' " +
-                                       "was not found."
+The position is returned in pixels off the left side of the page, as an
+integer. Fails if a matching element is not found.
+""",
+(locator) ->
+    visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
+    for result in queryAll document, locator when visible result
+        rect = result.getBoundingClientRect()
+        return status: "PASS",\
+               return: rect.left
+    status: "FAIL",\
+    error: "Could not determine position for '#{locator}'"
 
 
-"Get matching XPath count": (params, respond) ->
-    [xpath] = params
+keyword "Get vertical position",
+"""
+Returns vertical position of element identified by ``locator``.
 
-    locator = "xpath=" + xpath
-
-    getXPathMatchTimes = (locator) ->
-        do queryAll(document, locator).length.toString
-
-    respond status: "PASS", return: @page.eval getXPathMatchTimes, locator
-
-
-"XPath should match X times": (params, respond) ->
-    [xpath, times] = params
-
-    locator = "xpath=" + xpath
-    times = parseInt times, 10
-
-    getXPathMatchTimes = (locator) -> queryAll(document, locator).length
-
-    if (result = @page.eval getXPathMatchTimes, locator) == times
-        respond status: "PASS"
-    else
-        respond status: "FAIL", error: "XPath '#{locator}' matched only " +
-                                       "'#{result}' times."
-
-
-"Get horizontal position": (params, respond) ->
-    [locator] = params
-
-    getElementCoords = (locator) ->
-        visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
-        for result in queryAll document, locator when visible result
-            rect = result.getBoundingClientRect()
-            return x: rect.left, y: rect.top
-        return null
-
-    if coords = @page.eval getElementCoords, locator
-        respond status: "PASS", return: coords.x
-    else
-        respond status: "FAIL", error: "Could not determine position for " +
-                                       "'#{locator}'"
-
-
-"Get vertical position": (params, respond) ->
-    [locator] = params
-
-    getElementCoords = (locator) ->
-        visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
-        for result in queryAll document, locator when visible result
-            rect = result.getBoundingClientRect()
-            return x: rect.left, y: rect.top
-        return null
-
-    if coords = @page.eval getElementCoords, locator
-        respond status: "PASS", return: coords.y
-    else
-        respond status: "FAIL", error: "Element '#{locator}' was not found."
-
+The position is returned in pixels off the top of the page, as an integer.
+Fails if a matching element is not found.
+""",
+(locator) ->
+    visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
+    for result in queryAll document, locator when visible result
+        rect = result.getBoundingClientRect()
+        return status: "PASS",\
+               return: rect.top
+    status: "FAIL",\
+    error: "Could not determine position for '#{locator}'"
