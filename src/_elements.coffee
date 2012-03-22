@@ -27,7 +27,8 @@ Identifier expires when the page is reloaded.
 (locator, id) ->
     for result in queryAll document, locator, id
         return status: "PASS"
-    status: "FAIL", error: "Page did not contain '#{locator}'."
+    status: "FAIL",\
+    error: "Page did not contain '#{locator}'."
 
 
 keyword "Page should contain",
@@ -44,7 +45,26 @@ disables logging.
     xpath = "xpath=//*[contains(text(), '#{text}')]"
     for result in queryAll document, xpath
         return status: "PASS"
-    status: "FAIL", error: "Page did not contain '#{text}'."
+    status: "FAIL",\
+    error: "Page did not contain '#{text}'."
+
+
+keyword "Wait until page contains",
+"""
+Waits until text appears on current page.
+
+Fails if timeout expires before the text appears. See introduction for more
+information about timeout and its default value. error can be used to override
+the default error message.
+
+.. note:: ``timeout`` has no effect on phantomrobot.
+""",
+([text, timeout, error], callback) ->
+    xpath = "xpath=//*[contains(text(), '#{text}')]"
+    for result in queryAll document, xpath
+        return status: "PASS"
+    status: "FAIL",\
+    error: error or "Page did not contain '#{text}'."
 
 
 keyword "Page should not contain",
@@ -58,27 +78,11 @@ disables logging.
 .. note:: ``loglevel`` has no effect on phantomrobot.
 """,
 (text, loglevel="INFO") ->
-    if (results = @["Page should contain"] text).status == "FAIL"
-        status: "PASS"
-    else
-        status: "FAIL", error: "Page did contain #{text}."
-
-
-keyword "Wait until page contains",
-"""
-Waits until text appears on current page.
-
-Fails if timeout expires before the text appears. See introduction for more
-information about timeout and its default value. error can be used to override
-the default error message.
-
-.. note:: ``timeout`` has no effect on phantomrobot.
-""",
-(text, timeout, error) ->
-    if (results = @["Page should contain"] text).status == "FAIL"
-        status: "FAIL", error: error or status.error
-    else
-        results
+    xpath = "xpath=//*[contains(text(), '#{text}')]"
+    for result in queryAll document, xpath
+        return status: "FAIL",\
+               error: "Page did contain '#{text}'."
+    status: "PASS"
 
 
 keyword "Page should contain visible",
@@ -90,31 +94,14 @@ level specified with the optional loglevel argument. Giving NONE as level
 disables logging.
 
 .. note:: ``loglevel`` has no effect on phantomrobot.
-""", (text, loglevel="INFO") ->
+""",
+(text, loglevel="INFO") ->
     visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
     xpath = "xpath=//*[contains(text(), '#{text}')]"
     for result in queryAll document, xpath when visible result
         return status: "PASS"
-    status: "FAIL", error: "Page did not contain visible '#{text}'."
-
-
-keyword "Page should not contain visible",
-"""
-Verifies the current page does not contain visible text.
-
-If this keyword fails, it automatically logs the page source using the log
-level specified with the optional loglevel argument. Giving NONE as level
-disables logging.
-
-.. note:: ``loglevel`` has no effect on phantomrobot.
-""",
-(text, loglevel="INFO") ->
-    if (results = @["Page should contain visible"] text).status == "FAIL"
-        status: "PASS"
-    else
-        status: "FAIL", error: "Page did contain visible #{text}."
-
-
+    status: "FAIL",\
+    error: "Page did not contain visible '#{text}'."
 
 
 keyword "Wait until page contains visible",
@@ -128,12 +115,31 @@ the default error message.
 .. note:: ``timeout`` has no effect on phantomrobot.
 """,
 (text, timeout, error) ->
-    if (results = @["Page should contain visible"] text).status == "FAIL"
-        status: "FAIL", error: error or status.error
-    else
-        results
+    visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
+    xpath = "xpath=//*[contains(text(), '#{text}')]"
+    for result in queryAll document, xpath when visible result
+        return status: "PASS"
+    status: "FAIL",\
+    error: error or "Page did not contain visible '#{text}'."
 
 
+keyword "Page should not contain visible",
+"""
+Verifies the current page does not contain visible text.
+
+If this keyword fails, it automatically logs the page source using the log
+level specified with the optional loglevel argument. Giving NONE as level
+disables logging.
+
+.. note:: ``loglevel`` has no effect on phantomrobot.
+""",
+(text, loglevel="INFO") ->
+    visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
+    xpath = "xpath=//*[contains(text(), '#{text}')]"
+    for result in queryAll document, xpath when visible result
+        return status: "FAIL",\
+               error: "Page did contain visible '#{text}'."
+    status: "PASS"
 
 
 keyword "Page should contain element",
@@ -151,7 +157,8 @@ disables logging.
 (locator, message, loglevel="INFO") ->
     for result in queryAll document, locator
         return status: "PASS"
-    status: "FAIL", error: message or "Page did not contain '#{locator}'."
+    status: "FAIL",\
+    error: message or "Page did not contain '#{locator}'."
 
 
 keyword "Wait until page contains element",
@@ -166,23 +173,29 @@ information about timeout and its default value.
 .. note:: ``timeout`` has no effect on phantomrobot.
 """,
 (locator, timeout, error) ->
-    if (results = @["Page should contain element"] locator).status == "FAIL"
-        status: "FAIL", error: error or status.error
-    else
-        results
+    for result in queryAll document, locator
+        return status: "PASS"
+    status: "FAIL",\
+    error: error or "Page did not contain '#{locator}'."
 
 
 keyword "Page should not contain element",
 """
-""",
-(params, respond) ->
-    [locator] = params
+Verifies element identified by locator is not found from current page.
 
-    @["Page should contain"] params, (response) ->
-        if response?.status == "PASS"
-            respond status: "FAIL", error: "Page did contain '#{locator}'.",
-        else
-            respond status: "PASS"
+``message`` can be used to override default error message.
+
+If this keyword fails, it automatically logs the page source using the log
+level specified with the optional loglevel argument. Giving NONE as level
+disables logging.
+
+.. note:: ``loglevel`` has no effect on phantomrobot.
+""",
+(locator, message, loglevel="INFO") ->
+    for result in queryAll document, locator
+        return status: "FAIL",\
+               error: message or "Page did contain #{locator}."
+    status: "PASS"
 
 
 "Element should be visible": (params, respond) ->
