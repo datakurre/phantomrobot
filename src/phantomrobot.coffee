@@ -112,7 +112,9 @@ class PhantomRobot
                 # On FAIL, retry after @sleep until the timeout.
                 if response?.status == "FAIL" and timenow < timeout
                     setTimeout =>
-                        @[name] params, (response) => callback response
+                        try @[name] params, (response) => callback response
+                        catch e then callback status: "FAIL",\
+                                              error: do e.toString
                     , @sleep * 1000
                     response.status = "RETRY"
                 # On FAIL and the timeout, run @on_failure keyword and return.
@@ -131,7 +133,9 @@ class PhantomRobot
                 else if response?.status == "RETRY"
                     @debug "RETRY #{response.error}"
 
-            @[name] params, (response) => callback response
+            try @[name] params, (response) => callback response
+            catch e then callback status: "FAIL",\
+                                  error: do e.toString
 
     get_keyword_names: ([], callback) ->
         names = (name.replace(/\_/g, " ") for name, _ of @library\
