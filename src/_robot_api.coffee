@@ -52,8 +52,8 @@ Returns the previous value.
 ([seconds], callback) ->
     regexp = /(\d+)/
     if regexp.test(seconds)
-        previous = "#{robot.timeout} seconds"
-        robot.timeout = parseInt seconds.match(regexp)[1], 10
+        previous = "#{Math.floor robot.timeout} seconds"
+        robot.timeout = Math.max 0.1, parseFloat(seconds.match(regexp)[1], 10)
 
         callback status: "PASS", return: previous
     else
