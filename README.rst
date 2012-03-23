@@ -1,10 +1,11 @@
-============================================
-PhantomJS Remote Library for Robot Framework
-============================================
+============
+PhantomRobot
+============
 
-PhantomRobot is an extendable `Robot Framework`_ remote library for running
-acceptance tests on a headless PhantomJS_ (WebKit) browser. PhantomRobot is
-written in and is expandable with CoffeeScript_.
+PhantomRobot is a `Robot Framework`_ test library that uses the popular
+PhantomJS_-browser, the headless WebKit-browser, for running acceptance tests
+in the background. PhantomRobot is written in and is easily expandable with
+CoffeeScript_.
 
 .. _Robot Framework: http://code.google.com/p/robotframework/
 .. _PhantomJS: http://www.phantomjs.org/
@@ -18,8 +19,8 @@ Checkout the code::
 
     git clone git://github.com/datakurre/phantomrobot.git
 
-Go to the checkout directory and run the buildout_ for installing the
-dependencies; buildout keeps everything under the checkout directory::
+Go to the checkout directory and run the buildout_ for installing all the
+dependencies (buildout keeps everything within the checkout directory)::
 
     cd phantomrobot
     python bootstrap.py --distribute
@@ -51,8 +52,8 @@ Then launch it (as a blocking foreground process)::
 
     node phantomrobot.js
 
-Finally, to run some Robot Framework tests using PhantomRobot, you could open
-a new console, change to the checkout/buildout-directory of PhantomRobot, and::
+Finally, to run some Robot Framework tests using PhantomRobot, just open a new
+console, change to the checkout/buildout-directory of PhantomRobot, and::
 
     source bin/activate
     pybot tests
@@ -68,24 +69,27 @@ a new console, change to the checkout/buildout-directory of PhantomRobot, and::
    I've done the compiling once on Cent OS 5 / RHEL 5. I needed to build a more
    recent version of GNU Tar >= 1.2.6 to make npm installing modules
    successfully. Yet, because websockets-support was broken in all existing
-   QtWebKit-RPMs (thanks to https://bugs.webkit.org/show_bug.cgi?id=47284), I
+   QtWebKit-RPMs (thanks to `a known bug`__), I
    had to build my own WebKit to be able to compile working PhantomJS and get
    PhantomRobot running.
 
 .. __: http://code.google.com/p/phantomjs/wiki/BuildInstructions
+.. __: https://bugs.webkit.org/show_bug.cgi?id=47284
 
 
 Selenium keywords
 =================
 
 My secret goal is to provide full and fully tested set of keywords available in
-Robot Framework SeleniumLibrary_. Unfortunately, it may take most of the 2012
-for me to find enough free time to get that completed.
+Robot Framework SeleniumLibrary_. Unfortunately, it may take some time for me
+to find enough free time to get that completed.
 
 .. _SeleniumLibrary: http://code.google.com/p/robotframework-seleniumlibrary/
 
-Meanwhile, you a free to either help or implement your custom keywords, e.g.
-for testing your JavaScript-application directly.
+Meanwhile, you a free to either help or implement your own custom keywords,
+e.g. for testing your custom JavaScript-dependent features directly.
+
+.. note:: (Insert table of available and tested built-in-keywords here.)
 
 
 Custom keywords
@@ -101,64 +105,58 @@ easily done in just two steps:
             status: "PASS"
         else
             status: "FAIL",\
-            error: "Variable '#{needle}' was not defined."
+            error: "Variable '#{name}' was not defined."
 
 2. Run make with environment variable ``MY_KEYWORDS`` containing a relative
    path to your custom keyword files, e.g.::
 
     MY_KEYWORDS=*.coffee make
 
-This should result a new ``phantomrobot.js`` including your custom keywords.
+This should result a new ``phantomrobot.js`` including your new keywords.
 
 
-.. Custom keywords in detail
-.. -------------------------
-..
-.. Keyword-definition always starts with its name as a JavaScript hash property
-.. containing a function with two parameters::
-..
-..     "Is defined": (params, respond) ->
-..
-.. 1. two dimensional parameter array ``params`` from Robot Framework
-..
-.. 2. a respond callback method ``respond``.
-..
-.. Then keyword definition usually extracts the parameter array into meaningful
-.. variables:
-..
-..     ... [name] = params
-..
-.. Next follows usually the definition of the function that is evaluated with the
-.. extracted parameters by ``@page.eval`` on the tested page opened on PhantomJS_.
-.. The function can only accept simple JavaScript-objects (not functions or
-.. closures) as its parameters. Also the function can only return similar simple
-.. JavaScript objects as its results (not functions or closures)::
-..
-..     ... isDefined exists = (name) -> not eval("typeof #{name} === 'undefined'")
-..
-.. Finally, the function is called with ``@page.eval``, the result is interpreted
-.. and the ``respond``-callback is called with either ``status: "PASS"`` or with
-.. ``status: "FAIL"`` and a descriptive error message::
-..
-..     ... if @page.eval isDefined, name  # don't forget the commas between args
-..     ...     respond status: "PASS"
-..     ... else
-..     ...     respond status: "FAIL", error: "Variable '#{needle}' was " +
-..     ...                                    "not defined."
-..
-.. .. note:: ``@page.eval`` is a thin wrapper around PhantomJS_
-..    *WebPage.evaluate*. It can accept parameters any number of parameters.
-..    Besides that, it defines a special function ``queryAll`` to be usable to
-..    make DOM queries with CSS-selector, XPATH-expression or DOM element id.
-..    Please, see built-in keyword definitions for examples of using ``queryAll``.
+Advanced custom keywords
+========================
+
+PhantomRobot support  *simple* and *advanced* keyword definitions. Simple
+keyword definitions begin with ``keyword`` and are somewhat magical: the
+defined test function is eventually executed directly within the currently open
+browser context and have all the pros and cons of that.
+
+Advanced keyword definitions begin with ``advanced_keyword`` and are executed
+outside the currently open browser context. They are not bound to the
+restrictions of browser context and can take advantage of `PhantomJS' API`_
+(e.g. send *real* click-events).
+
+On the other hand, advanced keywords must take are of evaluating code within
+the browser context manually and end their execution by calling the given
+callback to pass the results back to the Robot Framework test runner::
+
+    advanced_keyword "Is defined", ([name], callback) ->
+
+        isDefined exists = (name) ->
+            not eval("typeof #{name} === 'undefined'")
+
+        if @browser.eval isDefined, name
+            callback status: "PASS"
+        else
+            callback status: "FAIL",\
+                     error: "Variable '#{name}' was not defined."
+
+.. _Phantom JS' API: http://code.google.com/p/phantomjs/wiki/Interface
+
+.. note:: ``@browser.eval`` is a thin wrapper around PhantomJS_'
+   *WebPage.evaluate*. It can accept parameters any number of parameters.
+   Besides that, it defines a special function ``queryAll`` to be usable to
+   make DOM queries with CSS-selector, XPATH-expression or DOM element id.  For
+   more examples, please, see built-in keyword definitions.
 
 
 An example test suite
 =====================
 
-.. note:: Even this example uses directly SeleniumLibrary_-keywords in
-   a classic Robot Framework -style, please, note that Robot framework
-   `supports given–when–then`__ style tests also.
+.. note:: Please, note that Robot framework also supports tests in
+   `given–when–then`__-syntax.
 
 .. __: http://robotframework.googlecode.com/svn/tags/robotframework-2.1.2/doc/userguide/RobotFrameworkUserGuide.html#behavior-driven-style
 
@@ -206,10 +204,10 @@ PhantomRobot
 
 1) provides an XML-RPC-service, which
 2) implements Robot Framework's remote library API,
-3) spawns a headless PhantomJS client and
+3) spawns a headless PhantomJS client as its child process and
 4) relays its commands to that client using WebSockets.
 
-.. note:: Insert a nice diagram here :+)
+.. note:: (Insert a nice diagram here.)
 
 PhantomRobot borrows some ideas from RoboZombie_ – a similar proof-of-concept
 remote library for Zombie.js_.
@@ -228,18 +226,18 @@ Basic usage
 
 ``--port=1337``
     a local port number for this Robot Framework remote library (PhantomJS will
-    connect to phantomrobot through ``port + 1``, e.g. ``1338``)
+    connect to PhantomRobot through ``port + 1``, e.g. ``1338``)
 ``--implicit-wait=10``
-    implicit timeout for supporting keywords, e.g. *page contains* (can be
-    disabled with ``implicit-wait=-1``)
+    implicit timeout for retrying failing keywords, e.g. *page contains* (can
+    be disabled with ``implicit-wait=-1`` unless is set explicitly in a test)
 ``--implicit-sleep=0.1``
-    time to sleep between trials until implicit timeout
+    time to sleep between retries until the implicit timeout
 
 
 Dependencies
 ------------
 
-All of the following dependencies for running PhantomRobot should now be
+All of the following dependencies for running PhantomRobot should be
 installed automatically by running the provided buildout:
 
 - PhantomJS_ >= 1.3 available on path
