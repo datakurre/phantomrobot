@@ -72,7 +72,7 @@ keyword "Select radio button",
 ,
 (name, value, coords) ->
     if coords
-        @page.sendEvent "click", coords.x, coords.y
+        @browser.sendEvent "click", coords.x, coords.y
         status: "PASS"
     else
         status: "FAIL",\

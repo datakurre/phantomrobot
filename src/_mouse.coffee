@@ -36,7 +36,7 @@ keyword "Click link",
 ,
 (locator, coords) ->
     if coords
-        @page.sendEvent "click", coords.x, coords.y
+        @browser.sendEvent "click", coords.x, coords.y
         status: "PASS"
     else
         status: "FAIL",\
@@ -56,7 +56,7 @@ keyword "Click element",
 ,
 (locator, coords) ->
     if coords
-        @page.sendEvent "click", coords.x, coords.y
+        @browser.sendEvent "click", coords.x, coords.y
         status: "PASS"
     else
         status: "FAIL",\
@@ -75,7 +75,7 @@ keyword "Mouse down",
 ,
 (locator, coords) ->
     if coords
-        @page.sendEvent "mousedown", coords.x, coords.y
+        @browser.sendEvent "mousedown", coords.x, coords.y
         status: "PASS"
     else
         status: "FAIL",\
@@ -94,7 +94,7 @@ keyword "Mouse up",
 ,
 (locator, coords) ->
     if coords
-        @page.sendEvent "mouseup", coords.x, coords.y
+        @browser.sendEvent "mouseup", coords.x, coords.y
         status: "PASS"
     else
         status: "FAIL",\
