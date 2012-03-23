@@ -96,16 +96,12 @@ easily done in just two steps:
 
 1. Create a ``.coffee``-ending file with your custom keywords as follows::
 
-    "Is defined": (params, respond) ->
-        [name] = params
-
-        isDefined exists = (name) -> not eval("typeof #{name} === 'undefined'")
-
-        if @page.eval isDefined, name  # don't forget the commas between args
-            respond status: "PASS"
+    keyword "Is defined", (name) ->
+        if not eval("typeof #{name} === 'undefined'")
+            status: "PASS"
         else
-            respond status: "FAIL", error: "Variable '#{needle}' was " +
-                                           "not defined."
+            status: "FAIL",\
+            error: "Variable '#{needle}' was not defined."
 
 2. Run make with environment variable ``MY_KEYWORDS`` containing a relative
    path to your custom keyword files, e.g.::
@@ -115,46 +111,46 @@ easily done in just two steps:
 This should result a new ``phantomrobot.js`` including your custom keywords.
 
 
-Custom keywords in detail
--------------------------
-
-Keyword-definition always starts with its name as a JavaScript hash property
-containing a function with two parameters::
-
-    "Is defined": (params, respond) ->
-
-1. two dimensional parameter array ``params`` from Robot Framework
-
-2. a respond callback method ``respond``.
-
-Then keyword definition usually extracts the parameter array into meaningful
-variables::
-
-    ... [name] = params
-
-Next follows usually the definition of the function that is evaluated with the
-extracted parameters by ``@page.eval`` on the tested page opened on PhantomJS_.
-The function can only accept simple JavaScript-objects (not functions or
-closures) as its parameters. Also the function can only return similar simple
-JavaScript objects as its results (not functions or closures)::
-
-    ... isDefined exists = (name) -> not eval("typeof #{name} === 'undefined'")
-
-Finally, the function is called with ``@page.eval``, the result is interpreted
-and the ``respond``-callback is called with either ``status: "PASS"`` or with
-``status: "FAIL"`` and a descriptive error message::
-
-    ... if @page.eval isDefined, name  # don't forget the commas between args
-    ...     respond status: "PASS"
-    ... else
-    ...     respond status: "FAIL", error: "Variable '#{needle}' was " +
-    ...                                    "not defined."
-
-.. note:: ``@page.eval`` is a thin wrapper around PhantomJS_
-   *WebPage.evaluate*. It can accept parameters any number of parameters.
-   Besides that, it defines a special function ``queryAll`` to be usable to
-   make DOM queries with CSS-selector, XPATH-expression or DOM element id.
-   Please, see built-in keyword definitions for examples of using ``queryAll``.
+.. Custom keywords in detail
+.. -------------------------
+.. 
+.. Keyword-definition always starts with its name as a JavaScript hash property
+.. containing a function with two parameters::
+.. 
+..     "Is defined": (params, respond) ->
+.. 
+.. 1. two dimensional parameter array ``params`` from Robot Framework
+.. 
+.. 2. a respond callback method ``respond``.
+.. 
+.. Then keyword definition usually extracts the parameter array into meaningful
+.. variables:
+.. 
+..     ... [name] = params
+.. 
+.. Next follows usually the definition of the function that is evaluated with the
+.. extracted parameters by ``@page.eval`` on the tested page opened on PhantomJS_.
+.. The function can only accept simple JavaScript-objects (not functions or
+.. closures) as its parameters. Also the function can only return similar simple
+.. JavaScript objects as its results (not functions or closures)::
+.. 
+..     ... isDefined exists = (name) -> not eval("typeof #{name} === 'undefined'")
+.. 
+.. Finally, the function is called with ``@page.eval``, the result is interpreted
+.. and the ``respond``-callback is called with either ``status: "PASS"`` or with
+.. ``status: "FAIL"`` and a descriptive error message::
+.. 
+..     ... if @page.eval isDefined, name  # don't forget the commas between args
+..     ...     respond status: "PASS"
+..     ... else
+..     ...     respond status: "FAIL", error: "Variable '#{needle}' was " +
+..     ...                                    "not defined."
+.. 
+.. .. note:: ``@page.eval`` is a thin wrapper around PhantomJS_
+..    *WebPage.evaluate*. It can accept parameters any number of parameters.
+..    Besides that, it defines a special function ``queryAll`` to be usable to
+..    make DOM queries with CSS-selector, XPATH-expression or DOM element id.
+..    Please, see built-in keyword definitions for examples of using ``queryAll``.
 
 
 An example test suite
@@ -206,9 +202,12 @@ An example test suite
 How does it work?
 =================
 
-PhantomRobot 1) provides an XML-RPC-service, which 2) implements Robot
-Framework's remote library API, 3) spawns a headless PhantomJS client and 4)
-relays its commands to that client using WebSockets.
+PhantomRobot
+
+1) provides an XML-RPC-service, which
+2) implements Robot Framework's remote library API,
+3) spawns a headless PhantomJS client and
+4) relays its commands to that client using WebSockets.
 
 .. note:: Insert a nice diagram here :+)
 
