@@ -176,17 +176,12 @@ Closes the current browser.
 ([], callback) ->
     @browsers ?= []
 
-    closed = false
     for browser in @browsers
         if browser == @browser
             try do browser.release
-            closed = true
             break
 
-    if closed
-        callback status: "PASS"
-    else
-        callback status: "FAIL", error: "Open browser was not found."
+    callback status: "PASS"
 
 
 advanced_keyword "Close all browsers",
