@@ -46,7 +46,7 @@ keyword "Click link",
 keyword "Click element",
 """
 """,
-(locator) ->
+(locator, dont_wait) ->
     visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
     for result in queryAll document, locator when visible result
         rect = result.getBoundingClientRect()
@@ -54,7 +54,8 @@ keyword "Click element",
                y: rect.top + rect.height / 2
     return null
 ,
-(locator, coords) ->
+(locator, dont_wait, coords) ->
+    coords ?= dont_wait
     if coords
         @browser.sendEvent "click", coords.x, coords.y
         status: "PASS"
