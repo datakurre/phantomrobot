@@ -179,7 +179,7 @@ Closes the current browser.
     closed = false
     for browser in @browsers
         if browser == @browser
-            do browser.release
+            try do browser.release
             closed = true
             break
 
@@ -202,7 +202,7 @@ are closed.
     @browsers ?= []
     loop
         if browser = do @browsers.pop
-            do browser.release
+            try do browser.release
         else break
     callback status: "PASS"
 
