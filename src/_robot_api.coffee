@@ -50,10 +50,10 @@ Sets the timeout for PhantomRobot implicit retries.
 Returns the previous value.
 """,
 ([seconds], callback) ->
-    regexp = /(\d+)s?/
+    regexp = /(\d+)/
     if regexp.test(seconds)
         previous = "#{robot.timeout} seconds"
-        robot.timeout = parseInt seconds.match(seconds)[1], 10
+        robot.timeout = parseInt seconds.match(regexp)[1], 10
 
         callback status: "PASS", return: previous
     else
