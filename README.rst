@@ -4,7 +4,7 @@ PhantomJS Remote Library for Robot Framework
 
 PhantomRobot is an extendable `Robot Framework`_ remote library for running
 acceptance tests on a headless PhantomJS_ (WebKit) browser. PhantomRobot is
-written in and is extendable with CoffeeScript_.
+written in and is expandable with CoffeeScript_.
 
 .. _Robot Framework: http://code.google.com/p/robotframework/
 .. _PhantomJS: http://www.phantomjs.org/
@@ -19,7 +19,7 @@ Checkout the code::
     git clone git://github.com/datakurre/phantomrobot.git
 
 Go to the checkout directory and run the buildout_ for installing the
-dependencies (buildout keeps them under the checkout directory)::
+dependencies; buildout keeps everything under the checkout directory::
 
     cd phantomrobot
     python bootstrap.py --distribute
@@ -41,8 +41,8 @@ c) On an OSX, continue with::
     bin/buildout
 
 After the buildout has compiled node.js_ and installed required
-node.js-packages using npm_, you should be able to activate the environment
-and compile PhantomRobot::
+node.js-packages using npm_, you should be able to activate the environment and
+compile PhantomRobot::
 
     source bin/activate
     make
@@ -113,39 +113,39 @@ This should result a new ``phantomrobot.js`` including your custom keywords.
 
 .. Custom keywords in detail
 .. -------------------------
-.. 
+..
 .. Keyword-definition always starts with its name as a JavaScript hash property
 .. containing a function with two parameters::
-.. 
+..
 ..     "Is defined": (params, respond) ->
-.. 
+..
 .. 1. two dimensional parameter array ``params`` from Robot Framework
-.. 
+..
 .. 2. a respond callback method ``respond``.
-.. 
+..
 .. Then keyword definition usually extracts the parameter array into meaningful
 .. variables:
-.. 
+..
 ..     ... [name] = params
-.. 
+..
 .. Next follows usually the definition of the function that is evaluated with the
 .. extracted parameters by ``@page.eval`` on the tested page opened on PhantomJS_.
 .. The function can only accept simple JavaScript-objects (not functions or
 .. closures) as its parameters. Also the function can only return similar simple
 .. JavaScript objects as its results (not functions or closures)::
-.. 
+..
 ..     ... isDefined exists = (name) -> not eval("typeof #{name} === 'undefined'")
-.. 
+..
 .. Finally, the function is called with ``@page.eval``, the result is interpreted
 .. and the ``respond``-callback is called with either ``status: "PASS"`` or with
 .. ``status: "FAIL"`` and a descriptive error message::
-.. 
+..
 ..     ... if @page.eval isDefined, name  # don't forget the commas between args
 ..     ...     respond status: "PASS"
 ..     ... else
 ..     ...     respond status: "FAIL", error: "Variable '#{needle}' was " +
 ..     ...                                    "not defined."
-.. 
+..
 .. .. note:: ``@page.eval`` is a thin wrapper around PhantomJS_
 ..    *WebPage.evaluate*. It can accept parameters any number of parameters.
 ..    Besides that, it defines a special function ``queryAll`` to be usable to
@@ -249,12 +249,3 @@ installed automatically by running the provided buildout:
   * *socket.io* == 0.8.7 (unknown error with 0.9.0)
   * *optimist* and
   * *coffee-script* >= 1.2.0
-
-
-TODO
-====
-
-* implement rest of the SeleniumLibrary_-keywords and test them
-* support ``get_keyword_documentation`` in Robot Framework remote library API
-* support ``get_keyword_arguments`` in Robot Framework remote library API
-* ...
