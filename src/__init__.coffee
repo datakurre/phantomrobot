@@ -43,14 +43,13 @@ keyword = (name, doc=null, fn=null, post_fn=null) ->
     PhantomKeywords[name] = (params, callback) ->
             # Call @browser.eval for the main function and given params.
             if fn and @browser
-                params.unshift fn  # insert fn before the parameters
-                results = @browser.eval params...  # apply with splat
+                results = @browser.eval.apply @, [fn].concat(params)
             if fn and not @browser
                 callback status: "FAIL", error: "Open browser was " +
                                                 "not found."
             # Call post_fn-func of the keyword when defined.
             if fn and post_fn
-                results = post_fn params[1...].concat [results]
+                results = post_fn.apply @, params.concat([results])
 
             # Fail whenresults don't seem to be correct, otherwise ret results.
             if not results?.status
