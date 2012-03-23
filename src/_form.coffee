@@ -82,7 +82,7 @@ keyword "Select radio button",
 keyword "Click button",
 """
 """,
-(locator) ->
+(locator, dont_wait) ->
     if not /^[a-z]+=(.*)/.test locator
         xpath = "xpath=//input[@type='submit']"
         for result in queryAll document, xpath when result?.click
