@@ -66,12 +66,13 @@ details about that.
         browser.robotIsLoadingURL = null
         browser.onLoadStarted = -> browser.robotIsLoading = true
         browser.onResourceRequested = (request) ->
-            if not browser.robotIsLoading
+            if not browser.robotIsLoading or not browser.robotIsLoadingURL
                 browser.robotIsLoadingURL = request.url
         browser.onResourceReceived = (request) ->
             if browser.robotIsLoading\
                 and request.url == browser.robotIsLoadingURL
                     browser.robotIsLoading = false
+                    browser.robotIsLoadingURL = null
 
         #
         # Define generic query-method to be available in eval.
@@ -153,9 +154,10 @@ details about that.
     @browsers.push browser
     @browser = browser
 
-    if url then @["Go to"] [url], callback
-
-    callback status: "PASS", return: @browsers.length
+    if url then @["Go to"] [url], (result) =>
+        callback status: "PASS", return: @browsers.length
+    else
+        callback status: "PASS", return: @browsers.length
 
 
 advanced_keyword "Maximize browser window",
