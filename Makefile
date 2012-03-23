@@ -1,5 +1,5 @@
 ROBOT = src/phantomrobot.coffee
-KEYWORDS = `find src/_*.coffee|sort`
+KEYWORDS = `find src/_*.coffee|LC_ALL=C sort`
 
 all: phantomrobot.js
 
