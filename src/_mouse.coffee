@@ -17,86 +17,87 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 ###
 
 
-keyword "Click link",
+advanced_keyword "Click link",
 """
 """,
-(locator) ->
-    visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
-    for result in queryAll document, locator when visible result
-        rect = result.getBoundingClientRect()
-        return x: rect.left + rect.width / 2,\
-               y: rect.top + rect.height / 2
-    trim = (s) -> s.replace /^\s+|\s+$/g, ""
-    for result in queryAll document, "xpath=//a" when visible result
-        if trim(result.innerText) == locator
+([locator], callback) ->
+    getLinkCoords = (locator) ->
+        visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
+        for result in queryAll document, locator when visible result
             rect = result.getBoundingClientRect()
             return x: rect.left + rect.width / 2,\
                    y: rect.top + rect.height / 2
-    return null
-,
-(locator, coords) ->
-    if coords
+        trim = (s) -> s.replace /^\s+|\s+$/g, ""
+        for result in queryAll document, "xpath=//a" when visible result
+            if trim(result.innerText) == locator
+                rect = result.getBoundingClientRect()
+                return x: rect.left + rect.width / 2,\
+                       y: rect.top + rect.height / 2
+        return null
+
+    if coords = @browser.eval getLinkCoords, locator
         @browser.sendEvent "click", coords.x, coords.y
-        status: "PASS"
+        callback status: "PASS"
     else
-        status: "FAIL",\
-        error: "Link '#{locator}' was not found."
+        callback status: "FAIL",\
+                 error: "Link '#{locator}' was not found."
 
 
-keyword "Click element",
+advanced_keyword "Click element",
 """
 """,
-(locator, dont_wait) ->
-    visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
-    for result in queryAll document, locator when visible result
-        rect = result.getBoundingClientRect()
-        return x: rect.left + rect.width / 2,\
-               y: rect.top + rect.height / 2
-    return null
-,
-(locator, dont_wait, coords) ->
-    coords ?= dont_wait
-    if coords
+([locator, dont_wait], callback) ->
+    getElementCoords = (locator) ->
+        visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
+        for result in queryAll document, locator when visible result
+            rect = result.getBoundingClientRect()
+            return x: rect.left + rect.width / 2,\
+                   y: rect.top + rect.height / 2
+        return null
+
+    if coords = @browser.eval getElementCoords, locator
         @browser.sendEvent "click", coords.x, coords.y
-        status: "PASS"
+        callback status: "PASS"
     else
-        status: "FAIL",\
-        error: "Element '#{locator}' was not found."
+        callback status: "FAIL",\
+                 error: "Element '#{locator}' was not found."
 
 
-keyword "Mouse down",
+advanced_keyword "Mouse down",
 """
 """,
-(locator) ->
-    for result in queryAll document, locator
-        rect = result.getBoundingClientRect()
-        return x: rect.left + rect.width / 2,\
-               y: rect.top + rect.height / 2
-    return null
-,
-(locator, coords) ->
-    if coords
+([locator], callback) ->
+    getCoords = (locator) ->
+        for result in queryAll document, locator
+            rect = result.getBoundingClientRect()
+            return x: rect.left + rect.width / 2,\
+                   y: rect.top + rect.height / 2
+        return null
+
+    if coords = @browser.eval getCoords, locator
         @browser.sendEvent "mousedown", coords.x, coords.y
-        status: "PASS"
+        callback status: "PASS"
     else
-        status: "FAIL",\
-        error: "Element '#{locator}' was not found."
+        callback status: "FAIL",\
+                 error: "Element '#{locator}' was not found."
 
 
-keyword "Mouse up",
+
+
+advanced_keyword "Mouse up",
 """
 """,
-(locator) ->
-    for result in queryAll document, locator
-        rect = result.getBoundingClientRect()
-        return x: rect.left + rect.width / 2,\
-               y: rect.top + rect.height / 2
-    return null
-,
-(locator, coords) ->
-    if coords
+([locator], callback) ->
+    getCoords = (locator) ->
+        for result in queryAll document, locator
+            rect = result.getBoundingClientRect()
+            return x: rect.left + rect.width / 2,\
+                   y: rect.top + rect.height / 2
+        return null
+
+    if coords = @browser.eval getCoords, locator
         @browser.sendEvent "mouseup", coords.x, coords.y
-        status: "PASS"
+        callback status: "PASS"
     else
-        status: "FAIL",\
-        error: "Element '#{locator}' was not found."
+        callback status: "FAIL",\
+                 error: "Element '#{locator}' was not found."

@@ -58,25 +58,25 @@ keyword "Select from list",
         error: "List '#{list}' did not contain '#{value}'."
 
 
-keyword "Select radio button",
+advanced_keyword "Select radio button",
 """
 """,
-(name, value) ->
-    visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
-    for result in queryAll document, "xpath=//input[@name='#{name}']"
-        if result.value == value and visible result
-            rect = result.getBoundingClientRect()
-            return [name, value, x: rect.left + rect.width / 2,\
-                                 y: rect.top + rect.height / 2]
-    return null
-,
-(name, value, coords) ->
-    if coords
+([name, value], callback) ->
+    getRadioButtonCoords = (name, value) ->
+        visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
+        for result in queryAll document, "xpath=//input[@name='#{name}']"
+            if result.value == value and visible result
+                rect = result.getBoundingClientRect()
+                return x: rect.left + rect.width / 2,\
+                       y: rect.top + rect.height / 2
+        return null
+
+    if coords = @browser.eval getRadioButtonCoords, name, value
         @browser.sendEvent "click", coords.x, coords.y
-        status: "PASS"
+        callback status: "PASS"
     else
-        status: "FAIL",\
-        error: "Radio button '#{value}' for '#{name}' was not found."
+        callback status: "FAIL",\
+                 error: "Radio button '#{value}' for '#{name}' was not found."
 
 
 keyword "Click button",

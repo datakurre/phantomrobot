@@ -19,14 +19,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 PhantomKeywords = {}  # will be filled by calling the keyword-function
 
 #
-# simple keywords are magical
+# simple keywords are a bit magical
 #
-keyword = (name, doc=null, fn=null, post_fn=null) ->
+keyword = (name, doc=null, fn=null) ->
 
     # Resolve working set of parameters when some are missing.
     if typeof doc == "function"
-        if typeof fn == "function"
-            post_fn = fn
         fn = doc
         doc = "n/a"
 
@@ -45,16 +43,13 @@ keyword = (name, doc=null, fn=null, post_fn=null) ->
             if fn and @browser
                 results = @browser.eval.apply @, [fn].concat(params)
             if fn and not @browser
-                callback status: "FAIL", error: "Open browser was " +
-                                                "not found."
-            # Call post_fn-func of the keyword when defined.
-            if fn and post_fn
-                results = post_fn.apply @, params.concat([results])
-
-            # Fail whenresults don't seem to be correct, otherwise ret results.
+                callback status: "FAIL",\
+                         error: "No open browser was found."
+            # Fail when results don't seem to be correct.
             if not results?.status
-                callback status: "FAIL", error: "Keyword didn't respond " +
-                                                "with status."
+                callback status: "FAIL",\
+                         error: "Keyword didn't respond correctly."
+            # Otherwise, return the results.
             else callback results
 
     PhantomKeywords[name].__doc__ = doc
