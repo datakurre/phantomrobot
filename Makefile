@@ -13,3 +13,10 @@ clean:
 	find . -name "output.xml" -print0|xargs -0 rm
 	find . -name "Altitude.log" -print0|xargs -0 rm
 	find . -name "*.png" -print0|xargs -0 rm
+
+libdoc.py:
+	curl http://robotframework.googlecode.com/hg/tools/libdoc/libdoc.py?r=2.5.7 -o libdoc.py
+
+docs: libdoc.py
+	bin/python libdoc.py -f HTML -N PhantomRobot -o keywords.html -S NONE -a localhost:1337 Remote
+
