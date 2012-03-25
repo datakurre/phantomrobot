@@ -59,7 +59,7 @@ the default error message.
 
 .. note:: ``timeout`` has no effect on phantomrobot.
 """,
-([text, timeout, error], callback) ->
+(text, timeout, error) ->
     xpath = "xpath=//*[contains(text(), '#{text}')]"
     for result in queryAll document, xpath
         return status: "PASS"
