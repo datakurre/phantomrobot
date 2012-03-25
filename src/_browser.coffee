@@ -25,12 +25,12 @@ Returns the index of this browser instance which can be used later to switch
 back to it. Index starts from 1 and is reset back to it when Close All Browsers
 keyword is used. See Switch Browser for example.
 
-``url`` is an optional url to open.
+_url_ is an optional url to open.
 
-``browser`` is an optional parameter that exists to support SeleniumLibarary
+_browser_ is an optional parameter that exists to support SeleniumLibarary
 and is just ignored.
 
-``alias`` is an optional alias for the browser instance and it can be used for
+_alias_ is an optional alias for the browser instance and it can be used for
 switching between browsers similarly as the index. See Switch Browser for more
 details about that.
 """,
@@ -164,7 +164,7 @@ advanced_keyword "Maximize browser window",
 """
 Maximizes current browser window.
 
-.. note:: Just resizes to larger, not maximizes, the browser on phantomrobot.
+*Note:* Just resizes to larger, not maximizes, the browser on phantomrobot.
 """,
 ([], callback) ->
     @browser.viewportSize = width: 1280, height: 1024

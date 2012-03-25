@@ -21,7 +21,7 @@ advanced_keyword "Start Selenium server",
 """
 Starts the Selenium Server provided with SeleniumLibrary.
 
-.. note:: Does nothing on phantomrobot.
+*Note:* Does nothing on phantomrobot.
 """,
 ([], callback) -> callback status: "PASS"
 
@@ -55,6 +55,6 @@ This is useful mainly in slowing down the test execution to be able to view the
 execution. seconds may be given in Robot Framework time format. Returns the
 previous speed value.
 
-.. note:: Sets the sleep between retries until timeout on phantomrobot.
+*Note:* Sets the sleep between retries until timeout on phantomrobot.
 """,
 ([seconds], callback) -> @["Set Phantom sleep"] [seconds], callback

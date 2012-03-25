@@ -102,7 +102,7 @@ class PhantomRobot
         @create_callback "get_keyword_arguments"
         @create_callback "run_keyword"
 
-        # Define PhantomRobot instance as a global variable ``robot``
+        # Define PhantomRobot instance as a global variable `robot`.
         window.robot = this
 
     # Setup our custom loggers.

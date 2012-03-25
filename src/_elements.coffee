@@ -39,7 +39,7 @@ If this keyword fails, it automatically logs the page source using the log
 level specified with the optional loglevel argument. Giving NONE as level
 disables logging.
 
-.. note:: ``loglevel`` has no effect on phantomrobot.
+*Note:* _loglevel_ has no effect on phantomrobot.
 """,
 (text, loglevel="INFO") ->
     xpath = "xpath=//*[contains(text(), '#{text}')]"
@@ -57,7 +57,7 @@ Fails if timeout expires before the text appears. See introduction for more
 information about timeout and its default value. error can be used to override
 the default error message.
 
-.. note:: ``timeout`` has no effect on phantomrobot.
+*Note:* _timeout_ has no effect on phantomrobot.
 """,
 (text, timeout, error) ->
     xpath = "xpath=//*[contains(text(), '#{text}')]"
@@ -75,7 +75,7 @@ If this keyword fails, it automatically logs the page source using the log
 level specified with the optional loglevel argument. Giving NONE as level
 disables logging.
 
-.. note:: ``loglevel`` has no effect on phantomrobot.
+*Note:* _loglevel_ has no effect on phantomrobot.
 """,
 (text, loglevel="INFO") ->
     xpath = "xpath=//*[contains(text(), '#{text}')]"
@@ -93,7 +93,7 @@ If this keyword fails, it automatically logs the page source using the log
 level specified with the optional loglevel argument. Giving NONE as level
 disables logging.
 
-.. note:: ``loglevel`` has no effect on phantomrobot.
+*Note:* _loglevel_ has no effect on phantomrobot.
 """,
 (text, loglevel="INFO") ->
     visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
@@ -112,7 +112,7 @@ Fails if timeout expires before the text appears. See introduction for more
 information about timeout and its default value. error can be used to override
 the default error message.
 
-.. note:: ``timeout`` has no effect on phantomrobot.
+*Note:* _timeout_ has no effect on phantomrobot.
 """,
 (text, timeout, error) ->
     visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
@@ -131,7 +131,7 @@ If this keyword fails, it automatically logs the page source using the log
 level specified with the optional loglevel argument. Giving NONE as level
 disables logging.
 
-.. note:: ``loglevel`` has no effect on phantomrobot.
+*Note:* _loglevel_ has no effect on phantomrobot.
 """,
 (text, loglevel="INFO") ->
     visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
@@ -146,13 +146,13 @@ keyword "Page should contain element",
 """
 Verifies element identified by locator is found from current page.
 
-``message`` can be used to override default error message.
+_message_ can be used to override default error message.
 
 If this keyword fails, it automatically logs the page source using the log
 level specified with the optional loglevel argument. Giving NONE as level
 disables logging.
 
-.. note:: ``loglevel`` has no effect on phantomrobot.
+*Note:* _loglevel_ has no effect on phantomrobot.
 """,
 (locator, message, loglevel="INFO") ->
     for result in queryAll document, locator
@@ -168,9 +168,9 @@ Waits until element specified with locator appears on current page.
 Fails if timeout expires before the element appears. See introduction for more
 information about timeout and its default value.
 
-``error`` can be used to override the default error message.
+_error_ can be used to override the default error message.
 
-.. note:: ``timeout`` has no effect on phantomrobot.
+*Note:* _timeout_ has no effect on phantomrobot.
 """,
 (locator, timeout, error) ->
     for result in queryAll document, locator
@@ -183,13 +183,13 @@ keyword "Page should not contain element",
 """
 Verifies element identified by locator is not found from current page.
 
-``message`` can be used to override default error message.
+_message_ can be used to override default error message.
 
 If this keyword fails, it automatically logs the page source using the log
 level specified with the optional loglevel argument. Giving NONE as level
 disables logging.
 
-.. note:: ``loglevel`` has no effect on phantomrobot.
+*Note:* _loglevel_ has no effect on phantomrobot.
 """,
 (locator, message, loglevel="INFO") ->
     for result in queryAll document, locator
@@ -202,7 +202,7 @@ keyword "Get element attribute",
 """
 Return value of element attribute.
 
-``attribute_locator`` consists of element locator followed by an @ sign and
+_attribute_locator_ consists of element locator followed by an @ sign and
 attribute name, for example "element_id@class".
 """,
 (attribute_locator) ->
@@ -216,16 +216,16 @@ attribute name, for example "element_id@class".
 
 keyword "Element should be visible",
 """
-Verifies that the element identified by ``locator`` is visible.
+Verifies that the element identified by _locator_ is visible.
 
 Herein, visible means that the element is logically visible, not optically
 visible in the current browser viewport. For example, an element that carries
 display:none is not logically visible, so using this keyword on that element
 would fail.
 
-``message`` can be used to override the default error message.
+_message_ can be used to override the default error message.
 
-Key attributes for arbitrary elements are ``id`` and ``name``.
+Key attributes for arbitrary elements are _id_ and _name_.
 """,
 (locator, message) ->
     visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
@@ -237,13 +237,13 @@ Key attributes for arbitrary elements are ``id`` and ``name``.
 
 keyword "Element should not be visible",
 """
-Verifies that the element identified by ``locator`` is NOT visible.
+Verifies that the element identified by _locator_ is NOT visible.
 
-This is the opposite of *Element should be visible*.
+This is the opposite of _Element should be visible_.
 
-``message`` can be used to override the default error message.
+_message_ can be used to override the default error message.
 
-Key attributes for arbitrary elements are ``id`` and ``name``.
+Key attributes for arbitrary elements are _id_ and _name_.
 """,
 (locator, message) ->
     visible = (el) -> el.offsetWidth > 0 and el.offsetHeight > 0
@@ -255,14 +255,14 @@ Key attributes for arbitrary elements are ``id`` and ``name``.
 
 keyword "Element should contain",
 """
-Verifies element identified by ``locator`` contains text expected.
+Verifies element identified by _locator_ contains text expected.
 
 If you wish to assert an exact (not a substring) match on the text of the
-element, use *Element text should be*
+element, use _Element text should be_
 
-``message`` can be used to override the default error message.
+_message_ can be used to override the default error message.
 
-Key attributes for arbitrary elements are ``id`` and ``name``.
+Key attributes for arbitrary elements are _id_ and _name_.
 """,
 (locator, expected, message) ->
     if (results = queryAll document, locator).length
@@ -278,14 +278,14 @@ Key attributes for arbitrary elements are ``id`` and ``name``.
 
 keyword "Element text should be",
 """
-Verifies element identified by ``locator`` exactly contains text expected.
+Verifies element identified by _locator_ exactly contains text expected.
 
 In contrast to Element Should Contain, this keyword does not try a substring
 match but an exact match on the element identified by locator.
 
-``message`` can be used to override the default error message.
+_message_ can be used to override the default error message.
 
-Key attributes for arbitrary elements are ``id`` and ``name``.
+Key attributes for arbitrary elements are _id_ and _name_.
 """,
 (locator, expected, message) ->
     if (results = queryAll document, locator).length
@@ -301,10 +301,10 @@ Key attributes for arbitrary elements are ``id`` and ``name``.
 
 keyword "Get matching XPath count",
 """
-Returns number of elements matching ``xpath``
+Returns number of elements matching _xpath_
 
-If you wish to assert the number of matching elements, use *Xpath should match
-X times*.
+If you wish to assert the number of matching elements, use _Xpath should match
+X times_.
 """,
 (xpath) ->
     count = queryAll(document, "xpath=#{xpath}").length
@@ -315,7 +315,7 @@ X times*.
 keyword "XPath should match X times",
 """
 Verifies that the page contains the given number of elements located by the
-given ``xpath``.
+given _xpath_.
 """,
 (xpath, expected_xpath_count, message, loglevel="INFO") ->
     count = queryAll(document, "xpath=#{xpath}").length
@@ -329,7 +329,7 @@ given ``xpath``.
 
 keyword "Get horizontal position",
 """
-Returns horizontal position of element identified by ``locator``.
+Returns horizontal position of element identified by _locator_.
 
 The position is returned in pixels off the left side of the page, as an
 integer. Fails if a matching element is not found.
@@ -346,7 +346,7 @@ integer. Fails if a matching element is not found.
 
 keyword "Get vertical position",
 """
-Returns vertical position of element identified by ``locator``.
+Returns vertical position of element identified by _locator_.
 
 The position is returned in pixels off the top of the page, as an integer.
 Fails if a matching element is not found.

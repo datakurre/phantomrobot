@@ -21,14 +21,14 @@ advanced_keyword "Capture page screenshot",
 """
 Takes a screenshot of the current page and embeds it into the log.
 
-``filename`` argument specifies the name of the file to write the screenshot into.
+_filename_ argument specifies the name of the file to write the screenshot into.
 It works the same was as with Capture Screenshot.
 
-``css`` can be used to modify how the screenshot is taken. By default the bakground
+_css_ can be used to modify how the screenshot is taken. By default the bakground
 color is changed to avoid possible problems with background leaking when the
 page layout is somehow broken.
 
-.. note:: ``css`` has no effect on phantomrobot.
+*Note:* _css_ has no effect on phantomrobot.
 """,
 ([filename, css], callback) ->
     if @browser?.render
@@ -83,7 +83,7 @@ advanced_keyword "Register keyword to run on failure",
 """
 Sets the keyword to execute when a SeleniumLibrary keyword fails.
 
-``keyword_name`` is the name of a SeleniumLibrary keyword that will be executed if
+_keyword_name_ is the name of a SeleniumLibrary keyword that will be executed if
 another SeleniumLibrary keyword fails. It is not possible to use a keyword that
 requires arguments. The name is case but not space sensitive. If the name does
 not match any keyword, this functionality is disabled and nothing extra will be
