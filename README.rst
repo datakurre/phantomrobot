@@ -151,346 +151,131 @@ e.g. for testing your custom JavaScript-dependent features directly.
 
 Implemented SeleniumLibrary-keywords:
 
-.. raw:: html
+Assign Id To Element *(locator=, id=)*
+    Assigns a temporary identifier to element specified by locator.This is mainly useful if the locator is complicated/slow XPath expression. Identifier expires when the page is reloaded.
 
-    <table border="1" class="keywords">
-    <tr>
-      <th class="kw">Keyword</th>
-      <th class="arg">Arguments</th>
-      <th class="doc">Documentation</th>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Assign Id To Element"></a>Assign Id To Element</td>
-      <td class="arg">locator=, id=</td>
-      <td class="doc">Assigns a temporary identifier to element specified by locator.<br />
-    <br />
-    This is mainly useful if the locator is complicated/slow XPath expression. Identifier expires when the page is reloaded.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Capture Page Screenshot"></a>Capture Page Screenshot</td>
-      <td class="arg">filename=, css=</td>
-      <td class="doc">Takes a screenshot of the current page and embeds it into the log.<br />
-    <br />
-    <i>filename</i> argument specifies the name of the file to write the screenshot into. It works the same was as with Capture Screenshot.<br />
-    <br />
-    <i>css</i> can be used to modify how the screenshot is taken. By default the bakground color is changed to avoid possible problems with background leaking when the page layout is somehow broken.<br />
-    <br />
-    <b>Note:</b> <i>css</i> has no effect on phantomrobot.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Click Button"></a>Click Button</td>
-      <td class="arg">locator=, dont_wait=</td>
-      <td class="doc"></td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Click Element"></a>Click Element</td>
-      <td class="arg">locator=, dont_wait=</td>
-      <td class="doc"></td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Click Link"></a>Click Link</td>
-      <td class="arg">locator=</td>
-      <td class="doc"></td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Close All Browsers"></a>Close All Browsers</td>
-      <td class="arg"></td>
-      <td class="doc">Closes all open browsers and empties the connection cache.<br />
-    <br />
-    After this keyword new indexes get from Open Browser keyword are reset to 1.<br />
-    <br />
-    This keyword should be used in test or suite teardown to make sure all browsers are closed.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Close Browser"></a>Close Browser</td>
-      <td class="arg"></td>
-      <td class="doc">Closes the current browser.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Element Should Be Visible"></a>Element Should Be Visible</td>
-      <td class="arg">locator=, message=</td>
-      <td class="doc">Verifies that the element identified by <i>locator</i> is visible.<br />
-    <br />
-    Herein, visible means that the element is logically visible, not optically visible in the current browser viewport. For example, an element that carries display:none is not logically visible, so using this keyword on that element would fail.<br />
-    <br />
-    <i>message</i> can be used to override the default error message.<br />
-    <br />
-    Key attributes for arbitrary elements are <i>id</i> and <i>name</i>.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Element Should Contain"></a>Element Should Contain</td>
-      <td class="arg">locator=, expected=, message=</td>
-      <td class="doc">Verifies element identified by <i>locator</i> contains text expected.<br />
-    <br />
-    If you wish to assert an exact (not a substring) match on the text of the element, use <i>Element text should be</i><br />
-    <br />
-    <i>message</i> can be used to override the default error message.<br />
-    <br />
-    Key attributes for arbitrary elements are <i>id</i> and <i>name</i>.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Element Should Not Be Visible"></a>Element Should Not Be Visible</td>
-      <td class="arg">locator=, message=</td>
-      <td class="doc">Verifies that the element identified by <i>locator</i> is NOT visible.<br />
-    <br />
-    This is the opposite of <i>Element should be visible</i>.<br />
-    <br />
-    <i>message</i> can be used to override the default error message.<br />
-    <br />
-    Key attributes for arbitrary elements are <i>id</i> and <i>name</i>.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Element Text Should Be"></a>Element Text Should Be</td>
-      <td class="arg">locator=, expected=, message=</td>
-      <td class="doc">Verifies element identified by <i>locator</i> exactly contains text expected.<br />
-    <br />
-    In contrast to Element Should Contain, this keyword does not try a substring match but an exact match on the element identified by locator.<br />
-    <br />
-    <i>message</i> can be used to override the default error message.<br />
-    <br />
-    Key attributes for arbitrary elements are <i>id</i> and <i>name</i>.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Get Element Attribute"></a>Get Element Attribute</td>
-      <td class="arg">attribute_locator=</td>
-      <td class="doc">Return value of element attribute.<br />
-    <br />
-    <i>attribute_locator</i> consists of element locator followed by an @ sign and attribute name, for example "element_id@class".</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Get Horizontal Position"></a>Get Horizontal Position</td>
-      <td class="arg">locator=</td>
-      <td class="doc">Returns horizontal position of element identified by <i>locator</i>.<br />
-    <br />
-    The position is returned in pixels off the left side of the page, as an integer. Fails if a matching element is not found.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Get Matching XPath Count"></a>Get Matching XPath Count</td>
-      <td class="arg">xpath=</td>
-      <td class="doc">Returns number of elements matching <i>xpath</i><br />
-    <br />
-    If you wish to assert the number of matching elements, use <i>Xpath should match X times</i>.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Get Vertical Position"></a>Get Vertical Position</td>
-      <td class="arg">locator=</td>
-      <td class="doc">Returns vertical position of element identified by <i>locator</i>.<br />
-    <br />
-    The position is returned in pixels off the top of the page, as an integer. Fails if a matching element is not found.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Go To"></a>Go To</td>
-      <td class="arg">url=</td>
-      <td class="doc">Navigates the active browser instance to the provided URL.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Input Text"></a>Input Text</td>
-      <td class="arg">locator=, text=</td>
-      <td class="doc">Types the given text into text field identified by locator.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Maximize Browser Window"></a>Maximize Browser Window</td>
-      <td class="arg"></td>
-      <td class="doc">Maximizes current browser window.<br />
-    <br />
-    <b>Note:</b> Just resizes to larger, not maximizes, the browser on phantomrobot.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Mouse Down"></a>Mouse Down</td>
-      <td class="arg">locator=</td>
-      <td class="doc"></td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Mouse Up"></a>Mouse Up</td>
-      <td class="arg">locator=</td>
-      <td class="doc"></td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Open Browser"></a>Open Browser</td>
-      <td class="arg">url=, browser=, alias=</td>
-      <td class="doc">Opens a new browser instance to given URL.<br />
-    <br />
-    Returns the index of this browser instance which can be used later to switch back to it. Index starts from 1 and is reset back to it when Close All Browsers keyword is used. See Switch Browser for example.<br />
-    <br />
-    <i>url</i> is an optional url to open.<br />
-    <br />
-    <i>browser</i> is an optional parameter that exists to support SeleniumLibarary and is just ignored.<br />
-    <br />
-    <i>alias</i> is an optional alias for the browser instance and it can be used for switching between browsers similarly as the index. See Switch Browser for more details about that.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Page Should Contain"></a>Page Should Contain</td>
-      <td class="arg">text=, loglevel=</td>
-      <td class="doc">Verifies that current page contains text.<br />
-    <br />
-    If this keyword fails, it automatically logs the page source using the log level specified with the optional loglevel argument. Giving NONE as level disables logging.<br />
-    <br />
-    <b>Note:</b> <i>loglevel</i> has no effect on phantomrobot.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Page Should Contain Element"></a>Page Should Contain Element</td>
-      <td class="arg">locator=, message=, loglevel=</td>
-      <td class="doc">Verifies element identified by locator is found from current page.<br />
-    <br />
-    <i>message</i> can be used to override default error message.<br />
-    <br />
-    If this keyword fails, it automatically logs the page source using the log level specified with the optional loglevel argument. Giving NONE as level disables logging.<br />
-    <br />
-    <b>Note:</b> <i>loglevel</i> has no effect on phantomrobot.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Page Should Contain Visible"></a>Page Should Contain Visible</td>
-      <td class="arg">text=, loglevel=</td>
-      <td class="doc">Verifies that current page contains visible text.<br />
-    <br />
-    If this keyword fails, it automatically logs the page source using the log level specified with the optional loglevel argument. Giving NONE as level disables logging.<br />
-    <br />
-    <b>Note:</b> <i>loglevel</i> has no effect on phantomrobot.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Page Should Not Contain"></a>Page Should Not Contain</td>
-      <td class="arg">text=, loglevel=</td>
-      <td class="doc">Verifies the current page does not contain text.<br />
-    <br />
-    If this keyword fails, it automatically logs the page source using the log level specified with the optional loglevel argument. Giving NONE as level disables logging.<br />
-    <br />
-    <b>Note:</b> <i>loglevel</i> has no effect on phantomrobot.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Page Should Not Contain Element"></a>Page Should Not Contain Element</td>
-      <td class="arg">locator=, message=, loglevel=</td>
-      <td class="doc">Verifies element identified by locator is not found from current page.<br />
-    <br />
-    <i>message</i> can be used to override default error message.<br />
-    <br />
-    If this keyword fails, it automatically logs the page source using the log level specified with the optional loglevel argument. Giving NONE as level disables logging.<br />
-    <br />
-    <b>Note:</b> <i>loglevel</i> has no effect on phantomrobot.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Page Should Not Contain Visible"></a>Page Should Not Contain Visible</td>
-      <td class="arg">text=, loglevel=</td>
-      <td class="doc">Verifies the current page does not contain visible text.<br />
-    <br />
-    If this keyword fails, it automatically logs the page source using the log level specified with the optional loglevel argument. Giving NONE as level disables logging.<br />
-    <br />
-    <b>Note:</b> <i>loglevel</i> has no effect on phantomrobot.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Register Keyword To Run On Failure"></a>Register Keyword To Run On Failure</td>
-      <td class="arg">keyword_name=</td>
-      <td class="doc">Sets the keyword to execute when a SeleniumLibrary keyword fails.<br />
-    <br />
-    <i>keyword_name</i> is the name of a SeleniumLibrary keyword that will be executed if another SeleniumLibrary keyword fails. It is not possible to use a keyword that requires arguments. The name is case but not space sensitive. If the name does not match any keyword, this functionality is disabled and nothing extra will be done in case of a failure.<br />
-    <br />
-    The initial keyword to use is set in importing, and the keyword that is used by default is Capture Screenshot. Taking a screenshot when something failed is a very useful feature, but notice that it can slow down the execution.<br />
-    <br />
-    This keyword returns the name of the previously registered failure keyword. It can be used to restore the original value later.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Reload Page"></a>Reload Page</td>
-      <td class="arg"></td>
-      <td class="doc">Simulates user reloading page.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Select From List"></a>Select From List</td>
-      <td class="arg">list=, value=</td>
-      <td class="doc"></td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Select Radio Button"></a>Select Radio Button</td>
-      <td class="arg">name=, value=</td>
-      <td class="doc"></td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Set Phantom Sleep"></a>Set Phantom Sleep</td>
-      <td class="arg">seconds=</td>
-      <td class="doc">Sets the sleep between PhantomRobot's implicit retries.<br />
-    <br />
-    Returns the previous value.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Set Phantom Timeout"></a>Set Phantom Timeout</td>
-      <td class="arg">seconds=</td>
-      <td class="doc">Sets the timeout for PhantomRobot implicit retries.<br />
-    <br />
-    Returns the previous value.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Set Selenium Speed"></a>Set Selenium Speed</td>
-      <td class="arg">seconds=</td>
-      <td class="doc">Sets the delay that is waited after each Selenium command.<br />
-    <br />
-    This is useful mainly in slowing down the test execution to be able to view the execution. seconds may be given in Robot Framework time format. Returns the previous speed value.<br />
-    <br />
-    <b>Note:</b> Sets the sleep between retries until timeout on phantomrobot.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Set Selenium Timeout"></a>Set Selenium Timeout</td>
-      <td class="arg">seconds=</td>
-      <td class="doc">Sets the timeout used by various keywords.<br />
-    <br />
-    Keywords that expect a page load to happen will fail if the page is not loaded within the timeout specified with seconds.<br />
-    <br />
-    The previous timeout value is returned by this keyword and can be used to set the old value back later. The default timeout is 5 seconds, but it can be altered in importing.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Start Selenium Server"></a>Start Selenium Server</td>
-      <td class="arg"></td>
-      <td class="doc">Starts the Selenium Server provided with SeleniumLibrary.<br />
-    <br />
-    <b>Note:</b> Does nothing on phantomrobot.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Stop Selenium Server"></a>Stop Selenium Server</td>
-      <td class="arg"></td>
-      <td class="doc">Stops the selenium server (and closes all browsers).</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Submit Form"></a>Submit Form</td>
-      <td class="arg">locator=</td>
-      <td class="doc"></td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Wait Until Page Contains"></a>Wait Until Page Contains</td>
-      <td class="arg">text=, timeout=, error=</td>
-      <td class="doc">Waits until text appears on current page.<br />
-    <br />
-    Fails if timeout expires before the text appears. See introduction for more information about timeout and its default value. error can be used to override the default error message.<br />
-    <br />
-    <b>Note:</b> <i>timeout</i> has no effect on phantomrobot.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Wait Until Page Contains Element"></a>Wait Until Page Contains Element</td>
-      <td class="arg">locator=, timeout=, error=</td>
-      <td class="doc">Waits until element specified with locator appears on current page.<br />
-    <br />
-    Fails if timeout expires before the element appears. See introduction for more information about timeout and its default value.<br />
-    <br />
-    <i>error</i> can be used to override the default error message.<br />
-    <br />
-    <b>Note:</b> <i>timeout</i> has no effect on phantomrobot.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="Wait Until Page Contains Visible"></a>Wait Until Page Contains Visible</td>
-      <td class="arg">text=, timeout=, error=</td>
-      <td class="doc">Waits until visible text appears on current page.<br />
-    <br />
-    Fails if timeout expires before the text appears. See introduction for more information about timeout and its default value. error can be used to override the default error message.<br />
-    <br />
-    <b>Note:</b> <i>timeout</i> has no effect on phantomrobot.</td>
-    </tr>
-    <tr>
-      <td class="kw"><a name="XPath Should Match X Times"></a>XPath Should Match X Times</td>
-      <td class="arg">xpath=, expected_xpath_count=, message=, loglevel=</td>
-      <td class="doc">Verifies that the page contains the given number of elements located by the given <i>xpath</i>.</td>
-    </tr>
-    </table>
-    <p id="footer">
-    Altogether 42 keywords.<br />
-    Generated by <a href="http://code.google.com/p/robotframework/wiki/LibraryDocumentationTool">libdoc.py</a>
-    on 2012-03-25 20:05:58.
-    </p>
+Capture Page Screenshot *(filename=, css=)*
+    Takes a screenshot of the current page and embeds it into the log. *filename* argument specifies the name of the file to write the screenshot into. It works the same was as with Capture Screenshot. *css* can be used to modify how the screenshot is taken. By default the bakground color is changed to avoid possible problems with background leaking when the page layout is somehow broken. **Note:**  *css* has no effect on phantomrobot.
+
+Click Button *(locator=, dont_wait=)*
+    
+
+Click Element *(locator=, dont_wait=)*
+    
+
+Click Link *(locator=)*
+    
+
+Close All Browsers *()*
+    Closes all open browsers and empties the connection cache.After this keyword new indexes get from Open Browser keyword are reset to 1.This keyword should be used in test or suite teardown to make sure all browsers are closed.
+
+Close Browser *()*
+    Closes the current browser.
+
+Element Should Be Visible *(locator=, message=)*
+    Verifies that the element identified by *locator* is visible.Herein, visible means that the element is logically visible, not optically visible in the current browser viewport. For example, an element that carries display:none is not logically visible, so using this keyword on that element would fail. *message* can be used to override the default error message.Key attributes for arbitrary elements are *id*  *name* 
+
+Element Should Contain *(locator=, expected=, message=)*
+    Verifies element identified by *locator* contains text expected.If you wish to assert an exact (not a substring) match on the text of the element, use *Element text should be*  *message* can be used to override the default error message.Key attributes for arbitrary elements are *id*  *name* 
+
+Element Should Not Be Visible *(locator=, message=)*
+    Verifies that the element identified by *locator* is NOT visible.This is the opposite of *Element should be visible*  *message* can be used to override the default error message.Key attributes for arbitrary elements are *id*  *name* 
+
+Element Text Should Be *(locator=, expected=, message=)*
+    Verifies element identified by *locator* exactly contains text expected.In contrast to Element Should Contain, this keyword does not try a substring match but an exact match on the element identified by locator. *message* can be used to override the default error message.Key attributes for arbitrary elements are *id*  *name* 
+
+Get Element Attribute *(attribute_locator=)*
+    Return value of element attribute. *attribute_locator* consists of element locator followed by an @ sign and attribute name, for example "element_id@class".
+
+Get Horizontal Position *(locator=)*
+    Returns horizontal position of element identified by *locator* The position is returned in pixels off the left side of the page, as an integer. Fails if a matching element is not found.
+
+Get Matching XPath Count *(xpath=)*
+    Returns number of elements matching *xpath* If you wish to assert the number of matching elements, use *Xpath should match X times* 
+
+Get Vertical Position *(locator=)*
+    Returns vertical position of element identified by *locator* The position is returned in pixels off the top of the page, as an integer. Fails if a matching element is not found.
+
+Go To *()*
+    Navigates the active browser instance to the provided URL.
+
+Input Text *(locator=, text=)*
+    Types the given text into text field identified by locator.
+
+Maximize Browser Window *()*
+    Maximizes current browser window. **Note:** Just resizes to larger, not maximizes, the browser on phantomrobot.
+
+Mouse Down *(locator=)*
+    
+
+Mouse Up *(locator=)*
+    
+
+Open Browser *(url=, browser=, alias=)*
+    Opens a new browser instance to given URL.Returns the index of this browser instance which can be used later to switch back to it. Index starts from 1 and is reset back to it when Close All Browsers keyword is used. See Switch Browser for example. *url* is an optional url to open. *browser* is an optional parameter that exists to support SeleniumLibarary and is just ignored. *alias* is an optional alias for the browser instance and it can be used for switching between browsers similarly as the index. See Switch Browser for more details about that.
+
+Page Should Contain *(text=, loglevel=)*
+    Verifies that current page contains text.If this keyword fails, it automatically logs the page source using the log level specified with the optional loglevel argument. Giving NONE as level disables logging. **Note:**  *loglevel* has no effect on phantomrobot.
+
+Page Should Contain Element *(locator=, message=, loglevel=)*
+    Verifies element identified by locator is found from current page. *message* can be used to override default error message.If this keyword fails, it automatically logs the page source using the log level specified with the optional loglevel argument. Giving NONE as level disables logging. **Note:**  *loglevel* has no effect on phantomrobot.
+
+Page Should Contain Visible *(text=, loglevel=)*
+    Verifies that current page contains visible text.If this keyword fails, it automatically logs the page source using the log level specified with the optional loglevel argument. Giving NONE as level disables logging. **Note:**  *loglevel* has no effect on phantomrobot.
+
+Page Should Not Contain *(text=, loglevel=)*
+    Verifies the current page does not contain text.If this keyword fails, it automatically logs the page source using the log level specified with the optional loglevel argument. Giving NONE as level disables logging. **Note:**  *loglevel* has no effect on phantomrobot.
+
+Page Should Not Contain Element *(locator=, message=, loglevel=)*
+    Verifies element identified by locator is not found from current page. *message* can be used to override default error message.If this keyword fails, it automatically logs the page source using the log level specified with the optional loglevel argument. Giving NONE as level disables logging. **Note:**  *loglevel* has no effect on phantomrobot.
+
+Page Should Not Contain Visible *(text=, loglevel=)*
+    Verifies the current page does not contain visible text.If this keyword fails, it automatically logs the page source using the log level specified with the optional loglevel argument. Giving NONE as level disables logging. **Note:**  *loglevel* has no effect on phantomrobot.
+
+Register Keyword To Run On Failure *(keyword_name=)*
+    Sets the keyword to execute when a SeleniumLibrary keyword fails. *keyword_name* is the name of a SeleniumLibrary keyword that will be executed if another SeleniumLibrary keyword fails. It is not possible to use a keyword that requires arguments. The name is case but not space sensitive. If the name does not match any keyword, this functionality is disabled and nothing extra will be done in case of a failure.The initial keyword to use is set in importing, and the keyword that is used by default is Capture Screenshot. Taking a screenshot when something failed is a very useful feature, but notice that it can slow down the execution.This keyword returns the name of the previously registered failure keyword. It can be used to restore the original value later.
+
+Reload Page *()*
+    Simulates user reloading page.
+
+Select From List *(list=, value=)*
+    
+
+Select Radio Button *(name=, value=)*
+    
+
+Set Phantom Sleep *(seconds=)*
+    Sets the sleep between PhantomRobot's implicit retries.Returns the previous value.
+
+Set Phantom Timeout *(seconds=)*
+    Sets the timeout for PhantomRobot implicit retries.Returns the previous value.
+
+Set Selenium Speed *(seconds=)*
+    Sets the delay that is waited after each Selenium command.This is useful mainly in slowing down the test execution to be able to view the execution. seconds may be given in Robot Framework time format. Returns the previous speed value. **Note:** Sets the sleep between retries until timeout on phantomrobot.
+
+Set Selenium Timeout *(seconds=)*
+    Sets the timeout used by various keywords.Keywords that expect a page load to happen will fail if the page is not loaded within the timeout specified with seconds.The previous timeout value is returned by this keyword and can be used to set the old value back later. The default timeout is 5 seconds, but it can be altered in importing.
+
+Start Selenium Server *()*
+    Starts the Selenium Server provided with SeleniumLibrary. **Note:** Does nothing on phantomrobot.
+
+Stop Selenium Server *()*
+    Stops the selenium server (and closes all browsers).
+
+Submit Form *(locator=)*
+    
+
+Wait Until Page Contains *(text=, timeout=, error=)*
+    Waits until text appears on current page.Fails if timeout expires before the text appears. See introduction for more information about timeout and its default value. error can be used to override the default error message. **Note:**  *timeout* has no effect on phantomrobot.
+
+Wait Until Page Contains Element *(locator=, timeout=, error=)*
+    Waits until element specified with locator appears on current page.Fails if timeout expires before the element appears. See introduction for more information about timeout and its default value. *error* can be used to override the default error message. **Note:**  *timeout* has no effect on phantomrobot.
+
+Wait Until Page Contains Visible *(text=, timeout=, error=)*
+    Waits until visible text appears on current page.Fails if timeout expires before the text appears. See introduction for more information about timeout and its default value. error can be used to override the default error message. **Note:**  *timeout* has no effect on phantomrobot.
+
+XPath Should Match X Times *(xpath=, expected_xpath_count=, message=, loglevel=)*
+    Verifies that the page contains the given number of elements located by the given *xpath* 
 
 
 An example test suite
