@@ -18,5 +18,6 @@ libdoc.py:
 	curl http://robotframework.googlecode.com/hg/tools/libdoc/libdoc.py?r=2.5.7 -o libdoc.py
 
 docs: libdoc.py
-	bin/python libdoc.py -f HTML -N PhantomRobot -o keywords.html -S NONE -a localhost:1337 Remote
+	bin/python libdoc.py -f html -N PhantomRobot -o keywords.html -S NONE -a localhost:1337 Remote
+	xsltproc --html --novalid keywords.xsl keywords.html > keywords.rst
 

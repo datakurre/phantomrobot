@@ -158,13 +158,13 @@ Capture Page Screenshot *(filename=, css=)*
     Takes a screenshot of the current page and embeds it into the log. *filename* argument specifies the name of the file to write the screenshot into. It works the same was as with Capture Screenshot. *css* can be used to modify how the screenshot is taken. By default the bakground color is changed to avoid possible problems with background leaking when the page layout is somehow broken. **Note:**  *css* has no effect on phantomrobot.
 
 Click Button *(locator=, dont_wait=)*
-    
+    n/a
 
 Click Element *(locator=, dont_wait=)*
-    
+    n/a
 
 Click Link *(locator=)*
-    
+    n/a
 
 Close All Browsers *()*
     Closes all open browsers and empties the connection cache.After this keyword new indexes get from Open Browser keyword are reset to 1.This keyword should be used in test or suite teardown to make sure all browsers are closed.
@@ -173,16 +173,16 @@ Close Browser *()*
     Closes the current browser.
 
 Element Should Be Visible *(locator=, message=)*
-    Verifies that the element identified by *locator* is visible.Herein, visible means that the element is logically visible, not optically visible in the current browser viewport. For example, an element that carries display:none is not logically visible, so using this keyword on that element would fail. *message* can be used to override the default error message.Key attributes for arbitrary elements are *id*  *name* 
+    Verifies that the element identified by *locator* is visible.Herein, visible means that the element is logically visible, not optically visible in the current browser viewport. For example, an element that carries display:none is not logically visible, so using this keyword on that element would fail. *message* can be used to override the default error message.Key attributes for arbitrary elements are *id*  *name*
 
 Element Should Contain *(locator=, expected=, message=)*
-    Verifies element identified by *locator* contains text expected.If you wish to assert an exact (not a substring) match on the text of the element, use *Element text should be*  *message* can be used to override the default error message.Key attributes for arbitrary elements are *id*  *name* 
+    Verifies element identified by *locator* contains text expected.If you wish to assert an exact (not a substring) match on the text of the element, use *Element text should be*  *message* can be used to override the default error message.Key attributes for arbitrary elements are *id*  *name*
 
 Element Should Not Be Visible *(locator=, message=)*
-    Verifies that the element identified by *locator* is NOT visible.This is the opposite of *Element should be visible*  *message* can be used to override the default error message.Key attributes for arbitrary elements are *id*  *name* 
+    Verifies that the element identified by *locator* is NOT visible.This is the opposite of *Element should be visible*  *message* can be used to override the default error message.Key attributes for arbitrary elements are *id*  *name*
 
 Element Text Should Be *(locator=, expected=, message=)*
-    Verifies element identified by *locator* exactly contains text expected.In contrast to Element Should Contain, this keyword does not try a substring match but an exact match on the element identified by locator. *message* can be used to override the default error message.Key attributes for arbitrary elements are *id*  *name* 
+    Verifies element identified by *locator* exactly contains text expected.In contrast to Element Should Contain, this keyword does not try a substring match but an exact match on the element identified by locator. *message* can be used to override the default error message.Key attributes for arbitrary elements are *id*  *name*
 
 Get Element Attribute *(attribute_locator=)*
     Return value of element attribute. *attribute_locator* consists of element locator followed by an @ sign and attribute name, for example "element_id@class".
@@ -191,7 +191,7 @@ Get Horizontal Position *(locator=)*
     Returns horizontal position of element identified by *locator* The position is returned in pixels off the left side of the page, as an integer. Fails if a matching element is not found.
 
 Get Matching XPath Count *(xpath=)*
-    Returns number of elements matching *xpath* If you wish to assert the number of matching elements, use *Xpath should match X times* 
+    Returns number of elements matching *xpath* If you wish to assert the number of matching elements, use *Xpath should match X times*
 
 Get Vertical Position *(locator=)*
     Returns vertical position of element identified by *locator* The position is returned in pixels off the top of the page, as an integer. Fails if a matching element is not found.
@@ -206,10 +206,10 @@ Maximize Browser Window *()*
     Maximizes current browser window. **Note:** Just resizes to larger, not maximizes, the browser on phantomrobot.
 
 Mouse Down *(locator=)*
-    
+    n/a
 
 Mouse Up *(locator=)*
-    
+    n/a
 
 Open Browser *(url=, browser=, alias=)*
     Opens a new browser instance to given URL.Returns the index of this browser instance which can be used later to switch back to it. Index starts from 1 and is reset back to it when Close All Browsers keyword is used. See Switch Browser for example. *url* is an optional url to open. *browser* is an optional parameter that exists to support SeleniumLibarary and is just ignored. *alias* is an optional alias for the browser instance and it can be used for switching between browsers similarly as the index. See Switch Browser for more details about that.
@@ -239,10 +239,10 @@ Reload Page *()*
     Simulates user reloading page.
 
 Select From List *(list=, value=)*
-    
+    n/a
 
 Select Radio Button *(name=, value=)*
-    
+    n/a
 
 Set Phantom Sleep *(seconds=)*
     Sets the sleep between PhantomRobot's implicit retries.Returns the previous value.
@@ -263,7 +263,7 @@ Stop Selenium Server *()*
     Stops the selenium server (and closes all browsers).
 
 Submit Form *(locator=)*
-    
+    n/a
 
 Wait Until Page Contains *(text=, timeout=, error=)*
     Waits until text appears on current page.Fails if timeout expires before the text appears. See introduction for more information about timeout and its default value. error can be used to override the default error message. **Note:**  *timeout* has no effect on phantomrobot.
@@ -275,7 +275,7 @@ Wait Until Page Contains Visible *(text=, timeout=, error=)*
     Waits until visible text appears on current page.Fails if timeout expires before the text appears. See introduction for more information about timeout and its default value. error can be used to override the default error message. **Note:**  *timeout* has no effect on phantomrobot.
 
 XPath Should Match X Times *(xpath=, expected_xpath_count=, message=, loglevel=)*
-    Verifies that the page contains the given number of elements located by the given *xpath* 
+    Verifies that the page contains the given number of elements located by the given *xpath*
 
 
 An example test suite

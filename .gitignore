@@ -10,4 +10,5 @@ report.log
 output.xml
 Altitude.log
 .DS_Store
+libdoc.py
 tests/__init__.txt
