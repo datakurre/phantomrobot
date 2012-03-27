@@ -196,7 +196,7 @@ Get Matching XPath Count *(xpath=)*
 Get Vertical Position *(locator=)*
     Returns vertical position of element identified by *locator* The position is returned in pixels off the top of the page, as an integer. Fails if a matching element is not found.
 
-Go To *()*
+Go To *(url=)*
     Navigates the active browser instance to the provided URL.
 
 Input Text *(locator=, text=)*

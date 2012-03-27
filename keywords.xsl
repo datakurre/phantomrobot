@@ -17,7 +17,7 @@
 
 <xsl:if test="position()=3">
 <xsl:choose>
-<xsl:when test="string-length(normalize-space(node()))>4">
+<xsl:when test="string-length(normalize-space(node()))>3">
 <xsl:text>
     </xsl:text><xsl:apply-templates select="node()"/>
 </xsl:when>
@@ -44,7 +44,7 @@
 
 <!-- Filtering identity templates -->
 <xsl:template match="text()">
-  <xsl:if test="string-length(normalize-space(.))>4">
+  <xsl:if test="string-length(normalize-space(.))>3">
     <xsl:value-of select="normalize-space(.)" />
   </xsl:if>
 </xsl:template>
