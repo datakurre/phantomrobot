@@ -92,7 +92,7 @@ details about that.
                 # array thanks wanderingstan at morethanwarm dot mail dot com
                 # for the initial work.
                 # https://developer.mozilla.org/en/Using_XPath
-                xpe = do new XPathEvaluator
+                xpe = new XPathEvaluator
                 nsResolver = xpe.createNSResolver document
                 iterator = xpe.evaluate xpath, document, nsResolver, 0, null
                 loop
