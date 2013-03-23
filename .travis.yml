@@ -1,0 +1,11 @@
+---
+language: python
+python: '2.7'
+install:
+- python bootstrap.py -c buildout.cfg
+- bin/buildout -N -t 3 -c buildout.cfg
+before_script:
+- source bin/activate
+- make
+- node phantomrobot.js &
+script: pybot tests
