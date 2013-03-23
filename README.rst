@@ -7,6 +7,9 @@ PhantomJS_-browser, the headless WebKit-browser, for running acceptance tests
 in the background. PhantomRobot is written in and is easily expandable with
 CoffeeScript_.
 
+.. image:: https://secure.travis-ci.org/datakurre/phantomrobot.png
+     :target: http://travis-ci.org/datakurre/phantomrobot
+
 .. _Robot Framework: http://code.google.com/p/robotframework/
 .. _PhantomJS: http://www.phantomjs.org/
 .. _CoffeeScript: http://coffeescript.org/
