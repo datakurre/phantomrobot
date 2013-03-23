@@ -2,8 +2,8 @@
 language: python
 python: '2.7'
 install:
-- python bootstrap.py -c buildout.cfg
-- bin/buildout -N -t 3 -c buildout.cfg
+- python bootstrap.py -c buildout-linux-x86.cfg
+- bin/buildout -N -t 3 -c buildout-linux-x86.cfg
 before_script:
 - source bin/activate
 - make
