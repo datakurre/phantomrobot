@@ -7,5 +7,5 @@ install:
 before_script:
 - source bin/activate
 - make
-- node phantomrobot.js &
+- node phantomrobot.js 1>/dev/null &
 script: pybot tests
