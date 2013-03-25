@@ -26,7 +26,7 @@ Go to the checkout directory and run the buildout_ for installing all the
 dependencies (buildout keeps everything within the checkout directory)::
 
     cd phantomrobot
-    python bootstrap.py --distribute
+    python bootstrap.py
 
 .. _buildout: http://www.buildout.org/
 
