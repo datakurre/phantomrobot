@@ -42,7 +42,7 @@ disables logging.
 *Note:* _loglevel_ has no effect on phantomrobot.
 """,
 (text, loglevel="INFO") ->
-    xpath = "xpath=//*[contains(text(), '#{text}')]"
+    xpath = "xpath=//*[contains(., \"#{text}\")]"
     for result in queryAll document, xpath
         return status: "PASS"
     status: "FAIL",\
