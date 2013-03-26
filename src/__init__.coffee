@@ -60,7 +60,7 @@ keyword = (name, doc=null, fn=null) ->
             # Fail when results don't seem to be correct.
             if not results?.status
                 callback status: "FAIL",\
-                         error: "Keyword didn't respond correctly."
+                         error: "Keyword responded with: #{results}"
             # Otherwise, return the results.
             else callback results
 
