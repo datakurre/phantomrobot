@@ -19,11 +19,6 @@
 advanced_keyword "Frame Should Contain",
 """
 Verifies frame identified by locator contains text.
-
-See Page Should Contain for explanation about loglevel argument.
-
-Key attributes for frames are id and name. See introduction for details about
-locating elements.
 """,
 ([locator, text], callback) ->
     @browser.switchToMainFrame()
@@ -34,8 +29,6 @@ locating elements.
 advanced_keyword "Select Frame",
 """
 Sets frame identified by locator as current frame.
-
-Key attributes for frames are id and name. See introduction for details about locating elements.
 """,
 ([locator], callback) ->
     @browser.switchToMainFrame()
@@ -55,8 +48,6 @@ Sets the top frame as the current frame.
 advanced_keyword "Current Frame Contains",
 """
 Verifies that current frame contains text.
-
-See Page Should Contain for explanation about loglevel argument.
 """,
 ([text], callback) ->
     @["Page should contain"] [text], callback
