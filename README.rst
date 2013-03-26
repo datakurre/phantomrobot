@@ -122,7 +122,7 @@ callback to pass the results back to the Robot Framework test runner::
 
     advanced_keyword "Is defined", ([name], callback) ->
 
-        isDefined exists = (name) ->
+        isDefined = (name) ->
             not eval("typeof #{name} === 'undefined'")
 
         if @browser.eval isDefined, name
