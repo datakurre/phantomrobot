@@ -14,6 +14,13 @@ CoffeeScript_.
 .. _PhantomJS: http://www.phantomjs.org/
 .. _CoffeeScript: http://coffeescript.org/
 
+.. note::
+
+   If you can use Selenium, please, see the GhostDriver_-project, which
+   has already been integrated into Selenium-library for running
+   PhantomJS. It just works, while this is mostly proof-of-concept.
+
+.. _GhostDriver: https://github.com/detro/ghostdriver
 
 Try it out
 ==========
@@ -143,13 +150,13 @@ callback to pass the results back to the Robot Framework test runner::
 Selenium keywords
 =================
 
-My secret goal is to provide full and fully tested set of keywords available in
-Robot Framework SeleniumLibrary_. Unfortunately, it may take some time for me
-to find enough free time to get that completed.
+My secret goal was to provide full and fully tested set of keywords available in
+Robot Framework SeleniumLibrary_. Unfortunately, it would hava takent too much time
+for me to get that completed.
 
 .. _SeleniumLibrary: http://code.google.com/p/robotframework-seleniumlibrary/
 
-Meanwhile, you a free to either help or implement your own custom keywords,
+You are free to either help or implement your own custom keywords,
 e.g. for testing your custom JavaScript-dependent features directly.
 
 Implemented SeleniumLibrary-keywords:
