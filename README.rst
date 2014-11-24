@@ -151,7 +151,7 @@ Selenium keywords
 =================
 
 My secret goal was to provide full and fully tested set of keywords available in
-Robot Framework SeleniumLibrary_. Unfortunately, it would hava takent too much time
+Robot Framework SeleniumLibrary_. Unfortunately, it would have taken too much time
 for me to get that completed.
 
 .. _SeleniumLibrary: http://code.google.com/p/robotframework-seleniumlibrary/
