@@ -93,7 +93,7 @@ class PhantomRobot
     constructor: (@library=null, @port, @timeout, @sleep,\
                   @on_failure="Capture page screenshot") ->
         # Connect to PhantomProxy using socket.io (WebSockets)
-        @socket = io.connect "http://localhost:#{port}/"
+        @socket = io.connect "http://localhost:#{@port}/"
         @info "port #{@port} timeout #{@timeout} sleep #{@sleep}"
 
         # Create socket.io-methods for Robot Framework's remote library API.

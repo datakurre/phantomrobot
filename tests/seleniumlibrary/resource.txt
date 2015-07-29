@@ -5,6 +5,7 @@ Library  Remote  http://localhost:1337/
 *Variable*
 ${SERVER}  localhost:7272
 ${BROWSER}  *firefox
+${ALIAS}  firefox
 ${ROOT}  file://${CURDIR}/html
 ${FRONT PAGE}  ${ROOT}/index.html
 ${SPEED}  0
@@ -13,7 +14,7 @@ ${SPEED}  0
 *Keyword*
 Open Browser To Start Page
   Set Selenium Timeout  0
-  Open Browser  ${FRONT PAGE}  ${BROWSER}
+  Open Browser  ${FRONT PAGE}  ${BROWSER}  ${ALIAS}
 
 Cannot Be Executed In IE
   ${runsInIE}=  Set Variable If  "${BROWSER}".replace(' ', '').lower() in ['ie', '*iexplore', 'internetexplorer']  ${TRUE}
