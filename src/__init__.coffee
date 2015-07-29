@@ -93,13 +93,11 @@ advanced_keyword = (name, doc=null, fn=null) ->
     # Define helper to resolve keyword arguments from a serialized function.
     args = (str) ->
         results = []
-        regexp = /(\S+) = _arg/gim
-        loop
-            if match = regexp.exec str
-                [match, arg] = match
-                if arg != "callback" then results.push "#{arg}="
-            else
-                return results
+        regex = /([^\s]+)\s=\sarg1\[[0-9]+\]/igm
+        while result = regex.exec str
+            results.push "#{result[1]}="
+        
+        return results
         # ^ Advanced keyword definitions must contain the full argument list in
         # the function definition, like ([arg1, arg2], callback) -> ... See
         # built-in keywords for more examples.
