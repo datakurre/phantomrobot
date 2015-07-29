@@ -1,6 +1,7 @@
 ---
 language: python
 python: '2.7'
+sudo: false
 install:
 - python bootstrap.py -c buildout-linux-x86.cfg
 - bin/buildout -N -t 3 -c buildout-linux-x86.cfg
