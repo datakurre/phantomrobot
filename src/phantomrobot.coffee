@@ -72,7 +72,8 @@ class PhantomProxy
         path = require "path"
         fullpath = path.join __dirname, "phantomrobot.js"
         relpath = path.relative process.cwd(), fullpath
-        phantomjs = "phantomjs #{relpath} #{port + 1} #{timeout} #{sleep}"
+        params = "--ignore-ssl-errors=yes --ssl-protocol=any"
+        phantomjs = "phantomjs  #{params} #{relpath} #{port + 1} #{timeout} #{sleep}"
         child_process = require "child_process"
 
         # Spawn a new PhantomJS-client as a child process.'
